@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Phone, CheckCircle2, MessageCircle, Mail, Clock, MapPin } from "lucide-react";
+import { Phone, CheckCircle2, MessageCircle, Mail, Clock, MapPin, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,20 +22,31 @@ import onixPrata from "@/assets/vehicles/onix-prata-2019.jpeg";
 import prismaPreto from "@/assets/vehicles/prisma-preto-2019.jpeg";
 import kiabongo from "@/assets/vehicles/kiabongo-2020.png";
 
+import heroCar from "@/assets/landing/hero-car.png";
+import dailyRentalKeys from "@/assets/landing/daily-rental-keys.jpg";
+import uberLogo from "@/assets/landing/uber.png";
+import logo99 from "@/assets/landing/99.png";
+import indriveLogo from "@/assets/landing/indrive.png";
+import ifoodLogo from "@/assets/landing/ifood.png";
+import rappiLogo from "@/assets/landing/rappi.png";
+import loggiLogo from "@/assets/landing/loggi.png";
+import mercadoLivreLogo from "@/assets/landing/mercado-livre.png";
+import shopeeLogo from "@/assets/landing/shopee.png";
+
 const PHONE = "(11) 91913-4094";
 const PHONE_TEL = "+5511919134094";
 const WHATSAPP_URL =
   "https://wa.me/5511919134094?text=Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20o%20aluguel%20de%20carros.";
 
 const apps = [
-  { name: "Uber", url: "https://www.olilocacao.com.br/assets/uber-D4Kjs_ku.png" },
-  { name: "99", url: "https://www.olilocacao.com.br/assets/99-C5YjFWE8.png" },
-  { name: "InDrive", url: "https://www.olilocacao.com.br/assets/indrive-D4tT5kSm.png" },
-  { name: "iFood", url: "https://www.olilocacao.com.br/assets/ifood-DlAWmDh_.png" },
-  { name: "Rappi", url: "https://www.olilocacao.com.br/assets/rappi-D6lz69GM.png" },
-  { name: "Loggi", url: "https://www.olilocacao.com.br/assets/loggi-C5nNdT7u.png" },
-  { name: "Mercado Livre", url: "https://www.olilocacao.com.br/assets/mercado-livre-7WPQhpiU.png" },
-  { name: "Shopee", url: "https://www.olilocacao.com.br/assets/shopee-Bp8FwSVx.png" },
+  { name: "Uber", url: uberLogo },
+  { name: "99", url: logo99 },
+  { name: "InDrive", url: indriveLogo },
+  { name: "iFood", url: ifoodLogo },
+  { name: "Rappi", url: rappiLogo },
+  { name: "Loggi", url: loggiLogo },
+  { name: "Mercado Livre", url: mercadoLivreLogo },
+  { name: "Shopee", url: shopeeLogo },
 ];
 
 const cars = [
@@ -123,10 +134,7 @@ export default function Home() {
       >
         <div
           className="absolute inset-0 opacity-10 bg-no-repeat bg-right bg-contain pointer-events-none"
-          style={{
-            backgroundImage:
-              "url('https://www.olilocacao.com.br/assets/hero-car-DiVcQNNS.png')",
-          }}
+          style={{ backgroundImage: `url(${heroCar})` }}
         />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
           <div className="max-w-3xl">
@@ -225,7 +233,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
           <div className="rounded-2xl overflow-hidden shadow-[var(--shadow-elevated)]">
             <img
-              src="https://www.olilocacao.com.br/assets/daily-rental-keys-CCDeloML.jpg"
+              src={dailyRentalKeys}
               alt="Chaves de carro sobre balcão de locadora"
               className="w-full h-full object-cover"
               loading="lazy"
@@ -335,6 +343,32 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Fidelidade / Direito de compra */}
+      <section className="py-16 bg-secondary/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto bg-card rounded-2xl p-8 md:p-12 shadow-[var(--shadow-elevated)] border-2 border-primary/20">
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+              <div className="flex justify-center">
+                <div className="rounded-full bg-primary/10 p-8">
+                  <Award className="h-24 w-24 text-primary" />
+                </div>
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold mb-4 text-foreground">Fidelidade que dá vantagem</h2>
+                <p className="text-lg text-muted-foreground mb-6">
+                  Após 1 ano de contrato, o locatário tem exclusividade na opção de compra do veículo. Fale com um consultor e conheça as condições.
+                </p>
+                <a href={WHATSAPP_URL} target="_blank" rel="noreferrer">
+                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-6 h-12">
+                    Quero saber mais
+                  </Button>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section className="py-16 lg:py-20 bg-background">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -439,6 +473,17 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* WhatsApp Float */}
+      <a
+        href={WHATSAPP_URL}
+        target="_blank"
+        rel="noreferrer"
+        className="fixed bottom-6 right-6 z-50 bg-[#25D366] hover:bg-[#20BA5A] text-white rounded-full p-4 shadow-lg transition-all duration-300 hover:scale-110"
+        aria-label="Chat no WhatsApp"
+      >
+        <MessageCircle className="h-6 w-6" />
+      </a>
     </div>
   );
 }
