@@ -11,7 +11,7 @@ import { WhatsAppFloat } from "@/components/landing/WhatsAppFloat";
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen font-landing">
       <Header />
       <main>
         <Hero />
