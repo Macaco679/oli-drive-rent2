@@ -60,28 +60,95 @@ export function LegalLayout({ title, subtitle, toc, children }: LegalLayoutProps
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[260px_1fr] gap-10">
           {/* TOC */}
           <aside className="hidden lg:block">
-            <div className="sticky top-24 bg-card rounded-2xl p-5 border border-border/50 shadow-[var(--shadow-card)]">
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                Índice
-              </p>
-              <nav className="space-y-1">
-                {toc.map((item) => (
-                  <a
-                    key={item.id}
-                    href={`#${item.id}`}
-                    className="block text-sm py-1.5 px-2 rounded-md text-foreground/80 hover:text-primary hover:bg-secondary/50 transition-colors"
-                  >
-                    {item.label}
-                  </a>
-                ))}
-              </nav>
+            <div className="sticky top-24 space-y-4">
+              <div className="bg-card rounded-2xl p-5 border border-border/50 shadow-[var(--shadow-card)]">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                  Documentos legais
+                </p>
+                <nav className="space-y-1">
+                  {LEGAL_PAGES.map((p) => {
+                    const Icon = p.icon;
+                    const active = p.path === pathname;
+                    return (
+                      <Link
+                        key={p.path}
+                        to={p.path}
+                        className={`flex items-center gap-2 text-sm py-2 px-2 rounded-md transition-colors ${
+                          active
+                            ? "bg-primary/10 text-primary font-semibold"
+                            : "text-foreground/80 hover:text-primary hover:bg-secondary/50"
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" /> {p.label}
+                      </Link>
+                    );
+                  })}
+                </nav>
+              </div>
+              <div className="bg-card rounded-2xl p-5 border border-border/50 shadow-[var(--shadow-card)]">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                  Índice
+                </p>
+                <nav className="space-y-1">
+                  {toc.map((item) => (
+                    <a
+                      key={item.id}
+                      href={`#${item.id}`}
+                      className="block text-sm py-1.5 px-2 rounded-md text-foreground/80 hover:text-primary hover:bg-secondary/50 transition-colors"
+                    >
+                      {item.label}
+                    </a>
+                  ))}
+                </nav>
+              </div>
             </div>
           </aside>
 
           {/* Body */}
           <article className="bg-card rounded-2xl p-6 sm:p-10 border border-border/50 shadow-[var(--shadow-card)]">
+            {/* Mobile cross-link */}
+            <div className="lg:hidden mb-6 flex flex-wrap gap-2">
+              {LEGAL_PAGES.map((p) => {
+                const Icon = p.icon;
+                const active = p.path === pathname;
+                return (
+                  <Link
+                    key={p.path}
+                    to={p.path}
+                    className={`inline-flex items-center gap-2 text-sm py-2 px-3 rounded-full border transition-colors ${
+                      active
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "border-border text-foreground/80 hover:text-primary hover:border-primary"
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" /> {p.label}
+                  </Link>
+                );
+              })}
+            </div>
+
             <div className="prose prose-slate max-w-none prose-headings:scroll-mt-24 prose-headings:text-foreground prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-10 prose-h2:mb-4 prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-6 prose-p:text-foreground/85 prose-p:leading-relaxed prose-li:text-foreground/85 prose-strong:text-foreground prose-a:text-primary">
               {children}
+            </div>
+
+            {/* Cross-page CTA */}
+            <div className="mt-10 rounded-xl bg-primary/5 border border-primary/20 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-primary/80">
+                  Leia também
+                </p>
+                <h3 className="mt-1 text-lg font-semibold text-foreground flex items-center gap-2">
+                  <OtherIcon className="w-5 h-5 text-primary" /> {otherPage.label}
+                </h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Estes documentos se complementam. Recomendamos a leitura de ambos.
+                </p>
+              </div>
+              <Link to={otherPage.path}>
+                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full h-11">
+                  Ler {otherPage.label} <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
             </div>
 
             {/* Contact CTA */}
