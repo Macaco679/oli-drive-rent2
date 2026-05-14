@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Phone, CheckCircle2, MessageCircle, Mail, Clock, MapPin, ChevronDown } from "lucide-react";
+import { Phone, CheckCircle2, MessageCircle, Mail, Clock, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
