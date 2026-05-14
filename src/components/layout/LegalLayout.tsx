@@ -1,10 +1,15 @@
 import { ReactNode } from "react";
-import { Link } from "react-router-dom";
-import { Phone, MessageCircle, ArrowLeft } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { Phone, MessageCircle, ArrowLeft, FileText, ShieldCheck, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const PHONE = "+55 11 94017-5031";
 const WHATSAPP_URL = "https://wa.me/5511940175031";
+
+const LEGAL_PAGES = [
+  { path: "/politica-de-privacidade", label: "Política de Privacidade", icon: ShieldCheck },
+  { path: "/termos-de-uso", label: "Termos de Uso", icon: FileText },
+];
 
 interface LegalLayoutProps {
   title: string;
@@ -14,6 +19,9 @@ interface LegalLayoutProps {
 }
 
 export function LegalLayout({ title, subtitle, toc, children }: LegalLayoutProps) {
+  const { pathname } = useLocation();
+  const otherPage = LEGAL_PAGES.find((p) => p.path !== pathname) ?? LEGAL_PAGES[0];
+  const OtherIcon = otherPage.icon;
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
