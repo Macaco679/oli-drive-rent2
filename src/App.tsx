@@ -25,6 +25,8 @@ import RegisterVehicle from "./pages/RegisterVehicle";
 import MyVehicles from "./pages/MyVehicles";
 import EditVehicle from "./pages/EditVehicle";
 import VehicleInspection from "./pages/VehicleInspection";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfUse from "./pages/TermsOfUse";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -57,6 +59,8 @@ const App = () => (
               <Route path="/my-vehicles" element={<MyVehicles />} />
               <Route path="/my-vehicles/:id/edit" element={<EditVehicle />} />
               <Route path="/reservations/:rentalId/inspection" element={<VehicleInspection />} />
+              <Route path="/politica-de-privacidade" element={<PrivacyPolicy />} />
+              <Route path="/termos-de-uso" element={<TermsOfUse />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

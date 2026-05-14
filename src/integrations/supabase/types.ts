@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      n8n_chat_histories: {
+        Row: {
+          contact_id: string | null
+          contact_name: string | null
+          created_at: string | null
+          id: number
+          lead_id: string | null
+          message: string | null
+          phone_id: string | null
+          session_id: string | null
+          talk_id: string | null
+          zapi_lid: string | null
+          zapi_phone: string | null
+        }
+        Insert: {
+          contact_id?: string | null
+          contact_name?: string | null
+          created_at?: string | null
+          id?: number
+          lead_id?: string | null
+          message?: string | null
+          phone_id?: string | null
+          session_id?: string | null
+          talk_id?: string | null
+          zapi_lid?: string | null
+          zapi_phone?: string | null
+        }
+        Update: {
+          contact_id?: string | null
+          contact_name?: string | null
+          created_at?: string | null
+          id?: number
+          lead_id?: string | null
+          message?: string | null
+          phone_id?: string | null
+          session_id?: string | null
+          talk_id?: string | null
+          zapi_lid?: string | null
+          zapi_phone?: string | null
+        }
+        Relationships: []
+      }
       oli_conversation_participants: {
         Row: {
           conversation_id: string
@@ -838,12 +880,16 @@ export type Database = {
           created_at: string
           daily_price: number | null
           deposit_amount: number | null
+          driver_daily_price: string | null
+          driver_notes: string | null
           fuel_type: string | null
+          has_driver_option: string | null
           id: string
           is_active: boolean
           is_popular: boolean
           location_city: string | null
           location_state: string | null
+          mileage_limit_per_day: string | null
           model: string | null
           monthly_price: number | null
           owner_id: string
@@ -873,12 +919,16 @@ export type Database = {
           created_at?: string
           daily_price?: number | null
           deposit_amount?: number | null
+          driver_daily_price?: string | null
+          driver_notes?: string | null
           fuel_type?: string | null
+          has_driver_option?: string | null
           id?: string
           is_active?: boolean
           is_popular?: boolean
           location_city?: string | null
           location_state?: string | null
+          mileage_limit_per_day?: string | null
           model?: string | null
           monthly_price?: number | null
           owner_id: string
@@ -908,12 +958,16 @@ export type Database = {
           created_at?: string
           daily_price?: number | null
           deposit_amount?: number | null
+          driver_daily_price?: string | null
+          driver_notes?: string | null
           fuel_type?: string | null
+          has_driver_option?: string | null
           id?: string
           is_active?: boolean
           is_popular?: boolean
           location_city?: string | null
           location_state?: string | null
+          mileage_limit_per_day?: string | null
           model?: string | null
           monthly_price?: number | null
           owner_id?: string
