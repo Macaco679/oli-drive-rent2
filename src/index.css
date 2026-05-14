@@ -114,6 +114,8 @@ All colors MUST be HSL.
   }
 }
 
+.font-landing { font-family: 'Poppins', system-ui, sans-serif; }
+
 @layer components {
   .mobile-container {
     @apply mx-auto max-w-[430px] min-h-screen bg-card shadow-xl;
