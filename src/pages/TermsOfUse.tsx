@@ -1,255 +1,254 @@
-import { WebLayout } from "@/components/layout/WebLayout";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { MessageCircle } from "lucide-react";
+import { LegalLayout } from "@/components/layout/LegalLayout";
 
-const sections = [
-  { id: "definicoes", title: "1. Definições" },
-  { id: "objeto", title: "2. Objeto" },
-  { id: "informacoes", title: "3. Informações do site" },
-  { id: "cadastro", title: "4. Cadastro, análise e aprovação" },
-  { id: "reserva", title: "5. Reserva e disponibilidade" },
-  { id: "caucao", title: "6. Caução, pagamentos e cobranças" },
-  { id: "obrig-locatario", title: "7. Obrigações do locatário e condutor" },
-  { id: "obrig-oli", title: "8. Obrigações da Oli Locação" },
-  { id: "uso", title: "9. Uso do veículo" },
-  { id: "multas", title: "10. Multas, avarias, sinistros" },
-  { id: "rastreamento", title: "11. Rastreamento, bloqueio e recuperação" },
-  { id: "devolucao", title: "12. Devolução do veículo" },
-  { id: "cancelamento", title: "13. Cancelamento, suspensão ou rescisão" },
-  { id: "limitacao", title: "14. Limitação de responsabilidade" },
-  { id: "propriedade", title: "15. Propriedade intelectual" },
-  { id: "dados", title: "16. Proteção de dados pessoais" },
-  { id: "alteracoes", title: "17. Alterações dos Termos" },
-  { id: "lei", title: "18. Lei aplicável e foro" },
-  { id: "contato", title: "19. Contato" },
+const toc = [
+  { id: "introducao", label: "Introdução" },
+  { id: "definicoes", label: "1. Definições" },
+  { id: "objeto", label: "2. Objeto" },
+  { id: "informacoes-site", label: "3. Informações do site" },
+  { id: "cadastro", label: "4. Cadastro, análise e aprovação" },
+  { id: "reserva", label: "5. Reserva e disponibilidade" },
+  { id: "caucao", label: "6. Caução, pagamentos e cobranças" },
+  { id: "obrigacoes-locatario", label: "7. Obrigações do locatário" },
+  { id: "obrigacoes-oli", label: "8. Obrigações da Oli Locação" },
+  { id: "uso-veiculo", label: "9. Uso do veículo" },
+  { id: "multas", label: "10. Multas, avarias e sinistros" },
+  { id: "rastreamento", label: "11. Rastreamento e recuperação" },
+  { id: "devolucao", label: "12. Devolução do veículo" },
+  { id: "cancelamento", label: "13. Cancelamento e rescisão" },
+  { id: "limitacao", label: "14. Limitação de responsabilidade" },
+  { id: "propriedade", label: "15. Propriedade intelectual" },
+  { id: "dados", label: "16. Proteção de dados pessoais" },
+  { id: "alteracoes", label: "17. Alterações dos Termos" },
+  { id: "foro", label: "18. Lei aplicável e foro" },
+  { id: "contato", label: "19. Contato" },
 ];
 
 export default function TermsOfUse() {
   return (
-    <WebLayout>
-      <section className="bg-gradient-to-br from-primary to-accent text-primary-foreground py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Termos de Uso e Condições Gerais</h1>
-          <p className="text-lg md:text-xl opacity-90">
-            Regras que regem o uso do site e a contratação dos serviços da Oli Locação.
-          </p>
-        </div>
-      </section>
+    <LegalLayout
+      title="Termos de Uso e Condições Gerais"
+      subtitle="Regras para acesso ao site, uso dos canais de atendimento e contratação dos serviços de locação de veículos da Oli Locação."
+      toc={toc}
+    >
+      <p className="text-sm text-muted-foreground"><strong>Última atualização:</strong> {new Date().toLocaleDateString("pt-BR")}</p>
 
-      <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8">
-        <aside className="lg:sticky lg:top-24 self-start">
-          <Card className="p-4">
-            <h2 className="font-semibold mb-3 text-primary">Índice</h2>
-            <ul className="space-y-2 text-sm">
-              {sections.map((s) => (
-                <li key={s.id}>
-                  <a href={`#${s.id}`} className="text-muted-foreground hover:text-primary transition-colors">
-                    {s.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </Card>
-        </aside>
+      <h2 id="introducao">Introdução</h2>
+      <p>
+        Estes Termos de Uso e Condições Gerais regulam o acesso ao site da Oli Locação, o uso dos canais
+        de atendimento e as condições básicas aplicáveis às solicitações, propostas, reservas e
+        contratações de locação de veículos.
+      </p>
+      <p>
+        A Oli Locação é marca da <strong>OLI LOCACAO DE VEICULOS LTDA</strong>, inscrita no CNPJ nº{" "}
+        <strong>57.448.288/0001-89</strong>, com sede na Rua José Silvestre da Cruz, nº 3, Parque
+        Arariba, São Paulo/SP, CEP 05778-220.
+      </p>
+      <p>
+        Ao acessar o site, solicitar atendimento, enviar documentos, realizar cadastro, reservar veículo
+        ou contratar qualquer serviço, o usuário declara que leu, entendeu e concorda integralmente com
+        estes Termos. Caso não concorde, não deve utilizar o site nem contratar os serviços.
+      </p>
 
-        <Card className="p-6 md:p-10 space-y-8 leading-relaxed text-foreground">
-          <p className="text-muted-foreground">
-            Estes Termos de Uso e Condições Gerais regulam o acesso ao site da Oli Locação, o uso dos
-            canais de atendimento e as condições básicas aplicáveis às solicitações, propostas, reservas
-            e contratações de locação de veículos.
-          </p>
-          <p className="text-muted-foreground">
-            A Oli Locação é marca da <strong>OLI LOCACAO DE VEICULOS LTDA</strong>, inscrita no CNPJ
-            nº <strong>57.448.288/0001-89</strong>, com sede na Rua José Silvestre da Cruz, nº 3,
-            Parque Arariba, São Paulo/SP, CEP 05778-220.
-          </p>
-          <p className="text-muted-foreground">
-            Ao acessar o site, solicitar atendimento, enviar documentos, realizar cadastro, reservar
-            veículo ou contratar qualquer serviço, o usuário declara que leu, entendeu e concorda com
-            estes Termos.
-          </p>
+      <h2 id="definicoes">1. Definições</h2>
+      <ul>
+        <li><strong>Oli Locação:</strong> OLI LOCACAO DE VEICULOS LTDA, prestadora dos serviços de locação.</li>
+        <li><strong>Site:</strong> o endereço eletrônico oficial da Oli Locação e demais canais oficiais de atendimento.</li>
+        <li><strong>Usuário:</strong> qualquer pessoa que acesse o site ou utilize os canais de atendimento.</li>
+        <li><strong>Locatário:</strong> pessoa física ou jurídica que contrata a locação do veículo.</li>
+        <li><strong>Condutor:</strong> pessoa autorizada formalmente a conduzir o veículo locado.</li>
+        <li><strong>Contrato:</strong> instrumento específico de locação assinado entre as partes.</li>
+        <li><strong>Caução:</strong> valor exigido como garantia das obrigações do locatário.</li>
+        <li><strong>Veículo:</strong> automóvel disponibilizado na frota da Oli Locação ou de proprietários parceiros.</li>
+      </ul>
 
-          <section id="definicoes">
-            <h2 className="text-2xl font-bold text-primary mb-3">1. Definições</h2>
-            <ul className="list-disc pl-6 space-y-1">
-              <li><strong>Oli Locação:</strong> OLI LOCACAO DE VEICULOS LTDA, locadora dos veículos.</li>
-              <li><strong>Usuário:</strong> qualquer pessoa que acessa o site ou canais de atendimento.</li>
-              <li><strong>Locatário:</strong> pessoa física ou jurídica que contrata a locação.</li>
-              <li><strong>Condutor:</strong> pessoa autorizada a dirigir o veículo locado.</li>
-              <li><strong>Caução:</strong> valor exigido como garantia da locação.</li>
-              <li><strong>Contrato:</strong> instrumento específico de locação assinado entre as partes.</li>
-            </ul>
-          </section>
+      <h2 id="objeto">2. Objeto</h2>
+      <p>
+        O objeto destes Termos é regular o acesso e uso do site, bem como as condições gerais aplicáveis
+        à locação de veículos pela Oli Locação, incluindo cadastro, análise, reserva, pagamento,
+        retirada, uso, devolução e demais aspectos da relação contratual.
+      </p>
 
-          <section id="objeto">
-            <h2 className="text-2xl font-bold text-primary mb-3">2. Objeto</h2>
-            <p>O site disponibiliza informações institucionais, canais de contato e ferramentas para
-            cadastro e solicitação de locação de veículos. A efetiva contratação depende de processo
-            específico, conforme estes Termos e o Contrato de Locação aplicável.</p>
-          </section>
+      <h2 id="informacoes-site">3. Informações do site</h2>
+      <p>
+        Imagens, valores, planos, modelos, anos, cores, opcionais e disponibilidade exibidos no site são{" "}
+        <strong>meramente ilustrativos</strong> e podem variar conforme estoque, sazonalidade,
+        manutenção, sinistro ou outras condições operacionais.
+      </p>
+      <p>
+        As condições do site podem ser alteradas a qualquer momento, <strong>sem aviso prévio
+        individualizado</strong>. Promoções e tabelas de preço podem ter prazo de validade, restrições e
+        critérios específicos.
+      </p>
+      <p>
+        O <strong>contrato específico de locação</strong> assinado entre as partes prevalecerá sobre as
+        informações genéricas do site sempre que houver divergência.
+      </p>
 
-          <section id="informacoes">
-            <h2 className="text-2xl font-bold text-primary mb-3">3. Informações do site</h2>
-            <p>Imagens, valores, planos, descrições e disponibilidade apresentados no site são
-            meramente ilustrativos e podem sofrer alterações sem aviso prévio. As condições do site
-            podem mudar a qualquer tempo. Em caso de divergência, prevalecem as condições do Contrato
-            de Locação específico firmado entre as partes.</p>
-          </section>
+      <h2 id="cadastro">4. Cadastro, análise e aprovação</h2>
+      <p>
+        A contratação <strong>não é automática</strong> pelo site. A formalização da locação depende de:
+      </p>
+      <ul>
+        <li>Envio de documentos pessoais e CNH categoria B válida do condutor;</li>
+        <li>Análise cadastral, de risco e de prevenção a fraude;</li>
+        <li>Disponibilidade do veículo escolhido;</li>
+        <li>Pagamento da primeira parcela e da caução, quando aplicável;</li>
+        <li>Assinatura digital do contrato de locação;</li>
+        <li>Realização da vistoria de retirada.</li>
+      </ul>
+      <p>
+        A Oli Locação poderá <strong>negar cadastro, recusar proposta, cancelar reserva ou interromper
+        atendimento</strong> em caso de risco, inconsistência documental, suspeita de fraude,
+        inadimplência, descumprimento de regras, indisponibilidade ou qualquer outro motivo legítimo,
+        sem necessidade de justificativa detalhada.
+      </p>
 
-          <section id="cadastro">
-            <h2 className="text-2xl font-bold text-primary mb-3">4. Cadastro, análise e aprovação</h2>
-            <p>A contratação <strong>não é automática pelo site</strong>. Toda locação depende de:</p>
-            <ul className="list-disc pl-6 mt-2 space-y-1">
-              <li>Aprovação cadastral e documental.</li>
-              <li>Análise de crédito, risco e antifraude.</li>
-              <li>Disponibilidade do veículo.</li>
-              <li>Pagamento dos valores e da caução, quando aplicável.</li>
-              <li>Assinatura do Contrato de Locação.</li>
-              <li>Vistoria de retirada do veículo.</li>
-            </ul>
-            <p className="mt-2">A Oli Locação pode <strong>negar cadastro, cancelar proposta ou
-            recusar locação</strong> em caso de risco, inconsistência documental, suspeita de fraude,
-            inadimplência, descumprimento de regras ou indisponibilidade de veículo.</p>
-          </section>
+      <h2 id="reserva">5. Reserva e disponibilidade</h2>
+      <p>
+        A reserva manifestada pelo usuário não garante a locação. A locação somente se efetiva após
+        cumpridas todas as etapas do item anterior. A Oli Locação não se responsabiliza por
+        indisponibilidades resultantes de manutenção, sinistro, apreensão, recolhimento, perda total ou
+        outras situações alheias a sua vontade.
+      </p>
 
-          <section id="reserva">
-            <h2 className="text-2xl font-bold text-primary mb-3">5. Reserva e disponibilidade</h2>
-            <p>Reservas estão sujeitas à disponibilidade da frota e à confirmação pela Oli Locação.
-            A confirmação pode depender de pagamento prévio, sinal, caução e validação documental.</p>
-          </section>
+      <h2 id="caucao">6. Caução, pagamentos e cobranças</h2>
+      <p>
+        A caução é exigida como garantia e <strong>somente é aceita por cartão de crédito</strong>,
+        podendo ser parcelada conforme política vigente. O valor poderá ser utilizado para compensar
+        eventuais débitos pendentes, multas, avarias, sinistros, franquias, combustível, limpeza
+        especial, diárias adicionais, custos de pátio, guincho ou qualquer outro débito previsto em
+        contrato.
+      </p>
+      <p>
+        A devolução da caução depende de conferência do veículo, apuração de multas (que podem chegar
+        meses após a devolução), avarias, sinistros e demais pendências, podendo ser parcial ou total
+        conforme apuração.
+      </p>
+      <p>
+        Atrasos no pagamento podem gerar bloqueio do veículo, multa, juros, correção monetária,
+        cobrança de honorários, negativação em birôs de crédito e adoção de medidas judiciais.
+      </p>
 
-          <section id="caucao">
-            <h2 className="text-2xl font-bold text-primary mb-3">6. Caução, pagamentos e cobranças</h2>
-            <p>Para garantir a locação, poderá ser exigida caução em valor e modalidade definidos
-            (cartão de crédito, PIX, transferência ou outra forma aceita). A caução pode ser utilizada
-            para compensar débitos pendentes do locatário, incluindo multas, avarias, sinistros,
-            franquias, combustível, limpeza especial, diárias adicionais e demais valores devidos.
-            A devolução da caução depende da conferência do veículo, apuração de multas, avarias,
-            sinistros e quaisquer pendências.</p>
-          </section>
+      <h2 id="obrigacoes-locatario">7. Obrigações do locatário e do condutor</h2>
+      <ul>
+        <li>Fornecer dados verdadeiros, atualizados e documentos válidos;</li>
+        <li>Conduzir o veículo apenas com CNH válida e dentro da legislação de trânsito;</li>
+        <li>Respeitar regras do contrato, vistoria e estado do veículo;</li>
+        <li>Pagar pontualmente todas as parcelas, caução, multas e demais valores;</li>
+        <li>Comunicar imediatamente sinistros, furtos, roubos, apreensões e ocorrências relevantes;</li>
+        <li>Devolver o veículo nas condições e prazo contratados;</li>
+        <li>Não permitir condutor não autorizado, mesmo familiar;</li>
+        <li>Não sublocar, emprestar, vender, ceder, transferir, dar em garantia, desmontar, adulterar nem usar o veículo para fins ilícitos.</li>
+      </ul>
 
-          <section id="obrig-locatario">
-            <h2 className="text-2xl font-bold text-primary mb-3">7. Obrigações do locatário e do condutor</h2>
-            <ul className="list-disc pl-6 space-y-1">
-              <li>Fornecer informações verdadeiras, completas e atualizadas.</li>
-              <li>Apresentar documentação válida (CNH, identidade, comprovantes).</li>
-              <li>Realizar pagamentos nos prazos acordados.</li>
-              <li>Usar o veículo com zelo, dentro da lei e conforme o Contrato.</li>
-              <li>Comunicar imediatamente qualquer sinistro, avaria, furto ou roubo.</li>
-              <li>Devolver o veículo no prazo, local e condições contratadas.</li>
-            </ul>
-          </section>
+      <h2 id="obrigacoes-oli">8. Obrigações da Oli Locação</h2>
+      <ul>
+        <li>Disponibilizar o veículo em condições de uso e devidamente documentado;</li>
+        <li>Realizar manutenções preventivas conforme plano de cada veículo;</li>
+        <li>Prestar atendimento nos canais oficiais durante o horário comercial;</li>
+        <li>Tratar dados pessoais conforme a Política de Privacidade e a LGPD;</li>
+        <li>Cumprir o contrato específico assinado entre as partes.</li>
+      </ul>
 
-          <section id="obrig-oli">
-            <h2 className="text-2xl font-bold text-primary mb-3">8. Obrigações da Oli Locação</h2>
-            <ul className="list-disc pl-6 space-y-1">
-              <li>Disponibilizar veículo em condições adequadas de uso.</li>
-              <li>Prestar atendimento pelos canais oficiais.</li>
-              <li>Cumprir o Contrato de Locação e a legislação aplicável.</li>
-              <li>Tratar dados pessoais conforme a Política de Privacidade e a LGPD.</li>
-            </ul>
-          </section>
+      <h2 id="uso-veiculo">9. Uso do veículo</h2>
+      <p>O veículo deve ser utilizado de forma diligente, lícita e conforme o contrato. É vedado:</p>
+      <ul>
+        <li>Conduzir sob efeito de álcool, drogas ou substâncias proibidas;</li>
+        <li>Participar de competições, rachas, off-road ou usos similares;</li>
+        <li>Transportar carga incompatível com o veículo;</li>
+        <li>Utilizar o veículo para atividades ilegais;</li>
+        <li>Remover, desligar ou adulterar o rastreador, telemetria ou qualquer equipamento de segurança;</li>
+        <li>Sair do território nacional sem autorização expressa.</li>
+      </ul>
+      <p>
+        O uso do veículo para <strong>aplicativos de mobilidade e entrega</strong> (Uber, 99, InDrive,
+        iFood, Rappi, Loggi, Mercado Livre, Shopee, entre outros) é permitido conforme o plano
+        contratado.
+      </p>
 
-          <section id="uso">
-            <h2 className="text-2xl font-bold text-primary mb-3">9. Uso do veículo</h2>
-            <p>É <strong>vedado</strong> ao locatário e ao condutor:</p>
-            <ul className="list-disc pl-6 mt-2 space-y-1">
-              <li>Sublocar, emprestar, vender, ceder ou transferir o veículo a terceiros.</li>
-              <li>Permitir condução por pessoa não autorizada ou sem CNH válida.</li>
-              <li>Desmontar, adulterar, remover ou inutilizar rastreador, telemetria ou equipamentos.</li>
-              <li>Utilizar o veículo para atos ilícitos, transporte irregular, competição, off-road
-              ou finalidades não previstas em Contrato.</li>
-              <li>Conduzir sob efeito de álcool, substâncias entorpecentes ou em desacordo com a lei.</li>
-              <li>Sair do território nacional sem autorização expressa por escrito.</li>
-            </ul>
-          </section>
+      <h2 id="multas">10. Multas, avarias, sinistros e responsabilidades</h2>
+      <p>
+        O locatário é integralmente responsável por <strong>multas de trânsito, infrações
+        administrativas, danos, avarias, mau uso, atrasos na devolução, combustível, limpeza especial,
+        sinistros, franquias e coparticipações de seguro, custos de guincho, pátio, apreensão, diárias
+        adicionais, perda de chave, documentação, taxa de transferência de pontos e demais custos
+        previstos em contrato.</strong>
+      </p>
+      <p>
+        As multas serão repassadas ao condutor mediante indicação ao órgão competente. Custos
+        administrativos podem incidir sobre cada repasse.
+      </p>
 
-          <section id="multas">
-            <h2 className="text-2xl font-bold text-primary mb-3">10. Multas, avarias, sinistros e responsabilidades</h2>
-            <p>O locatário é integralmente responsável por multas de trânsito, infrações
-            administrativas, danos, avarias, mau uso, atrasos, combustível, limpeza especial,
-            sinistros, franquias e coparticipações de seguro, guincho, pátio, apreensão, diárias
-            adicionais e demais custos previstos em Contrato, ainda que apurados após a devolução do
-            veículo.</p>
-          </section>
+      <h2 id="rastreamento">11. Rastreamento, bloqueio e recuperação do veículo</h2>
+      <p>
+        Os veículos podem possuir rastreador, telemetria e sistemas de bloqueio. Em caso de
+        inadimplência, apropriação indevida, suspeita de fraude, descumprimento contratual,
+        recusa de devolução, risco ao patrimônio ou ordem de autoridade competente, a Oli Locação
+        poderá adotar medidas para localização, bloqueio, retomada extrajudicial ou judicial, cobrança
+        e defesa de seus direitos, respeitada a legislação aplicável.
+      </p>
 
-          <section id="rastreamento">
-            <h2 className="text-2xl font-bold text-primary mb-3">11. Rastreamento, bloqueio e recuperação do veículo</h2>
-            <p>Os veículos podem possuir rastreador, telemetria e sistemas de segurança. Em caso de
-            inadimplência, apropriação indevida, suspeita de fraude, descumprimento contratual,
-            ausência de devolução ou risco ao patrimônio, a Oli Locação poderá adotar medidas para
-            localização, bloqueio remoto, retomada do veículo, cobrança de valores e defesa de seus
-            direitos, sempre respeitada a legislação aplicável.</p>
-          </section>
+      <h2 id="devolucao">12. Devolução do veículo</h2>
+      <p>
+        A devolução deve ocorrer no local, data e horário acordados, com o veículo nas mesmas condições
+        da retirada, ressalvado o desgaste natural. Atrasos geram cobrança de diárias adicionais e
+        podem caracterizar apropriação indevida. A vistoria de devolução é obrigatória para liberação da
+        caução.
+      </p>
 
-          <section id="devolucao">
-            <h2 className="text-2xl font-bold text-primary mb-3">12. Devolução do veículo</h2>
-            <p>O veículo deve ser devolvido no prazo, local e horário acordados, nas mesmas condições
-            de retirada, com tanque conforme contratado e acompanhado dos documentos e acessórios.
-            Atrasos geram cobrança de diárias adicionais e demais encargos.</p>
-          </section>
+      <h2 id="cancelamento">13. Cancelamento, suspensão ou rescisão</h2>
+      <p>
+        O contrato pode ser rescindido, suspenso ou cancelado, sem prejuízo de cobranças, em casos como
+        inadimplência, descumprimento contratual, fraude, uso indevido, sinistro com perda total,
+        apreensão, ordem judicial ou conforme regras específicas do contrato assinado.
+      </p>
 
-          <section id="cancelamento">
-            <h2 className="text-2xl font-bold text-primary mb-3">13. Cancelamento, suspensão ou rescisão</h2>
-            <p>A Oli Locação pode suspender ou rescindir a locação, com retomada do veículo, em caso
-            de descumprimento contratual, inadimplência, fraude, uso indevido ou risco ao patrimônio,
-            sem prejuízo da cobrança dos valores devidos.</p>
-          </section>
+      <h2 id="limitacao">14. Limitação de responsabilidade</h2>
+      <p>
+        A Oli Locação não se responsabiliza por: (i) lucros cessantes do locatário decorrentes de
+        manutenção, sinistro ou indisponibilidade do veículo; (ii) objetos pessoais deixados no veículo;
+        (iii) infrações cometidas pelo condutor; (iv) danos a terceiros decorrentes do uso do veículo
+        pelo locatário; (v) interrupções, falhas técnicas ou indisponibilidade temporária do site.
+      </p>
 
-          <section id="limitacao">
-            <h2 className="text-2xl font-bold text-primary mb-3">14. Limitação de responsabilidade</h2>
-            <p>A Oli Locação não se responsabiliza por danos decorrentes de uso indevido do veículo,
-            descumprimento contratual, força maior, caso fortuito, indisponibilidade momentânea do
-            site ou de canais de terceiros, nem por bens deixados no veículo após a devolução.</p>
-          </section>
+      <h2 id="propriedade">15. Propriedade intelectual</h2>
+      <p>
+        Marca, logotipo, layout, textos, imagens, fotos, vídeos e demais elementos do site são de
+        titularidade da Oli Locação ou de seus licenciantes, sendo vedada a reprodução, cópia ou uso
+        sem autorização expressa.
+      </p>
 
-          <section id="propriedade">
-            <h2 className="text-2xl font-bold text-primary mb-3">15. Propriedade intelectual</h2>
-            <p>Marca, logotipo, layout, textos, imagens e demais elementos do site são de
-            titularidade da Oli Locação ou de seus licenciantes, sendo vedada qualquer utilização sem
-            autorização prévia.</p>
-          </section>
+      <h2 id="dados">16. Proteção de dados pessoais</h2>
+      <p>
+        O tratamento de dados pessoais segue a{" "}
+        <a href="/politica-de-privacidade">Política de Privacidade</a> da Oli Locação e a Lei nº
+        13.709/2018 (LGPD).
+      </p>
 
-          <section id="dados">
-            <h2 className="text-2xl font-bold text-primary mb-3">16. Proteção de dados pessoais</h2>
-            <p>O tratamento de dados pessoais é realizado conforme a Política de Privacidade e a
-            LGPD (Lei nº 13.709/2018).</p>
-          </section>
+      <h2 id="alteracoes">17. Alterações dos Termos</h2>
+      <p>
+        Estes Termos podem ser alterados a qualquer momento, sem aviso prévio individualizado, valendo a
+        versão publicada nesta página. O uso continuado do site após alterações implica concordância
+        com a nova versão.
+      </p>
 
-          <section id="alteracoes">
-            <h2 className="text-2xl font-bold text-primary mb-3">17. Alterações dos Termos</h2>
-            <p>Estes Termos podem ser alterados a qualquer momento, sem aviso prévio. A versão
-            vigente é sempre a publicada no site.</p>
-          </section>
+      <h2 id="foro">18. Lei aplicável e foro</h2>
+      <p>
+        Estes Termos são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da
+        Comarca de São Paulo/SP para dirimir quaisquer controvérsias, com renúncia a qualquer outro,
+        por mais privilegiado que seja, ressalvado o foro do consumidor quando aplicável.
+      </p>
 
-          <section id="lei">
-            <h2 className="text-2xl font-bold text-primary mb-3">18. Lei aplicável e foro</h2>
-            <p>Estes Termos são regidos pelas leis brasileiras. Fica eleito o foro da comarca de São
-            Paulo/SP para dirimir quaisquer controvérsias, renunciando-se a qualquer outro, por mais
-            privilegiado que seja.</p>
-          </section>
-
-          <section id="contato" className="border-t pt-6">
-            <h2 className="text-2xl font-bold text-primary mb-3">19. Contato</h2>
-            <div className="space-y-1 text-muted-foreground">
-              <p><strong className="text-foreground">OLI LOCACAO DE VEICULOS LTDA</strong></p>
-              <p>Nome fantasia: OLI</p>
-              <p>CNPJ: 57.448.288/0001-89</p>
-              <p>Inscrição Estadual: 150.999.730.115</p>
-              <p>Endereço: Rua José Silvestre da Cruz, nº 3, Parque Arariba, São Paulo/SP, CEP 05778-220</p>
-              <p>Telefone/WhatsApp: +55 11 94017-5031</p>
-              <p>E-mail: [E-MAIL DE CONTATO]</p>
-            </div>
-            <Button asChild className="mt-6 bg-success hover:bg-success/90 text-success-foreground">
-              <a href="https://wa.me/5511940175031" target="_blank" rel="noopener noreferrer">
-                <MessageCircle className="w-4 h-4" />
-                Falar no WhatsApp
-              </a>
-            </Button>
-          </section>
-        </Card>
-      </div>
-    </WebLayout>
+      <h2 id="contato">19. Contato</h2>
+      <ul>
+        <li><strong>OLI LOCACAO DE VEICULOS LTDA</strong></li>
+        <li><strong>Nome fantasia:</strong> OLI</li>
+        <li><strong>CNPJ:</strong> 57.448.288/0001-89</li>
+        <li><strong>Inscrição Estadual:</strong> 150.999.730.115</li>
+        <li><strong>Endereço:</strong> Rua José Silvestre da Cruz, nº 3, Parque Arariba, São Paulo/SP, CEP 05778-220</li>
+        <li><strong>Telefone/WhatsApp:</strong> +55 11 94017-5031</li>
+        <li><strong>E-mail:</strong> [E-MAIL DE CONTATO]</li>
+      </ul>
+    </LegalLayout>
   );
 }
