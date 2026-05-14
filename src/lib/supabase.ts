@@ -45,10 +45,10 @@ export interface OliVehicle {
   weekly_price: number | null;
   monthly_price: number | null;
   deposit_amount: number | null;
-  has_driver_option: string | boolean | null;
-  driver_daily_price: string | number | null;
+  has_driver_option: any;
+  driver_daily_price: number | null;
   driver_notes: string | null;
-  mileage_limit_per_day: string | number | null;
+  mileage_limit_per_day: number | null;
   location_city: string | null;
   location_state: string | null;
   pickup_neighborhood: string | null;
