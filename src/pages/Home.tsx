@@ -134,10 +134,7 @@ export default function Home() {
       >
         <div
           className="absolute inset-0 opacity-10 bg-no-repeat bg-right bg-contain pointer-events-none"
-          style={{
-            backgroundImage:
-              "url('https://www.olilocacao.com.br/assets/hero-car-DiVcQNNS.png')",
-          }}
+          style={{ backgroundImage: `url(${heroCar})` }}
         />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
           <div className="max-w-3xl">
@@ -236,7 +233,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
           <div className="rounded-2xl overflow-hidden shadow-[var(--shadow-elevated)]">
             <img
-              src="https://www.olilocacao.com.br/assets/daily-rental-keys-CCDeloML.jpg"
+              src={dailyRentalKeys}
               alt="Chaves de carro sobre balcão de locadora"
               className="w-full h-full object-cover"
               loading="lazy"
