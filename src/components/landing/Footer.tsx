@@ -1,4 +1,5 @@
 import { MessageSquare, Phone, Mail } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -113,6 +114,11 @@ export const Footer = () => {
         </div>
 
         <div className="border-t border-white/20 pt-8 text-center text-sm text-white/60">
+          <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 mb-3">
+            <Link to="/politica-de-privacidade" className="text-white/80 hover:text-primary transition-colors">Política de Privacidade</Link>
+            <Link to="/termos-de-uso" className="text-white/80 hover:text-primary transition-colors">Termos de Uso</Link>
+            <Link to="/auth" className="text-white/80 hover:text-primary transition-colors">Área do Cliente</Link>
+          </div>
           <p>© {currentYear} Oli Locação. Todos os direitos reservados.</p>
         </div>
       </div>
