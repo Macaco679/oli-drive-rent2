@@ -96,7 +96,7 @@ export async function createVehicle(data: VehicleFormData): Promise<{ id: string
       is_popular: data.is_popular || false,
       status: "inactive" as const,
       is_active: false,
-    })
+    } as any)
     .select("id")
     .single();
 

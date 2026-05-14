@@ -45,7 +45,7 @@ export interface OliVehicle {
   weekly_price: number | null;
   monthly_price: number | null;
   deposit_amount: number | null;
-  has_driver_option: boolean;
+  has_driver_option: any;
   driver_daily_price: number | null;
   driver_notes: string | null;
   mileage_limit_per_day: number | null;
@@ -232,7 +232,7 @@ export const getAvailableVehicles = async (limit?: number): Promise<OliVehicle[]
     return [];
   }
 
-  return (data || []) as OliVehicle[];
+  return (data || []) as unknown as OliVehicle[];
 };
 
 export const getAllVehicles = async (limit?: number): Promise<OliVehicle[]> => {
@@ -252,7 +252,7 @@ export const getAllVehicles = async (limit?: number): Promise<OliVehicle[]> => {
     return [];
   }
 
-  return (data || []) as OliVehicle[];
+  return (data || []) as unknown as OliVehicle[];
 };
 
 export const getVehicleById = async (vehicleId: string): Promise<OliVehicle | null> => {
@@ -267,7 +267,7 @@ export const getVehicleById = async (vehicleId: string): Promise<OliVehicle | nu
     return null;
   }
 
-  return data as OliVehicle;
+  return data as unknown as OliVehicle;
 };
 
 export const getVehiclePhotos = async (vehicleId: string): Promise<OliVehiclePhoto[]> => {
@@ -374,7 +374,7 @@ export const getMyVehicles = async (ownerId: string): Promise<OliVehicle[]> => {
     return [];
   }
 
-  return (data || []) as OliVehicle[];
+  return (data || []) as unknown as OliVehicle[];
 };
 
 // ============================================================
