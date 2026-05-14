@@ -1,205 +1,188 @@
-import { WebLayout } from "@/components/layout/WebLayout";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { MessageCircle } from "lucide-react";
+import { LegalLayout } from "@/components/layout/LegalLayout";
 
-const sections = [
-  { id: "dados", title: "1. Dados que podemos coletar" },
-  { id: "finalidades", title: "2. Finalidades do uso dos dados" },
-  { id: "bases", title: "3. Bases legais para tratamento" },
-  { id: "compartilhamento", title: "4. Compartilhamento de dados" },
-  { id: "whatsapp", title: "5. WhatsApp, formulários e atendimento" },
-  { id: "cookies", title: "6. Cookies e tecnologias de navegação" },
-  { id: "rastreamento", title: "7. Rastreamento, localização e telemetria" },
-  { id: "seguranca", title: "8. Armazenamento e segurança" },
-  { id: "direitos", title: "9. Direitos do titular dos dados" },
-  { id: "menores", title: "10. Dados de menores de idade" },
-  { id: "marketing", title: "11. Marketing e comunicações" },
-  { id: "links", title: "12. Links externos" },
-  { id: "alteracoes", title: "13. Alterações da política" },
-  { id: "contato", title: "14. Contato" },
+const toc = [
+  { id: "introducao", label: "Introdução" },
+  { id: "dados-coletados", label: "1. Dados que podemos coletar" },
+  { id: "finalidades", label: "2. Finalidades do uso" },
+  { id: "bases-legais", label: "3. Bases legais" },
+  { id: "compartilhamento", label: "4. Compartilhamento de dados" },
+  { id: "whatsapp", label: "5. WhatsApp e atendimento" },
+  { id: "cookies", label: "6. Cookies" },
+  { id: "rastreamento", label: "7. Rastreamento e telemetria" },
+  { id: "seguranca", label: "8. Armazenamento e segurança" },
+  { id: "direitos", label: "9. Direitos do titular (LGPD)" },
+  { id: "menores", label: "10. Dados de menores" },
+  { id: "marketing", label: "11. Marketing e comunicações" },
+  { id: "links", label: "12. Links externos" },
+  { id: "alteracoes", label: "13. Alterações desta política" },
+  { id: "contato", label: "14. Contato" },
 ];
 
 export default function PrivacyPolicy() {
   return (
-    <WebLayout>
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-primary to-accent text-primary-foreground py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Política de Privacidade</h1>
-          <p className="text-lg md:text-xl opacity-90">
-            Saiba como a Oli Locação coleta, utiliza e protege seus dados pessoais.
-          </p>
-        </div>
-      </section>
+    <LegalLayout
+      title="Política de Privacidade"
+      subtitle="Como a Oli Locação coleta, utiliza, armazena e protege seus dados pessoais, em conformidade com a LGPD (Lei nº 13.709/2018)."
+      toc={toc}
+    >
+      <p className="text-sm text-muted-foreground"><strong>Última atualização:</strong> {new Date().toLocaleDateString("pt-BR")}</p>
 
-      <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8">
-        {/* Index */}
-        <aside className="lg:sticky lg:top-24 self-start">
-          <Card className="p-4">
-            <h2 className="font-semibold mb-3 text-primary">Índice</h2>
-            <ul className="space-y-2 text-sm">
-              {sections.map((s) => (
-                <li key={s.id}>
-                  <a href={`#${s.id}`} className="text-muted-foreground hover:text-primary transition-colors">
-                    {s.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </Card>
-        </aside>
+      <h2 id="introducao">Introdução</h2>
+      <p>
+        A presente Política de Privacidade explica como a <strong>OLI LOCACAO DE VEICULOS LTDA</strong>,
+        nome fantasia <strong>OLI</strong>, inscrita no CNPJ nº <strong>57.448.288/0001-89</strong>, com sede na
+        Rua José Silvestre da Cruz, nº 3, Parque Arariba, São Paulo/SP, CEP 05778-220, coleta, utiliza,
+        armazena, compartilha e protege os dados pessoais de usuários, clientes, interessados, locatários,
+        condutores, proprietários de veículos, parceiros e demais pessoas que acessam o site, entram em
+        contato por WhatsApp, telefone, formulário, redes sociais ou contratam serviços de locação.
+      </p>
+      <p>
+        Ao acessar o site, enviar informações, solicitar atendimento, realizar cadastro, reservar veículo
+        ou contratar serviços, o usuário declara estar ciente desta Política e concorda com o tratamento
+        de seus dados pessoais nos termos aqui descritos.
+      </p>
 
-        {/* Content */}
-        <Card className="p-6 md:p-10 space-y-8 leading-relaxed text-foreground">
-          <p className="text-muted-foreground">
-            A presente Política de Privacidade explica como a <strong>OLI LOCACAO DE VEICULOS LTDA</strong>,
-            nome fantasia <strong>OLI</strong>, inscrita no CNPJ nº <strong>57.448.288/0001-89</strong>, com
-            sede na Rua José Silvestre da Cruz, nº 3, Parque Arariba, São Paulo/SP, CEP 05778-220, coleta,
-            utiliza, armazena, compartilha e protege os dados pessoais de usuários, clientes, interessados,
-            locatários, condutores, proprietários de veículos, parceiros e demais pessoas que acessam o site,
-            entram em contato por WhatsApp, telefone, formulário, redes sociais ou contratam serviços de locação.
-          </p>
-          <p className="text-muted-foreground">
-            Ao acessar o site, enviar informações, solicitar atendimento, realizar cadastro, reservar veículo
-            ou contratar serviços, o usuário declara estar ciente desta Política.
-          </p>
+      <h2 id="dados-coletados">1. Dados que podemos coletar</h2>
+      <p>Para prestar nossos serviços, podemos coletar as seguintes categorias de dados:</p>
+      <ul>
+        <li><strong>Dados cadastrais:</strong> nome completo, CPF, RG, data de nascimento, estado civil, profissão, filiação, nacionalidade.</li>
+        <li><strong>Dados de contato:</strong> telefone, WhatsApp, e-mail, endereço residencial, comprovante de residência.</li>
+        <li><strong>Documentos:</strong> CNH (categoria, validade, número de registro), foto e selfie para validação, comprovantes de renda e ocupação.</li>
+        <li><strong>Dados financeiros:</strong> dados de cartão de crédito (tokenizados via gateway), comprovantes de pagamento, histórico de transações, dados bancários para reembolso de caução.</li>
+        <li><strong>Dados de análise cadastral:</strong> consultas a birôs de crédito, restrições, score, antecedentes para risco de fraude e inadimplência.</li>
+        <li><strong>Dados do veículo locado:</strong> placa, quilometragem, vistorias, fotos, histórico de uso, infrações e ocorrências.</li>
+        <li><strong>Dados de localização e telemetria:</strong> coordenadas GPS, rotas, velocidade e status do rastreador instalado no veículo.</li>
+        <li><strong>Dados de navegação:</strong> endereço IP, dispositivo, navegador, páginas visitadas, cookies e identificadores online.</li>
+        <li><strong>Dados de comunicação:</strong> registros de mensagens, áudios e atendimentos via WhatsApp, telefone, e-mail ou formulário.</li>
+      </ul>
 
-          <section id="dados">
-            <h2 className="text-2xl font-bold text-primary mb-3">1. Dados que podemos coletar</h2>
-            <p>Podemos coletar dados fornecidos diretamente por você, gerados pelo uso do site/app ou
-            obtidos junto a parceiros, incluindo:</p>
-            <ul className="list-disc pl-6 mt-2 space-y-1">
-              <li>Dados de identificação: nome completo, RG, CPF, data de nascimento, nacionalidade, estado civil, profissão.</li>
-              <li>Dados de contato: e-mail, telefone, WhatsApp, endereço residencial e comercial.</li>
-              <li>Documentos: CNH, comprovante de residência, comprovante de renda, selfies para validação facial e assinatura digital.</li>
-              <li>Dados financeiros e de pagamento: dados de cartão, PIX, comprovantes, histórico de pagamentos, caução, cobranças e inadimplência.</li>
-              <li>Dados cadastrais e de análise de crédito/risco, inclusive consultas a bureaus.</li>
-              <li>Dados de uso do veículo: localização, telemetria, quilometragem, eventos do rastreador, infrações, sinistros e avarias.</li>
-              <li>Dados de navegação: IP, dispositivo, navegador, cookies, páginas visitadas, interações.</li>
-            </ul>
-          </section>
+      <h2 id="finalidades">2. Finalidades do uso dos dados</h2>
+      <ul>
+        <li>Realizar análise cadastral, prevenção a fraude e avaliação de risco de crédito.</li>
+        <li>Formalizar propostas, contratos digitais, vistorias, entregas e devoluções de veículos.</li>
+        <li>Processar pagamentos, caução, multas, danos, avarias, sinistros e demais cobranças.</li>
+        <li>Cumprir obrigações legais, regulatórias, fiscais e contratuais.</li>
+        <li>Localizar, monitorar e, quando aplicável, recuperar veículos em casos de inadimplência ou apropriação indevida.</li>
+        <li>Atender solicitações de autoridades públicas, polícia, Detran, Receita Federal e poder judiciário.</li>
+        <li>Prestar suporte, atendimento e comunicação operacional sobre o contrato.</li>
+        <li>Aprimorar a segurança, a operação, os produtos e serviços oferecidos.</li>
+        <li>Enviar comunicações de marketing, quando autorizado pelo titular.</li>
+      </ul>
 
-          <section id="finalidades">
-            <h2 className="text-2xl font-bold text-primary mb-3">2. Finalidades do uso dos dados</h2>
-            <ul className="list-disc pl-6 space-y-1">
-              <li>Realizar cadastro, análise documental e de crédito.</li>
-              <li>Operacionalizar reservas, contratos, pagamentos, caução, vistorias e devoluções.</li>
-              <li>Prestar atendimento via WhatsApp, e-mail, telefone, chat e formulários.</li>
-              <li>Gerenciar contratos de locação, cobrar valores devidos, multas, avarias e franquias.</li>
-              <li>Prevenir fraudes, inadimplência, sinistros e proteger o patrimônio.</li>
-              <li>Cumprir obrigações legais, regulatórias, fiscais e contratuais.</li>
-              <li>Aprimorar serviços, segurança, comunicação e experiência do usuário.</li>
-            </ul>
-          </section>
+      <h2 id="bases-legais">3. Bases legais para tratamento dos dados</h2>
+      <p>O tratamento de dados pessoais ocorre com fundamento em uma ou mais das bases legais previstas na LGPD:</p>
+      <ul>
+        <li><strong>Execução de contrato</strong> ou de procedimentos preliminares relacionados à locação.</li>
+        <li><strong>Cumprimento de obrigação legal ou regulatória</strong> aplicável à atividade de locação de veículos.</li>
+        <li><strong>Legítimo interesse</strong> da Oli Locação, especialmente para prevenção a fraude, segurança patrimonial e cobrança.</li>
+        <li><strong>Consentimento</strong> do titular, quando exigido (por exemplo, para envio de marketing).</li>
+        <li><strong>Proteção do crédito</strong>, conforme autorizado pela legislação.</li>
+        <li><strong>Exercício regular de direitos</strong> em processo judicial, administrativo ou arbitral.</li>
+      </ul>
 
-          <section id="bases">
-            <h2 className="text-2xl font-bold text-primary mb-3">3. Bases legais para tratamento dos dados</h2>
-            <p>Tratamos dados com base nas hipóteses previstas pela Lei Geral de Proteção de Dados (LGPD),
-            principalmente: execução de contrato, cumprimento de obrigação legal/regulatória, legítimo
-            interesse, exercício regular de direitos em processo, proteção ao crédito, prevenção à fraude
-            e consentimento, quando aplicável.</p>
-          </section>
+      <h2 id="compartilhamento">4. Compartilhamento de dados</h2>
+      <p>A Oli Locação poderá compartilhar dados pessoais com:</p>
+      <ul>
+        <li><strong>Proprietários de veículos parceiros</strong>, quando aplicável à execução do contrato de locação.</li>
+        <li><strong>Seguradoras, oficinas, guincho e pátios</strong> em caso de sinistros, manutenção, reparo ou apreensão.</li>
+        <li><strong>Birôs de crédito e empresas de prevenção a fraude</strong>, para análise cadastral.</li>
+        <li><strong>Empresas de rastreamento e telemetria</strong>, para monitoramento e recuperação do veículo.</li>
+        <li><strong>Meios de pagamento, gateways e instituições financeiras</strong>, para processar transações e caução.</li>
+        <li><strong>Plataformas de assinatura digital de contrato</strong> (ex.: Clicksign).</li>
+        <li><strong>Autoridades públicas, Detran, polícia, Receita Federal e poder judiciário</strong>, mediante obrigação legal ou ordem judicial.</li>
+        <li><strong>Escritórios de cobrança e advocacia</strong>, em caso de inadimplência ou litígio.</li>
+        <li><strong>Prestadores de tecnologia, hospedagem e atendimento</strong> contratados sob obrigação de sigilo.</li>
+      </ul>
 
-          <section id="compartilhamento">
-            <h2 className="text-2xl font-bold text-primary mb-3">4. Compartilhamento de dados</h2>
-            <p>Podemos compartilhar dados com parceiros estritamente necessários à operação, tais como:</p>
-            <ul className="list-disc pl-6 mt-2 space-y-1">
-              <li>Meios de pagamento, adquirentes, gateways e instituições financeiras.</li>
-              <li>Bureaus de crédito, antifraude e análise cadastral.</li>
-              <li>Seguradoras, corretoras, oficinas mecânicas, guinchos e pátios.</li>
-              <li>Empresas de rastreamento, telemetria e recuperação de veículos.</li>
-              <li>Autoridades públicas, órgãos de trânsito, judiciais, fiscais e administrativos.</li>
-              <li>Provedores de tecnologia, hospedagem, comunicação, e-mail e WhatsApp Business.</li>
-            </ul>
-          </section>
+      <h2 id="whatsapp">5. WhatsApp, formulários e atendimento</h2>
+      <p>
+        Ao entrar em contato pelo WhatsApp, telefone, e-mail ou formulários do site, o usuário autoriza o
+        tratamento dos dados informados para fins de atendimento, envio de propostas, esclarecimento de
+        dúvidas, formalização de cadastro e execução do contrato. O histórico de mensagens, áudios e
+        documentos enviados pode ser armazenado para fins de comprovação, auditoria e cumprimento de
+        obrigações legais.
+      </p>
 
-          <section id="whatsapp">
-            <h2 className="text-2xl font-bold text-primary mb-3">5. WhatsApp, formulários e atendimento</h2>
-            <p>Ao iniciar conversa pelo WhatsApp, preencher formulários ou enviar mensagens pelos nossos
-            canais, você autoriza o tratamento das informações enviadas para fins de atendimento, cadastro,
-            proposta, contratação e comunicação posterior relacionada aos serviços. As conversas podem ser
-            armazenadas para fins de histórico, qualidade e segurança.</p>
-          </section>
+      <h2 id="cookies">6. Cookies e tecnologias de navegação</h2>
+      <p>
+        O site pode utilizar cookies próprios e de terceiros para funcionamento essencial, análise de
+        navegação, métricas e melhorias. O usuário pode gerenciar cookies nas configurações do navegador,
+        ciente de que algumas funcionalidades podem ser limitadas em caso de bloqueio.
+      </p>
 
-          <section id="cookies">
-            <h2 className="text-2xl font-bold text-primary mb-3">6. Cookies e tecnologias de navegação</h2>
-            <p>Utilizamos cookies e tecnologias semelhantes para autenticar usuários, manter sessões,
-            medir desempenho, personalizar conteúdo e melhorar a experiência. Você pode gerenciar cookies
-            nas configurações do seu navegador.</p>
-          </section>
+      <h2 id="rastreamento">7. Rastreamento, localização e telemetria dos veículos</h2>
+      <p>
+        Os veículos da frota podem possuir <strong>rastreador, telemetria e sistemas de bloqueio</strong>{" "}
+        que registram localização, rota, velocidade e demais dados operacionais. Esses dados são
+        utilizados para fins de segurança patrimonial, prevenção a sinistros, recuperação do veículo em
+        caso de roubo, furto, apropriação indevida, inadimplência ou descumprimento contratual, sempre
+        respeitada a legislação aplicável.
+      </p>
 
-          <section id="rastreamento">
-            <h2 className="text-2xl font-bold text-primary mb-3">7. Rastreamento, localização e telemetria dos veículos</h2>
-            <p>Os veículos da frota podem possuir equipamentos de rastreamento, telemetria e sistemas de
-            segurança. Esses recursos permitem monitorar localização, deslocamento, padrões de uso, eventos
-            de risco, bloqueio remoto e recuperação em caso de furto, roubo, apropriação indevida,
-            inadimplência ou descumprimento contratual, sempre conforme a legislação aplicável.</p>
-          </section>
+      <h2 id="seguranca">8. Armazenamento e segurança dos dados</h2>
+      <p>
+        Os dados são armazenados em ambiente controlado, com medidas técnicas e administrativas razoáveis
+        para protegê-los contra acesso não autorizado, perda, alteração, destruição ou divulgação
+        indevida. Os dados são mantidos pelo prazo necessário ao cumprimento das finalidades, obrigações
+        legais e exercício regular de direitos.
+      </p>
 
-          <section id="seguranca">
-            <h2 className="text-2xl font-bold text-primary mb-3">8. Armazenamento e segurança dos dados</h2>
-            <p>Adotamos medidas técnicas e administrativas adequadas para proteger seus dados contra
-            acessos não autorizados, perda, destruição ou alteração indevida. Os dados são armazenados
-            pelo tempo necessário ao cumprimento das finalidades e obrigações legais.</p>
-          </section>
+      <h2 id="direitos">9. Direitos do titular dos dados (LGPD)</h2>
+      <p>O titular dos dados pode, a qualquer momento e mediante requisição comprovada de identidade:</p>
+      <ul>
+        <li>Confirmar a existência de tratamento de seus dados;</li>
+        <li>Acessar seus dados pessoais;</li>
+        <li>Corrigir dados incompletos, inexatos ou desatualizados;</li>
+        <li>Solicitar anonimização, bloqueio ou eliminação de dados desnecessários ou tratados em desconformidade;</li>
+        <li>Solicitar portabilidade dos dados;</li>
+        <li>Obter informações sobre o compartilhamento de dados;</li>
+        <li>Revogar o consentimento, quando aplicável;</li>
+        <li>Opor-se a tratamentos com base em outras hipóteses legais;</li>
+        <li>Apresentar reclamação à Autoridade Nacional de Proteção de Dados (ANPD).</li>
+      </ul>
+      <p>
+        Algumas solicitações podem ser limitadas pela necessidade de cumprimento de obrigações legais,
+        contratuais ou exercício regular de direitos pela Oli Locação.
+      </p>
 
-          <section id="direitos">
-            <h2 className="text-2xl font-bold text-primary mb-3">9. Direitos do titular dos dados</h2>
-            <p>Nos termos da LGPD, você pode solicitar:</p>
-            <ul className="list-disc pl-6 mt-2 space-y-1">
-              <li>Confirmação da existência de tratamento.</li>
-              <li>Acesso, correção, atualização ou portabilidade dos dados.</li>
-              <li>Anonimização, bloqueio ou eliminação de dados desnecessários.</li>
-              <li>Informação sobre compartilhamento.</li>
-              <li>Revogação de consentimento, quando aplicável.</li>
-            </ul>
-            <p className="mt-2">As solicitações devem ser feitas pelos canais oficiais de contato.</p>
-          </section>
+      <h2 id="menores">10. Dados de menores de idade</h2>
+      <p>
+        Os serviços de locação são destinados a maiores de 18 anos com CNH válida. A Oli Locação não
+        coleta intencionalmente dados de menores. Caso identificado, os dados serão eliminados, exceto
+        quando exigida a guarda por obrigação legal.
+      </p>
 
-          <section id="menores">
-            <h2 className="text-2xl font-bold text-primary mb-3">10. Dados de menores de idade</h2>
-            <p>Nossos serviços são destinados a maiores de 18 anos. Não coletamos intencionalmente dados
-            de menores. Caso identifique tratamento indevido, entre em contato para remoção.</p>
-          </section>
+      <h2 id="marketing">11. Marketing e comunicações</h2>
+      <p>
+        Poderemos enviar comunicações sobre promoções, lançamentos e novidades, sempre com opção de
+        descadastramento. Comunicações operacionais relacionadas ao contrato (cobranças, vencimentos,
+        alertas, vistorias) não dependem de consentimento de marketing.
+      </p>
 
-          <section id="marketing">
-            <h2 className="text-2xl font-bold text-primary mb-3">11. Marketing e comunicações</h2>
-            <p>Podemos enviar comunicações sobre serviços, promoções e novidades por e-mail, WhatsApp ou
-            SMS. Você pode solicitar o descadastramento a qualquer momento.</p>
-          </section>
+      <h2 id="links">12. Links externos</h2>
+      <p>
+        O site pode conter links para sites de terceiros (parceiros, redes sociais, meios de pagamento).
+        A Oli Locação não se responsabiliza pelas práticas de privacidade desses sites, sendo
+        recomendada a leitura das políticas de cada um.
+      </p>
 
-          <section id="links">
-            <h2 className="text-2xl font-bold text-primary mb-3">12. Links externos</h2>
-            <p>O site pode conter links para páginas de terceiros. Não nos responsabilizamos pelas
-            práticas de privacidade desses sites.</p>
-          </section>
+      <h2 id="alteracoes">13. Alterações desta política</h2>
+      <p>
+        Esta Política pode ser atualizada a qualquer momento, sem aviso prévio individualizado, sempre
+        que houver mudança em práticas, legislação ou serviços. A versão vigente é a publicada nesta
+        página, identificada pela data da última atualização.
+      </p>
 
-          <section id="alteracoes">
-            <h2 className="text-2xl font-bold text-primary mb-3">13. Alterações da política</h2>
-            <p>Esta Política pode ser atualizada a qualquer tempo, sem aviso prévio. Recomendamos a
-            consulta periódica.</p>
-          </section>
-
-          <section id="contato" className="border-t pt-6">
-            <h2 className="text-2xl font-bold text-primary mb-3">14. Contato</h2>
-            <div className="space-y-1 text-muted-foreground">
-              <p><strong className="text-foreground">OLI LOCACAO DE VEICULOS LTDA</strong></p>
-              <p>CNPJ: 57.448.288/0001-89</p>
-              <p>Inscrição Estadual: 150.999.730.115</p>
-              <p>Endereço: Rua José Silvestre da Cruz, nº 3, Parque Arariba, São Paulo/SP, CEP 05778-220</p>
-              <p>Telefone/WhatsApp: +55 11 94017-5031</p>
-              <p>E-mail: [E-MAIL DE CONTATO]</p>
-            </div>
-            <Button asChild className="mt-6 bg-success hover:bg-success/90 text-success-foreground">
-              <a href="https://wa.me/5511940175031" target="_blank" rel="noopener noreferrer">
-                <MessageCircle className="w-4 h-4" />
-                Falar no WhatsApp
-              </a>
-            </Button>
-          </section>
-        </Card>
-      </div>
-    </WebLayout>
+      <h2 id="contato">14. Contato</h2>
+      <p>Para exercer direitos ou tirar dúvidas sobre privacidade, entre em contato:</p>
+      <ul>
+        <li><strong>OLI LOCACAO DE VEICULOS LTDA</strong></li>
+        <li><strong>CNPJ:</strong> 57.448.288/0001-89</li>
+        <li><strong>Inscrição Estadual:</strong> 150.999.730.115</li>
+        <li><strong>Endereço:</strong> Rua José Silvestre da Cruz, nº 3, Parque Arariba, São Paulo/SP, CEP 05778-220</li>
+        <li><strong>Telefone/WhatsApp:</strong> +55 11 94017-5031</li>
+        <li><strong>E-mail:</strong> [E-MAIL DE CONTATO]</li>
+      </ul>
+    </LegalLayout>
   );
 }
