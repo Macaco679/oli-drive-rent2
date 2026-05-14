@@ -158,13 +158,36 @@ export function WebLayout({ children }: WebLayoutProps) {
             <div>
               <h4 className="font-semibold mb-4">Contato</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>contato@oliapp.com.br</li>
-                <li>WhatsApp: (11) 99999-9999</li>
+                <li>WhatsApp: +55 11 94017-5031</li>
+                <li>
+                  <a
+                    href="https://wa.me/5511940175031"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-primary transition-colors"
+                  >
+                    Falar no WhatsApp
+                  </a>
+                </li>
+              </ul>
+              <h4 className="font-semibold mt-6 mb-3">Legal</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>
+                  <Link to="/politica-de-privacidade" className="hover:text-primary transition-colors">
+                    Política de Privacidade
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/termos-de-uso" className="hover:text-primary transition-colors">
+                    Termos de Uso
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
-          <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} OLI. Todos os direitos reservados.
+          <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground space-y-1">
+            <p>© {new Date().getFullYear()} Oli Locação. Todos os direitos reservados.</p>
+            <p>CNPJ: 57.448.288/0001-89</p>
           </div>
         </div>
       </footer>
