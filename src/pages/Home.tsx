@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Phone, CheckCircle2, MessageCircle, Mail, Clock, MapPin } from "lucide-react";
+import { Phone, CheckCircle2, MessageCircle, Mail, Clock, MapPin, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,20 +22,31 @@ import onixPrata from "@/assets/vehicles/onix-prata-2019.jpeg";
 import prismaPreto from "@/assets/vehicles/prisma-preto-2019.jpeg";
 import kiabongo from "@/assets/vehicles/kiabongo-2020.png";
 
+import heroCar from "@/assets/landing/hero-car.png";
+import dailyRentalKeys from "@/assets/landing/daily-rental-keys.jpg";
+import uberLogo from "@/assets/landing/uber.png";
+import logo99 from "@/assets/landing/99.png";
+import indriveLogo from "@/assets/landing/indrive.png";
+import ifoodLogo from "@/assets/landing/ifood.png";
+import rappiLogo from "@/assets/landing/rappi.png";
+import loggiLogo from "@/assets/landing/loggi.png";
+import mercadoLivreLogo from "@/assets/landing/mercado-livre.png";
+import shopeeLogo from "@/assets/landing/shopee.png";
+
 const PHONE = "(11) 91913-4094";
 const PHONE_TEL = "+5511919134094";
 const WHATSAPP_URL =
   "https://wa.me/5511919134094?text=Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20o%20aluguel%20de%20carros.";
 
 const apps = [
-  { name: "Uber", url: "https://www.olilocacao.com.br/assets/uber-D4Kjs_ku.png" },
-  { name: "99", url: "https://www.olilocacao.com.br/assets/99-C5YjFWE8.png" },
-  { name: "InDrive", url: "https://www.olilocacao.com.br/assets/indrive-D4tT5kSm.png" },
-  { name: "iFood", url: "https://www.olilocacao.com.br/assets/ifood-DlAWmDh_.png" },
-  { name: "Rappi", url: "https://www.olilocacao.com.br/assets/rappi-D6lz69GM.png" },
-  { name: "Loggi", url: "https://www.olilocacao.com.br/assets/loggi-C5nNdT7u.png" },
-  { name: "Mercado Livre", url: "https://www.olilocacao.com.br/assets/mercado-livre-7WPQhpiU.png" },
-  { name: "Shopee", url: "https://www.olilocacao.com.br/assets/shopee-Bp8FwSVx.png" },
+  { name: "Uber", url: uberLogo },
+  { name: "99", url: logo99 },
+  { name: "InDrive", url: indriveLogo },
+  { name: "iFood", url: ifoodLogo },
+  { name: "Rappi", url: rappiLogo },
+  { name: "Loggi", url: loggiLogo },
+  { name: "Mercado Livre", url: mercadoLivreLogo },
+  { name: "Shopee", url: shopeeLogo },
 ];
 
 const cars = [
