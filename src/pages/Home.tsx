@@ -343,6 +343,32 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Fidelidade / Direito de compra */}
+      <section className="py-16 bg-secondary/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto bg-card rounded-2xl p-8 md:p-12 shadow-[var(--shadow-elevated)] border-2 border-primary/20">
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+              <div className="flex justify-center">
+                <div className="rounded-full bg-primary/10 p-8">
+                  <Award className="h-24 w-24 text-primary" />
+                </div>
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold mb-4 text-foreground">Fidelidade que dá vantagem</h2>
+                <p className="text-lg text-muted-foreground mb-6">
+                  Após 1 ano de contrato, o locatário tem exclusividade na opção de compra do veículo. Fale com um consultor e conheça as condições.
+                </p>
+                <a href={WHATSAPP_URL} target="_blank" rel="noreferrer">
+                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-6 h-12">
+                    Quero saber mais
+                  </Button>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section className="py-16 lg:py-20 bg-background">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -447,6 +473,17 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* WhatsApp Float */}
+      <a
+        href={WHATSAPP_URL}
+        target="_blank"
+        rel="noreferrer"
+        className="fixed bottom-6 right-6 z-50 bg-[#25D366] hover:bg-[#20BA5A] text-white rounded-full p-4 shadow-lg transition-all duration-300 hover:scale-110"
+        aria-label="Chat no WhatsApp"
+      >
+        <MessageCircle className="h-6 w-6" />
+      </a>
     </div>
   );
 }
