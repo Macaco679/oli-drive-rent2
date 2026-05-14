@@ -428,11 +428,13 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-card border-t border-border py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} Oli Locação. Todos os direitos reservados.</p>
-          <p>CNPJ: 57.448.288/0001-89</p>
-          <div className="flex gap-4">
-            <Link to="/politica-de-privacidade" className="hover:text-primary">Privacidade</Link>
-            <Link to="/termos-de-uso" className="hover:text-primary">Termos</Link>
+          <div className="text-center md:text-left">
+            <p>© Oli Locação. Todos os direitos reservados.</p>
+            <p className="mt-1">CNPJ: 57.448.288/0001-89</p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-x-5 gap-y-2">
+            <Link to="/politica-de-privacidade" className="hover:text-primary">Política de Privacidade</Link>
+            <Link to="/termos-de-uso" className="hover:text-primary">Termos de Uso</Link>
             <Link to="/auth" className="hover:text-primary">Área do Cliente</Link>
           </div>
         </div>
