@@ -3,6 +3,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import onixAzul from "@/assets/vehicles/onix-azul-2022.jpeg";
+import hb20Prata from "@/assets/vehicles/hb20-prata-2024.png";
+import argo2026 from "@/assets/vehicles/argo-2026.jpeg";
+import basaltBranco from "@/assets/vehicles/basalt-branco-2024.jpeg";
+import kicksPreto from "@/assets/vehicles/kicks-preto-2024.png";
+import kicksPrata from "@/assets/vehicles/kicks-prata-2024.png";
+import onixPrata from "@/assets/vehicles/onix-prata-2019.jpeg";
+import prismaPreto from "@/assets/vehicles/prisma-preto-2019.jpeg";
 
 interface VehicleCardProps {
   id: string;
@@ -17,6 +25,23 @@ interface VehicleCardProps {
   locationState?: string;
   status: string;
   isActive: boolean;
+}
+
+function staticCoverForVehicle(id: string, title?: string, brand?: string, model?: string, year?: number) {
+  const text = `${id} ${title || ""} ${brand || ""} ${model || ""} ${year || ""}`.toLowerCase();
+  if (id === "static-1" || (text.includes("onix") && text.includes("2022"))) return onixAzul;
+  if (id === "static-2" || text.includes("hb20")) return hb20Prata;
+  if (id === "static-3" || text.includes("argo")) return argo2026;
+  if (id === "static-4" || text.includes("basalt")) return basaltBranco;
+  if (id === "static-5" || (text.includes("kicks") && !text.includes("prata"))) return kicksPreto;
+  if (id === "static-6" || (text.includes("kicks") && text.includes("prata"))) return kicksPrata;
+  if (id === "static-7" || (text.includes("onix") && text.includes("2019"))) return onixPrata;
+  if (id === "static-8" || text.includes("prisma")) return prismaPreto;
+  return undefined;
+}
+
+function shouldPreferLocalCover(url?: string) {
+  return Boolean(url && url.includes("supabase.co/storage/v1/object/public/vehicle-photos/"));
 }
 
 export const VehicleCard = ({
@@ -34,7 +59,10 @@ export const VehicleCard = ({
   isActive,
 }: VehicleCardProps) => {
   const navigate = useNavigate();
-  const [resolvedCover, setResolvedCover] = useState<string | undefined>(coverImage);
+  const fallbackCover = staticCoverForVehicle(id, title, brand, model, year);
+  const [resolvedCover, setResolvedCover] = useState<string | undefined>(
+    shouldPreferLocalCover(coverImage) ? fallbackCover : coverImage || fallbackCover
+  );
   const [attemptedFallback, setAttemptedFallback] = useState(false);
   
   const vehicleTitle = title || `${brand || ""} ${model || ""} ${year || ""}`.trim() || "Veículo sem nome";

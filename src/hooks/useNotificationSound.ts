@@ -1,35 +1,27 @@
 // Hook for playing notification sounds
-import { useCallback, useRef, useEffect } from "react";
-
-const NOTIFICATION_SOUND_URL = "https://cdn.pixabay.com/audio/2022/03/24/audio_715e1d36bc.mp3";
+import { useCallback, useRef } from "react";
 
 export function useNotificationSound() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    // Pre-load the audio
-    audioRef.current = new Audio(NOTIFICATION_SOUND_URL);
-    audioRef.current.volume = 0.5;
-    audioRef.current.preload = "auto";
-
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
+  const audioContextRef = useRef<AudioContext | null>(null);
 
   const playNotificationSound = useCallback(() => {
     try {
-      if (audioRef.current) {
-        // Reset and play
-        audioRef.current.currentTime = 0;
-        audioRef.current.play().catch((e) => {
-          // Ignore autoplay policy errors
-          console.debug("Could not play notification sound:", e);
-        });
-      }
+      const AudioContextCtor = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextCtor) return;
+      const context = audioContextRef.current ?? new AudioContextCtor();
+      audioContextRef.current = context;
+
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.value = 880;
+      gain.gain.setValueAtTime(0.0001, context.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.15, context.currentTime + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.18);
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start();
+      oscillator.stop(context.currentTime + 0.2);
     } catch (error) {
       console.debug("Error playing notification sound:", error);
     }

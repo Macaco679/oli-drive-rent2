@@ -214,6 +214,65 @@ export const updateProfile = async (userId: string, updates: Partial<OliProfile>
 // VEHICLE HELPERS
 // ============================================================
 
+const createStaticVehicle = (
+  id: string,
+  title: string,
+  brand: string,
+  model: string,
+  year: number,
+  dailyPrice: number,
+  weeklyPrice: number,
+  city: string,
+  state: string
+): OliVehicle => ({
+  id,
+  owner_id: "",
+  title,
+  brand,
+  model,
+  year,
+  color: null,
+  plate: null,
+  renavam: null,
+  transmission: null,
+  fuel_type: null,
+  seats: null,
+  daily_price: dailyPrice,
+  weekly_price: weeklyPrice,
+  monthly_price: null,
+  deposit_amount: null,
+  has_driver_option: false,
+  driver_daily_price: null,
+  driver_notes: null,
+  mileage_limit_per_day: null,
+  location_city: city,
+  location_state: state,
+  pickup_neighborhood: null,
+  pickup_street: null,
+  pickup_number: null,
+  pickup_complement: null,
+  pickup_zip_code: null,
+  is_active: true,
+  status: "available",
+  vehicle_type: "carro",
+  body_type: null,
+  segment: null,
+  is_popular: false,
+  created_at: new Date(0).toISOString(),
+  updated_at: new Date(0).toISOString(),
+});
+
+const staticVehiclesById: Record<string, OliVehicle> = {
+  "static-1": createStaticVehicle("static-1", "Chevrolet Onix LT 2022", "Chevrolet", "Onix LT", 2022, 150, 900, "Sao Paulo", "SP"),
+  "static-2": createStaticVehicle("static-2", "Hyundai HB20 Vision 2024", "Hyundai", "HB20 Vision", 2024, 140, 850, "Sao Paulo", "SP"),
+  "static-3": createStaticVehicle("static-3", "Fiat Argo Drive 2026", "Fiat", "Argo Drive", 2026, 160, 950, "Sao Paulo", "SP"),
+  "static-4": createStaticVehicle("static-4", "Citroen Basalt 2024", "Citroen", "Basalt", 2024, 180, 1100, "Sao Paulo", "SP"),
+  "static-5": createStaticVehicle("static-5", "Nissan Kicks 2024", "Nissan", "Kicks", 2024, 200, 1200, "Sao Paulo", "SP"),
+  "static-6": createStaticVehicle("static-6", "Nissan Kicks Prata 2024", "Nissan", "Kicks", 2024, 195, 1150, "Rio de Janeiro", "RJ"),
+  "static-7": createStaticVehicle("static-7", "Chevrolet Onix 2019", "Chevrolet", "Onix", 2019, 120, 700, "Belo Horizonte", "MG"),
+  "static-8": createStaticVehicle("static-8", "Chevrolet Prisma 2019", "Chevrolet", "Prisma", 2019, 130, 780, "Curitiba", "PR"),
+};
+
 export const getAvailableVehicles = async (limit?: number): Promise<OliVehicle[]> => {
   let query = supabase
     .from("oli_vehicles")
@@ -256,6 +315,10 @@ export const getAllVehicles = async (limit?: number): Promise<OliVehicle[]> => {
 };
 
 export const getVehicleById = async (vehicleId: string): Promise<OliVehicle | null> => {
+  if (staticVehiclesById[vehicleId]) {
+    return staticVehiclesById[vehicleId];
+  }
+
   const { data, error } = await supabase
     .from("oli_vehicles")
     .select("*")
@@ -271,6 +334,10 @@ export const getVehicleById = async (vehicleId: string): Promise<OliVehicle | nu
 };
 
 export const getVehiclePhotos = async (vehicleId: string): Promise<OliVehiclePhoto[]> => {
+  if (staticVehiclesById[vehicleId]) {
+    return [];
+  }
+
   const { data, error } = await supabase
     .from("oli_vehicle_photos")
     .select("*")
@@ -322,6 +389,8 @@ const normalizeImageUrl = (url: string): string => {
 };
 
 export const getVehicleCoverPhoto = async (vehicleId: string): Promise<string | null> => {
+  if (staticVehiclesById[vehicleId]) return null;
+
   // 1) Tenta pegar a capa na tabela
   const coverRes = await supabase
     .from("oli_vehicle_photos")
