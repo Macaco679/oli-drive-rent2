@@ -1,0 +1,320 @@
+name: Finalize R34 hero and persistent wallpaper playback
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/finalize-r34-and-video-playback.yml
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve exact user-supplied R34 MP4
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          from urllib.parse import urljoin
+          import hashlib, html, re, subprocess
+
+          pages = [
+              'https://moewalls.com/vehicle/nissan-skyline-gt-r-r34-in-the-tunnel-live-wallpaper/',
+              'https://wallpaperwaves.com/vehicle/nissan-skyline-gtr-r34-tunnel-live-wallpaper/',
+          ]
+          expected_sha = 'c557d158faaacd66f5a7119949bca15b3bea0875476610f440ba03fcc4e93206'
+          expected_size = 42331762
+          out = Path('public/videos/hero-r34-tunnel.mp4')
+          out.parent.mkdir(parents=True, exist_ok=True)
+          ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125 Safari/537.36'
+
+          if out.exists() and out.stat().st_size == expected_size:
+              digest = hashlib.sha256(out.read_bytes()).hexdigest()
+              if digest == expected_sha:
+                  print('Exact R34 MP4 already present; reusing untouched bytes.')
+                  raise SystemExit(0)
+
+          candidates = []
+          for page in pages:
+              try:
+                  req = Request(page, headers={'User-Agent': ua, 'Accept-Language': 'en-US,en;q=0.9'})
+                  raw = urlopen(req, timeout=60).read().decode('utf-8', 'ignore')
+                  raw = html.unescape(raw.replace('\\/', '/'))
+                  patterns = [
+                      r'https?://[^\s"\'<>]+?\.mp4(?:\?[^\s"\'<>]*)?',
+                      r'(?:src|href|data-src|data-video|data-download)=["\']([^"\']+?\.mp4(?:\?[^"\']*)?)["\']',
+                      r'(/[^\s"\'<>]+?\.mp4(?:\?[^\s"\'<>]*)?)',
+                  ]
+                  for pattern in patterns:
+                      for match in re.finditer(pattern, raw, re.I):
+                          value = match.group(1) if match.lastindex else match.group(0)
+                          candidates.append((urljoin(page, value), page))
+              except Exception as exc:
+                  print('page fetch failed:', page, exc)
+
+          for url in [
+              'https://moewalls.com/wp-content/uploads/2023/02/nissan-skyline-gt-r-r34-in-the-tunnel.mp4',
+              'https://moewalls.com/wp-content/uploads/2023/02/Nissan-Skyline-GT-R-R34-In-The-Tunnel.mp4',
+              'https://moewalls.com/wp-content/uploads/2023/02/nissan-skyline-gtr-r34-in-the-tunnel.mp4',
+              'https://moewalls.com/wp-content/uploads/2023/02/Nissan-Skyline-GTR-R34-In-The-Tunnel.mp4',
+          ]:
+              candidates.append((url, pages[0]))
+
+          seen = set()
+          ordered = []
+          for url, referer in candidates:
+              if url not in seen:
+                  seen.add(url)
+                  ordered.append((url, referer))
+
+          for url, referer in ordered:
+              tmp = Path('/tmp/r34-candidate.mp4')
+              if tmp.exists():
+                  tmp.unlink()
+              try:
+                  subprocess.run([
+                      'curl', '-L', '--fail', '--silent', '--show-error', '--retry', '2',
+                      '--connect-timeout', '20', '--max-time', '180',
+                      '-A', ua, '-e', referer,
+                      '-H', 'Accept: video/mp4,video/*;q=0.9,*/*;q=0.8',
+                      '-o', str(tmp), url
+                  ], check=True)
+              except Exception as exc:
+                  print('skip', url, exc)
+                  continue
+
+              size = tmp.stat().st_size if tmp.exists() else 0
+              if size != expected_size:
+                  print('wrong size', size, url)
+                  continue
+              digest = hashlib.sha256(tmp.read_bytes()).hexdigest()
+              print('candidate', url, 'size=', size, 'sha256=', digest)
+              if digest == expected_sha:
+                  tmp.replace(out)
+                  print('MATCHED EXACT USER FILE:', url)
+                  break
+          else:
+              raise SystemExit('Exact attached MP4 could not be resolved; no substitute or recompression was used.')
+          PY
+
+      - name: Patch top hero and install persistent playback guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          home_path = Path('src/pages/Home.tsx')
+          main_path = Path('src/main.tsx')
+          home = home_path.read_text()
+          main = main_path.read_text()
+
+          old = '''          src="/videos/hero-background.mp4"\n          poster="/videos/hero-background-poster.jpg"'''
+          new = '''          src="/videos/hero-r34-tunnel.mp4"'''
+          if old in home:
+              home = home.replace(old, new, 1)
+          elif 'src="/videos/hero-r34-tunnel.mp4"' not in home:
+              raise SystemExit('Top hero source fragment not found; footer intentionally left untouched.')
+
+          # Only the top hero used metadata preload. The footer is already preload=auto.
+          marker = 'src="/videos/hero-r34-tunnel.mp4"'
+          pos = home.find(marker)
+          if pos >= 0:
+              next_pos = home.find('preload="metadata"', pos, pos + 900)
+              if next_pos >= 0:
+                  home = home[:next_pos] + 'preload="auto"' + home[next_pos + len('preload="metadata"'):]
+
+          home_path.write_text(home)
+
+          import_line = 'import "./lib/persistentBackgroundVideos";'
+          if import_line not in main:
+              anchor = 'import "./styles/metallic-refresh.css";'
+              if anchor not in main:
+                  raise SystemExit('main.tsx import anchor not found')
+              main = main.replace(anchor, anchor + '\n' + import_line, 1)
+              main_path.write_text(main)
+          PY
+
+          cat > src/lib/persistentBackgroundVideos.ts <<'TS'
+          const managedVideos = new WeakSet<HTMLVideoElement>();
+          const pendingResume = new WeakMap<HTMLVideoElement, number>();
+
+          const BACKGROUND_VIDEO_SELECTOR =
+            'main > section:first-child video[autoplay][loop], footer video[autoplay][loop]';
+
+          function configure(video: HTMLVideoElement) {
+            video.autoplay = true;
+            video.loop = true;
+            video.muted = true;
+            video.defaultMuted = true;
+            video.playsInline = true;
+            video.preload = 'auto';
+            video.controls = false;
+
+            video.setAttribute('autoplay', '');
+            video.setAttribute('loop', '');
+            video.setAttribute('muted', '');
+            video.setAttribute('playsinline', '');
+            video.setAttribute('preload', 'auto');
+          }
+
+          function resume(video: HTMLVideoElement) {
+            configure(video);
+
+            if (video.ended && Number.isFinite(video.duration) && video.duration > 0) {
+              try {
+                video.currentTime = 0;
+              } catch {
+                // The browser can reject seeking while media metadata is being refreshed.
+              }
+            }
+
+            if (!video.paused && !video.ended) return;
+
+            const playResult = video.play();
+            if (playResult && typeof playResult.catch === 'function') {
+              playResult.catch(() => {
+                // Browser policy/network recovery is retried by the guard events and watchdog.
+              });
+            }
+          }
+
+          function scheduleResume(video: HTMLVideoElement, delay = 80) {
+            const existing = pendingResume.get(video);
+            if (existing) window.clearTimeout(existing);
+
+            const timer = window.setTimeout(() => {
+              pendingResume.delete(video);
+              resume(video);
+            }, delay);
+            pendingResume.set(video, timer);
+          }
+
+          function bind(video: HTMLVideoElement) {
+            configure(video);
+            if (managedVideos.has(video)) {
+              scheduleResume(video, 0);
+              return;
+            }
+
+            managedVideos.add(video);
+
+            const immediateEvents: Array<keyof HTMLMediaElementEventMap> = [
+              'loadedmetadata',
+              'loadeddata',
+              'canplay',
+              'canplaythrough',
+              'playing',
+            ];
+            immediateEvents.forEach((eventName) => {
+              video.addEventListener(eventName, () => scheduleResume(video, 0), { passive: true });
+            });
+
+            const recoveryEvents: Array<keyof HTMLMediaElementEventMap> = [
+              'pause',
+              'ended',
+              'stalled',
+              'suspend',
+              'waiting',
+              'emptied',
+              'abort',
+            ];
+            recoveryEvents.forEach((eventName) => {
+              video.addEventListener(eventName, () => scheduleResume(video, 100), { passive: true });
+            });
+
+            video.addEventListener('error', () => {
+              window.setTimeout(() => {
+                try {
+                  video.load();
+                } catch {
+                  // Keep the current resource if load() is temporarily unavailable.
+                }
+                scheduleResume(video, 120);
+              }, 500);
+            });
+
+            scheduleResume(video, 0);
+          }
+
+          function getBackgroundVideos() {
+            return Array.from(
+              document.querySelectorAll<HTMLVideoElement>(BACKGROUND_VIDEO_SELECTOR),
+            );
+          }
+
+          function scanAndResume() {
+            getBackgroundVideos().forEach(bind);
+          }
+
+          function resumeAll() {
+            getBackgroundVideos().forEach((video) => scheduleResume(video, 0));
+          }
+
+          if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+            const start = () => {
+              scanAndResume();
+
+              const observer = new MutationObserver(() => scanAndResume());
+              observer.observe(document.documentElement, { childList: true, subtree: true });
+
+              window.addEventListener('focus', resumeAll, { passive: true });
+              window.addEventListener('pageshow', resumeAll, { passive: true });
+              window.addEventListener('online', resumeAll, { passive: true });
+              document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') resumeAll();
+              });
+
+              // Watchdog for browsers that throttle/offload background media without a reliable pause event.
+              window.setInterval(() => {
+                getBackgroundVideos().forEach((video) => {
+                  if (video.paused || video.ended || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
+                    scheduleResume(video, 0);
+                  }
+                });
+              }, 1500);
+            };
+
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', start, { once: true });
+            } else {
+              start();
+            }
+          }
+          TS
+
+      - name: Verify exact video bytes and production build
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(stat -c%s public/videos/hero-r34-tunnel.mp4)" = "42331762"
+          echo "c557d158faaacd66f5a7119949bca15b3bea0875476610f440ba03fcc4e93206  public/videos/hero-r34-tunnel.mp4" | sha256sum -c -
+          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of default=noprint_wrappers=1 public/videos/hero-r34-tunnel.mp4 || true
+          npm ci
+          npm run build
+
+      - name: Commit final state and remove temporary workflows
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          rm -f \
+            .github/workflows/finalize-r34-and-video-playback.yml \
+            .github/workflows/replace-top-hero-r34.yml \
+            .github/workflows/replace-top-hero-r34-v2.yml \
+            .github/workflows/restore-footer-wallpaper.yml
+
+          git add -A
+          git commit -m 'fix: keep both live wallpapers continuously playing'
+          git push origin HEAD:main
