@@ -1,4 +1,6 @@
 // Notification Service - sends email notifications via Edge Function
+// e grava a notificação in-app (tabela oli_notifications, lida pelo sino
+// no header) a partir do mesmo ponto único.
 import { supabase } from "@/integrations/supabase/client";
 
 const EDGE_FUNCTION_URL = "https://sgpktbljjlixmyjmhppa.supabase.co/functions/v1/send-notification-email";
@@ -23,7 +25,108 @@ interface NotificationPayload {
   data: Record<string, unknown>;
 }
 
+// Título/texto curto e link de destino para o sino de notificações
+// in-app — independente do assunto/corpo HTML do e-mail.
+function buildInAppNotification(
+  type: NotificationType,
+  data: Record<string, unknown>
+): { title: string; body: string; link: string } {
+  const vehicleTitle = (data.vehicle_title as string) || "veículo";
+  switch (type) {
+    case "new_message":
+      return {
+        title: `Nova mensagem de ${data.sender_name || "alguém"}`,
+        body: (data.message_preview as string) || "",
+        link: "/messages",
+      };
+    case "rental_request":
+      return {
+        title: "Nova solicitação de aluguel",
+        body: `${data.renter_name || "Um motorista"} quer alugar seu ${vehicleTitle}`,
+        link: "/reservations",
+      };
+    case "rental_approved":
+      return {
+        title: "Reserva aprovada!",
+        body: `Sua reserva do ${vehicleTitle} foi aprovada`,
+        link: "/reservations",
+      };
+    case "rental_rejected":
+      return {
+        title: "Reserva não aprovada",
+        body: `Sua reserva do ${vehicleTitle} não foi aprovada`,
+        link: "/reservations",
+      };
+    case "contract_sent":
+      return {
+        title: "Contrato disponível para assinatura",
+        body: `Contrato do ${vehicleTitle} pronto para assinar`,
+        link: "/reservations",
+      };
+    case "contract_signed":
+      return {
+        title: "Contrato assinado!",
+        body: `${data.renter_name || "O locatário"} assinou o contrato do ${vehicleTitle}`,
+        link: "/reservations",
+      };
+    case "pickup_inspection_completed":
+      return {
+        title: "Veículo liberado para uso!",
+        body: `Retirada do ${vehicleTitle} confirmada`,
+        link: "/reservations",
+      };
+    case "dropoff_inspection_completed":
+      return {
+        title: "Vistoria de devolução concluída",
+        body: `${data.renter_name || "O locatário"} registrou a devolução do ${vehicleTitle}`,
+        link: "/reservations",
+      };
+    case "cnh_approved":
+      return {
+        title: "CNH aprovada!",
+        body: "Sua carteira de motorista foi verificada com sucesso",
+        link: "/profile",
+      };
+    case "cnh_rejected":
+      return {
+        title: "CNH reprovada",
+        body: "Não foi possível verificar sua carteira de motorista",
+        link: "/profile/driver-license",
+      };
+    case "vehicle_approved":
+      return {
+        title: "Veículo aprovado!",
+        body: `${vehicleTitle} já está disponível para aluguel`,
+        link: "/my-vehicles",
+      };
+    case "vehicle_rejected":
+      return {
+        title: "Veículo não aprovado",
+        body: `${vehicleTitle} não passou na verificação`,
+        link: "/my-vehicles",
+      };
+    default:
+      return { title: "Nova notificação", body: "", link: "/home" };
+  }
+}
+
 async function sendNotification(payload: NotificationPayload): Promise<boolean> {
+  // Grava a notificação in-app (não bloqueia nem depende do envio de
+  // e-mail — se uma falhar, a outra ainda deve seguir em frente).
+  try {
+    const { title, body, link } = buildInAppNotification(payload.type, payload.data);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (supabase as any).from("oli_notifications").insert({
+      user_id: payload.recipient_id,
+      type: payload.type,
+      title,
+      body,
+      link,
+    });
+  } catch (error) {
+    console.error("Failed to save in-app notification:", error);
+  }
+
   try {
     const { data: { session } } = await supabase.auth.getSession();
     

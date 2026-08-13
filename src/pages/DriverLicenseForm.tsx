@@ -591,6 +591,18 @@ export default function DriverLicenseForm() {
           },
           body: JSON.stringify(emailPayload),
         });
+
+        // Notificação in-app (sino) — mesmo evento, além do e-mail acima.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (supabase as any).from("oli_notifications").insert({
+          user_id: user.id,
+          type: isApproved ? "cnh_approved" : "cnh_rejected",
+          title: isApproved ? "CNH aprovada!" : "CNH reprovada",
+          body: isApproved
+            ? "Sua carteira de motorista foi verificada com sucesso"
+            : "Não foi possível verificar sua carteira de motorista",
+          link: isApproved ? "/profile" : "/profile/driver-license",
+        });
       } catch (emailErr) {
         console.warn("[CNH] Email de notificação falhou:", emailErr);
       }
