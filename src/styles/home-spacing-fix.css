@@ -1,0 +1,7 @@
+/* Visual spacing hotfix. */
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(4) {
+  margin-bottom: 0.9rem !important;
+}
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > button:last-child {
+  margin-top: 0 !important;
+}
