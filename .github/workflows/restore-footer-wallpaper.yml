@@ -17,38 +17,66 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Inspect wallpaper source
+      - name: Locate download handler
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import html, re, urllib.request
+          import html
+          import re
+          import urllib.parse
+          import urllib.request
+
           page_url = 'https://moewalls.com/abstract/abstract-organic-lines-live-wallpaper/'
           headers = {
               'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125 Safari/537.36',
               'Accept-Language': 'en-US,en;q=0.9',
               'Referer': page_url,
           }
-          req = urllib.request.Request(page_url, headers=headers)
-          text = urllib.request.urlopen(req, timeout=45).read().decode('utf-8', 'replace')
-          text = html.unescape(text).replace('\\/', '/')
-          print('HTML_LENGTH', len(text))
-          lower = text.lower()
-          for needle in ['download wallpaper', 'download', 'preview video', '<video', '<iframe', '.mp4', '.zip', 'wp-content', 'player', 'source']:
-              print('\n===== ', needle, ' =====')
-              start = 0
-              count = 0
+
+          def fetch(url):
+              req = urllib.request.Request(url, headers=headers)
+              return urllib.request.urlopen(req, timeout=45).read().decode('utf-8', 'replace')
+
+          page = html.unescape(fetch(page_url)).replace('\\/', '/')
+          print('DOWNLOAD_BUTTON')
+          m = re.search(r'<a[^>]+id=["\']moe-download["\'][^>]*>', page, re.I)
+          print(m.group(0) if m else 'not found')
+
+          print('\nINLINE_MATCHES')
+          needles = ['moe-download', 'lcc-wall', 'data-url', 'admin-ajax.php']
+          for needle in needles:
+              pos = 0
               while True:
-                  idx = lower.find(needle.lower(), start)
-                  if idx < 0 or count >= 12:
+                  idx = page.lower().find(needle.lower(), pos)
+                  if idx < 0:
                       break
-                  print(text[max(0, idx-700):min(len(text), idx+1400)].replace('\n',' '))
-                  start = idx + len(needle)
-                  count += 1
-          print('\n===== INTERESTING URLS =====')
-          urls = re.findall(r'https?://[^\\s"\'<>]+', text, re.I)
-          for u in dict.fromkeys(urls):
-              lu = u.lower()
-              if any(k in lu for k in ['download','video','player','stream','cdn','wp-content','mp4','zip','media']):
-                  print(u)
+                  print('\n--', needle, '--')
+                  print(page[max(0, idx-900): min(len(page), idx+1800)].replace('\n',' '))
+                  pos = idx + len(needle)
+
+          scripts = re.findall(r'<script[^>]+src=["\']([^"\']+)["\']', page, re.I)
+          scripts = list(dict.fromkeys(urllib.parse.urljoin(page_url, s) for s in scripts))
+          print('\nSCRIPT_COUNT', len(scripts))
+
+          for url in scripts:
+              try:
+                  js = fetch(url)
+              except Exception as exc:
+                  print('FETCH_FAIL', url, repr(exc))
+                  continue
+              low = js.lower()
+              if any(n.lower() in low for n in ['moe-download', 'lcc-wall', 'data-url', 'admin-ajax.php', 'wp_ajax', 'ajaxurl']):
+                  print('\n===== SCRIPT', url, '=====')
+                  for needle in ['moe-download', 'lcc-wall', 'data-url', 'admin-ajax.php', 'ajaxurl']:
+                      pos = 0
+                      hits = 0
+                      while hits < 8:
+                          idx = low.find(needle.lower(), pos)
+                          if idx < 0:
+                              break
+                          print('\n--', needle, '--')
+                          print(js[max(0, idx-1200): min(len(js), idx+2600)].replace('\n',' '))
+                          pos = idx + len(needle)
+                          hits += 1
           PY
