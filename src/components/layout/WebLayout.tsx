@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/supabase";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
-import { footerWallpaperDataUri } from "@/assets/footerWallpaper";
 
 interface WebLayoutProps {
   children: ReactNode;
@@ -24,6 +23,8 @@ const authNavItems = [
   { path: "/messages", label: "Mensagens", icon: MessageCircle },
   { path: "/profile", label: "Perfil", icon: User },
 ];
+
+const FOOTER_LIVE_WALLPAPER = "https://moewalls.com/wp-content/uploads/2021/11/abstract-organic-lines.mp4";
 
 export function WebLayout({ children }: WebLayoutProps) {
   const location = useLocation();
@@ -128,7 +129,7 @@ export function WebLayout({ children }: WebLayoutProps) {
             {!loading && !isAuthenticated && (
               <Link
                 to="/auth"
-                className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-colors text-white/60 hover:text-white shrink-0"
+                className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-lg transition-colors text-primary-foreground/60 hover:text-primary-foreground"
               >
                 <LogIn className="w-5 h-5" />
                 <span className="text-xs font-medium">Entrar</span>
@@ -146,8 +147,8 @@ export function WebLayout({ children }: WebLayoutProps) {
       {/* Footer */}
       <footer className="relative isolate overflow-hidden border-t border-emerald-200/20 py-10 lg:py-12 mt-auto text-white">
         <video
-          className="absolute inset-0 -z-20 h-full w-full scale-[1.02] object-cover blur-[0.35px]"
-          src={footerWallpaperDataUri}
+          className="absolute inset-0 -z-20 h-full w-full object-cover"
+          src={FOOTER_LIVE_WALLPAPER}
           autoPlay
           loop
           muted
