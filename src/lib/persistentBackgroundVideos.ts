@@ -3,17 +3,21 @@ const managed = new WeakSet<HTMLVideoElement>();
 const timers = new WeakMap<HTMLVideoElement, number>();
 const progressState = new WeakMap<HTMLVideoElement, { time: number; changedAt: number }>();
 
+const isHome = () => window.location.pathname === "/home" || window.location.pathname === "/";
+
+const getTopHero = () =>
+  isHome() ? document.querySelector<HTMLVideoElement>("main > section:first-child video") : null;
+
 const liveWallpapers = () => {
   const videos: HTMLVideoElement[] = [];
-  const topHero = document.querySelector<HTMLVideoElement>("main > section:first-child video");
+  const topHero = getTopHero();
   const footer = document.querySelector<HTMLVideoElement>("footer video");
   if (topHero) videos.push(topHero);
   if (footer && footer !== topHero) videos.push(footer);
   return videos;
 };
 
-const isTopHero = (video: HTMLVideoElement) =>
-  document.querySelector<HTMLVideoElement>("main > section:first-child video") === video;
+const isTopHero = (video: HTMLVideoElement) => getTopHero() === video;
 
 const configure = (video: HTMLVideoElement) => {
   video.autoplay = true;
