@@ -362,13 +362,12 @@ export default function Home() {
             (mesma cor de antes) definido no <section> acima. */}
         <video
           className="absolute inset-0 w-full h-full object-cover"
-          src="/videos/hero-background.mp4"
-          poster="/videos/hero-background-poster.jpg"
+          src="/videos/hero-r34-tunnel.mp4"
           autoPlay
           loop
           muted
           playsInline
-          preload="metadata"
+          preload="auto"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/15" />
         <div className="relative z-10">

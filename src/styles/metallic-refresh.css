@@ -195,21 +195,24 @@ section[class~="bg-secondary/30"] + section .grid > div {
   overflow: hidden;
   min-height: 13.5rem;
   padding: 1.7rem 1.65rem 1.65rem 1.85rem !important;
-  border: 1.5px solid transparent;
+  border: 2px solid transparent;
   border-radius: 1.35rem;
   background:
     radial-gradient(circle at 95% 0%, hsl(var(--metal-bright) / 0.12), transparent 34%) padding-box,
     linear-gradient(145deg, hsl(166 23% 93% / 0.96), hsl(210 17% 96% / 0.94)) padding-box,
-    linear-gradient(120deg,
-      hsl(176 72% 18%),
-      hsl(157 62% 48%) 28%,
-      hsl(151 76% 78%) 50%,
-      hsl(164 52% 39%) 72%,
-      hsl(177 70% 16%)) border-box !important;
+    linear-gradient(118deg,
+      hsl(178 76% 13%) 0%,
+      hsl(166 66% 31%) 18%,
+      hsl(156 72% 57%) 38%,
+      hsl(146 82% 82%) 50%,
+      hsl(159 68% 51%) 62%,
+      hsl(170 62% 28%) 82%,
+      hsl(178 76% 12%) 100%) border-box !important;
   box-shadow:
-    inset 0 1px 0 hsl(0 0% 100% / 0.82),
-    0 14px 34px hsl(var(--metal-deep) / 0.08),
-    0 0 0 1px hsl(157 54% 58% / 0.08);
+    inset 0 1px 0 hsl(0 0% 100% / 0.84),
+    0 14px 34px hsl(var(--metal-deep) / 0.1),
+    0 0 0 1px hsl(157 68% 51% / 0.18),
+    0 0 20px hsl(157 64% 46% / 0.1);
   text-align: left !important;
   transition: transform 240ms ease, box-shadow 240ms ease, filter 240ms ease;
 }
@@ -218,9 +221,10 @@ section[class~="bg-secondary/30"] + section .grid > div:hover {
   transform: translateY(-4px);
   filter: saturate(1.08) brightness(1.01);
   box-shadow:
-    inset 0 1px 0 hsl(0 0% 100% / 0.9),
-    0 22px 44px hsl(var(--metal-deep) / 0.13),
-    0 0 24px hsl(157 58% 52% / 0.12);
+    inset 0 1px 0 hsl(0 0% 100% / 0.92),
+    0 22px 44px hsl(var(--metal-deep) / 0.15),
+    0 0 0 1px hsl(151 76% 72% / 0.28),
+    0 0 30px hsl(157 68% 52% / 0.2);
 }
 
 section[class~="bg-secondary/30"] + section .grid > div::before {
