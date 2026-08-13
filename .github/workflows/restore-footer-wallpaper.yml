@@ -1,0 +1,128 @@
+name: Restore original footer wallpaper
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/restore-footer-wallpaper.yml
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download exact original wallpaper from source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import html
+          import os
+          import re
+          import sys
+          import urllib.parse
+          import urllib.request
+
+          page_url = 'https://moewalls.com/abstract/abstract-organic-lines-live-wallpaper/'
+          target = 'public/videos/footer-organic-lines-original.mp4'
+          expected_size = 53467423
+          os.makedirs(os.path.dirname(target), exist_ok=True)
+
+          headers = {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125 Safari/537.36',
+              'Accept-Language': 'en-US,en;q=0.9',
+              'Referer': page_url,
+          }
+
+          def get(url, timeout=45):
+              req = urllib.request.Request(url, headers=headers)
+              return urllib.request.urlopen(req, timeout=timeout)
+
+          with get(page_url) as r:
+              page = r.read().decode('utf-8', 'replace')
+
+          text = html.unescape(page).replace('\\/', '/')
+          candidates = []
+
+          for u in re.findall(r'https?://[^\\s"\'<>]+?\\.mp4(?:\\?[^\\s"\'<>]*)?', text, re.I):
+              candidates.append(u)
+
+          for u in re.findall(r'(?:src|href|data-src|data-video|data-url)=["\']([^"\']+?\\.mp4(?:\\?[^"\']*)?)["\']', text, re.I):
+              candidates.append(urllib.parse.urljoin(page_url, u))
+
+          # Known filename variants are only fallbacks; candidates found in the page are preferred.
+          candidates += [
+              'https://moewalls.com/wp-content/uploads/2021/11/abstract-organic-lines.mp4',
+              'https://moewalls.com/wp-content/uploads/2021/11/Abstract-Organic-Lines.mp4',
+              'https://moewalls.com/wp-content/uploads/2021/11/Abstract-Organic-Lines-Live-Wallpaper.mp4',
+          ]
+
+          seen = set()
+          ordered = []
+          for u in candidates:
+              u = u.strip().rstrip('\\')
+              if u and u not in seen:
+                  seen.add(u)
+                  ordered.append(u)
+
+          print('Candidates:', *ordered, sep='\n- ')
+
+          best = None
+          best_size = -1
+          tmp = target + '.part'
+
+          for url in ordered:
+              try:
+                  print('Trying', url)
+                  with get(url, timeout=90) as r, open(tmp, 'wb') as f:
+                      ctype = (r.headers.get('content-type') or '').lower()
+                      total = 0
+                      while True:
+                          chunk = r.read(1024 * 1024)
+                          if not chunk:
+                              break
+                          f.write(chunk)
+                          total += len(chunk)
+                  print('Downloaded', total, 'bytes; type=', ctype)
+                  if total > best_size and total > 40_000_000:
+                      best = url
+                      best_size = total
+                      os.replace(tmp, target)
+                      if total == expected_size:
+                          break
+                  elif os.path.exists(tmp):
+                      os.remove(tmp)
+              except Exception as exc:
+                  print('Failed:', url, exc)
+                  if os.path.exists(tmp):
+                      os.remove(tmp)
+
+          if not best or not os.path.exists(target):
+              raise SystemExit('Could not resolve a full-size original MP4 from the source page')
+
+          size = os.path.getsize(target)
+          print('Selected:', best)
+          print('Final size:', size)
+          if size < 40_000_000:
+              raise SystemExit(f'Refusing reduced asset: only {size} bytes')
+          PY
+
+      - name: Commit original MP4
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/videos/footer-organic-lines-original.mp4
+          if git diff --cached --quiet; then
+            echo "Original asset already present"
+            exit 0
+          fi
+          git commit -m "asset: add original 4K footer live wallpaper"
+          git push origin HEAD:main
