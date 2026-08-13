@@ -1,4 +1,4 @@
-name: Restore original footer wallpaper
+name: Repair footer video
 
 on:
   push:
@@ -6,24 +6,94 @@ on:
     paths:
       - .github/workflows/restore-footer-wallpaper.yml
 
+permissions:
+  contents: write
+
 jobs:
-  inspect:
+  repair:
     runs-on: ubuntu-latest
     steps:
-      - name: Inspect download response
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch footer to use bundled video with correct stacking
         shell: bash
         run: |
           set -euo pipefail
-          PAGE='https://moewalls.com/abstract/abstract-organic-lines-live-wallpaper/'
-          URL='https://go.moewalls.com/download.php?video=NDvY%2FAupXwmOeJsJpK4rX3u76gbA07S9kTlVjroWxazC01%2BHgURu74Cg4nB07rlXTpkIQWjybjgC76bC'
-          UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
-          curl -sS -c cookies.txt -b cookies.txt -A "$UA" -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' "$PAGE" -o page.html
-          curl -sS -D headers.txt -c cookies.txt -b cookies.txt -A "$UA" -e "$PAGE" -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' -H 'sec-fetch-site: same-site' -H 'sec-fetch-mode: navigate' -H 'sec-fetch-dest: document' "$URL" -o body.bin || true
-          echo '=== HEADERS ==='
-          cat headers.txt
-          echo '=== SIZE ==='
-          wc -c body.bin
-          echo '=== TYPE ==='
-          file body.bin
-          echo '=== BODY ==='
-          head -c 12000 body.bin || true
+          python - <<'PY'
+          from pathlib import Path
+
+          layout_path = Path('src/components/layout/WebLayout.tsx')
+          css_path = Path('src/index.css')
+          layout = layout_path.read_text()
+          css = css_path.read_text()
+
+          replacements = [
+              (
+                  'const FOOTER_LIVE_WALLPAPER = "https://moewalls.com/wp-content/uploads/2021/11/abstract-organic-lines.mp4";',
+                  'const FOOTER_LIVE_WALLPAPER = "/videos/hero-background.mp4";\nconst FOOTER_LIVE_WALLPAPER_POSTER = "/videos/hero-background-poster.jpg";'
+              ),
+              (
+                  '<footer className="relative isolate overflow-hidden border-t border-emerald-200/20 py-10 lg:py-12 mt-auto text-white">',
+                  '<footer className="site-live-footer relative isolate overflow-hidden border-t border-emerald-200/20 py-10 lg:py-12 mt-auto text-white">'
+              ),
+              (
+                  'className="absolute inset-0 -z-20 h-full w-full object-cover"\n          src={FOOTER_LIVE_WALLPAPER}',
+                  'className="site-live-footer__video absolute inset-0 z-0 h-full w-full object-cover"\n          src={FOOTER_LIVE_WALLPAPER}\n          poster={FOOTER_LIVE_WALLPAPER_POSTER}'
+              ),
+              (
+                  '<div className="footer-video-overlay absolute inset-0 -z-10" />\n        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-200/60 to-transparent" />\n\n        <div className="site-shell">',
+                  '<div className="footer-video-overlay absolute inset-0 z-[1]" aria-hidden="true" />\n        <div className="absolute inset-x-0 top-0 z-[2] h-px bg-gradient-to-r from-transparent via-emerald-200/60 to-transparent" />\n\n        <div className="site-shell relative z-[3]">'
+              ),
+          ]
+
+          for old, new in replacements:
+              if old not in layout:
+                  raise SystemExit(f'Expected layout fragment not found: {old[:100]}')
+              layout = layout.replace(old, new, 1)
+
+          css_anchor = '''  .footer-video-overlay {
+    background:
+      radial-gradient(circle at 18% 24%, hsl(var(--metal-bright) / 0.12), transparent 34%),
+      linear-gradient(110deg, hsl(var(--metal-deep) / 0.94), hsl(174 47% 13% / 0.86) 52%, hsl(176 52% 10% / 0.93));
+  }
+'''
+          css_replacement = '''  .site-live-footer {
+    background:
+      linear-gradient(110deg, hsl(176 58% 7% / 0.42), hsl(172 54% 10% / 0.3)),
+      url('/videos/hero-background-poster.jpg') center / cover no-repeat,
+      hsl(176 58% 7%);
+  }
+
+  .site-live-footer__video {
+    max-width: none;
+    opacity: 1;
+    filter: saturate(1.08) contrast(1.05) brightness(0.82);
+    transform: scale(1.015);
+  }
+
+  .footer-video-overlay {
+    background:
+      radial-gradient(circle at 18% 24%, hsl(var(--metal-bright) / 0.1), transparent 34%),
+      linear-gradient(110deg, hsl(var(--metal-deep) / 0.5), hsl(174 47% 13% / 0.38) 52%, hsl(176 52% 10% / 0.48));
+  }
+'''
+          if css_anchor not in css:
+              raise SystemExit('Expected footer CSS fragment not found')
+          css = css.replace(css_anchor, css_replacement, 1)
+
+          layout_path.write_text(layout)
+          css_path.write_text(css)
+          PY
+
+      - name: Remove temporary repair workflow and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/restore-footer-wallpaper.yml
+          git add src/components/layout/WebLayout.tsx src/index.css
+          git commit -m 'fix: restore visible animated footer background'
+          git push origin HEAD:main
