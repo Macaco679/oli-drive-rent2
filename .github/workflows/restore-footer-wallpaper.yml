@@ -17,25 +17,92 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download exact original 4K wallpaper
+      - name: Fetch original through browser download flow
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p public/videos
-          PAGE='https://moewalls.com/abstract/abstract-organic-lines-live-wallpaper/'
-          TOKEN='NDvY%2FAupXwmOeJsJpK4rX3u76gbA07S9kTlVjroWxazC01%2BHgURu74Cg4nB07rlXTpkIQWjybjgC76bC'
-          URL="https://go.moewalls.com/download.php?video=${TOKEN}"
-          TARGET='public/videos/footer-organic-lines-original.mp4'
+          python -m pip install --quiet selenium
+          python - <<'PY'
+          import glob
+          import hashlib
+          import os
+          import shutil
+          import time
+          from selenium import webdriver
+          from selenium.webdriver.common.by import By
+          from selenium.webdriver.chrome.options import Options
 
-          curl --fail --location --retry 3 --retry-all-errors \
-            --user-agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125 Safari/537.36' \
-            --referer "$PAGE" \
-            --output "$TARGET" "$URL"
+          expected_size = 53467423
+          expected_sha = '382d42218ea0e82a37577bce1728f07ee51174ae08ef1b35e138208caa5fe5e6'
+          page = 'https://moewalls.com/abstract/abstract-organic-lines-live-wallpaper/'
+          outdir = os.path.abspath('public/videos/.wallpaper-download')
+          target = os.path.abspath('public/videos/footer-organic-lines-original.mp4')
+          os.makedirs(outdir, exist_ok=True)
+          for p in glob.glob(os.path.join(outdir, '*')):
+              os.remove(p)
 
-          test "$(stat -c%s "$TARGET")" = '53467423'
-          echo '382d42218ea0e82a37577bce1728f07ee51174ae08ef1b35e138208caa5fe5e6  public/videos/footer-organic-lines-original.mp4' | sha256sum --check --strict
+          opts = Options()
+          opts.add_argument('--headless=new')
+          opts.add_argument('--no-sandbox')
+          opts.add_argument('--disable-dev-shm-usage')
+          opts.add_argument('--disable-gpu')
+          opts.add_argument('--window-size=1920,1080')
+          opts.add_argument('--disable-blink-features=AutomationControlled')
+          opts.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36')
+          opts.add_experimental_option('excludeSwitches', ['enable-automation'])
+          opts.add_experimental_option('useAutomationExtension', False)
+          opts.add_experimental_option('prefs', {
+              'download.default_directory': outdir,
+              'download.prompt_for_download': False,
+              'download.directory_upgrade': True,
+              'safebrowsing.enabled': True,
+              'profile.default_content_setting_values.automatic_downloads': 1,
+          })
 
-      - name: Commit original MP4
+          driver = webdriver.Chrome(options=opts)
+          try:
+              driver.execute_cdp_cmd('Page.setDownloadBehavior', {'behavior': 'allow', 'downloadPath': outdir})
+              driver.get(page)
+              time.sleep(4)
+              # Force the site's own no-popunder branch so the original download URL is opened directly.
+              driver.execute_script("localStorage.removeItem('cf_country'); localStorage.removeItem('downloadFileUrl'); localStorage.removeItem('expiryTime');")
+              btn = driver.find_element(By.ID, 'moe-download')
+              driver.execute_script('arguments[0].click();', btn)
+
+              deadline = time.time() + 120
+              candidate = None
+              while time.time() < deadline:
+                  files = [p for p in glob.glob(os.path.join(outdir, '*')) if not p.endswith('.crdownload')]
+                  partials = glob.glob(os.path.join(outdir, '*.crdownload'))
+                  if files and not partials:
+                      largest = max(files, key=os.path.getsize)
+                      if os.path.getsize(largest) >= 50_000_000:
+                          candidate = largest
+                          break
+                  time.sleep(2)
+
+              if not candidate:
+                  print('CURRENT_URL', driver.current_url)
+                  print('TITLE', driver.title)
+                  print('FILES', [(os.path.basename(p), os.path.getsize(p)) for p in glob.glob(os.path.join(outdir, '*'))])
+                  print('PAGE', driver.page_source[:8000])
+                  raise SystemExit('Browser flow did not produce the full original file')
+
+              size = os.path.getsize(candidate)
+              sha = hashlib.sha256(open(candidate, 'rb').read()).hexdigest()
+              print('DOWNLOADED_FILE', candidate)
+              print('SIZE', size)
+              print('SHA256', sha)
+              if size != expected_size or sha != expected_sha:
+                  raise SystemExit(f'Original mismatch: size={size} sha={sha}')
+              os.makedirs(os.path.dirname(target), exist_ok=True)
+              shutil.move(candidate, target)
+          finally:
+              driver.quit()
+              shutil.rmtree(outdir, ignore_errors=True)
+          PY
+
+      - name: Commit exact original MP4
         shell: bash
         run: |
           set -euo pipefail
