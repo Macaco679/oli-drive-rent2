@@ -1,0 +1,100 @@
+name: Apply R34 top hero UI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/apply-r34-hero-ui.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify exact original R34 asset
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(stat -c%s public/videos/hero-r34-tunnel.mp4)" = "42331762"
+          echo "c557d158faaacd66f5a7119949bca15b3bea0875476610f440ba03fcc4e93206  public/videos/hero-r34-tunnel.mp4" | sha256sum -c -
+
+      - name: Update only top hero and benefit card contour
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          home_path = Path('src/pages/Home.tsx')
+          css_path = Path('src/styles/metallic-refresh.css')
+          home = home_path.read_text()
+          css = css_path.read_text()
+
+          old_hero = '''          src="/videos/hero-background.mp4"\n          poster="/videos/hero-background-poster.jpg"'''
+          new_hero = '''          src="/videos/hero-r34-tunnel.mp4"'''
+          if old_hero in home:
+              home = home.replace(old_hero, new_hero, 1)
+          elif 'src="/videos/hero-r34-tunnel.mp4"' not in home:
+              raise SystemExit('Top hero source not found; footer was intentionally not touched.')
+
+          hero_pos = home.find('src="/videos/hero-r34-tunnel.mp4"')
+          if hero_pos >= 0:
+              preload_pos = home.find('preload="metadata"', hero_pos, hero_pos + 700)
+              if preload_pos >= 0:
+                  home = home[:preload_pos] + 'preload="auto"' + home[preload_pos + len('preload="metadata"'):]
+
+          marker = '/* BENEFITS — frosted mineral panels with a green metallic edge, no pure white cards. */'
+          if marker not in css:
+              raise SystemExit('Benefits CSS marker not found')
+          before, benefits = css.split(marker, 1)
+
+          benefits = benefits.replace(
+              '  border: 1.5px solid transparent;\n  border-radius: 1.35rem;',
+              '  border: 2px solid transparent;\n  border-radius: 1.35rem;',
+              1,
+          )
+
+          old_gradient = '''    linear-gradient(120deg,\n      hsl(176 72% 18%),\n      hsl(157 62% 48%) 28%,\n      hsl(151 76% 78%) 50%,\n      hsl(164 52% 39%) 72%,\n      hsl(177 70% 16%)) border-box !important;'''
+          new_gradient = '''    linear-gradient(118deg,\n      hsl(178 76% 13%) 0%,\n      hsl(166 66% 31%) 18%,\n      hsl(156 72% 57%) 38%,\n      hsl(146 82% 82%) 50%,\n      hsl(159 68% 51%) 62%,\n      hsl(170 62% 28%) 82%,\n      hsl(178 76% 12%) 100%) border-box !important;'''
+          if old_gradient in benefits:
+              benefits = benefits.replace(old_gradient, new_gradient, 1)
+          elif new_gradient not in benefits:
+              raise SystemExit('Current metallic border gradient not found')
+
+          old_shadow = '''    inset 0 1px 0 hsl(0 0% 100% / 0.82),\n    0 14px 34px hsl(var(--metal-deep) / 0.08),\n    0 0 0 1px hsl(157 54% 58% / 0.08);'''
+          new_shadow = '''    inset 0 1px 0 hsl(0 0% 100% / 0.84),\n    0 14px 34px hsl(var(--metal-deep) / 0.1),\n    0 0 0 1px hsl(157 68% 51% / 0.18),\n    0 0 20px hsl(157 64% 46% / 0.1);'''
+          if old_shadow in benefits:
+              benefits = benefits.replace(old_shadow, new_shadow, 1)
+
+          old_hover = '''    inset 0 1px 0 hsl(0 0% 100% / 0.9),\n    0 22px 44px hsl(var(--metal-deep) / 0.13),\n    0 0 24px hsl(157 58% 52% / 0.12);'''
+          new_hover = '''    inset 0 1px 0 hsl(0 0% 100% / 0.92),\n    0 22px 44px hsl(var(--metal-deep) / 0.15),\n    0 0 0 1px hsl(151 76% 72% / 0.28),\n    0 0 30px hsl(157 68% 52% / 0.2);'''
+          if old_hover in benefits:
+              benefits = benefits.replace(old_hover, new_hover, 1)
+
+          home_path.write_text(home)
+          css_path.write_text(before + marker + benefits)
+          PY
+
+      - name: Build production bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          npm run build
+
+      - name: Commit and remove temporary workflows
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f .github/workflows/apply-r34-hero-ui.yml .github/workflows/finalize-r34-and-video-playback.yml
+          git add -A
+          git commit -m 'style: use exact R34 wallpaper in top hero and strengthen metallic card borders'
+          git push origin HEAD:main
