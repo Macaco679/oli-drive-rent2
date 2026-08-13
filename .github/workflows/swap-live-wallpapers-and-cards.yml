@@ -1,0 +1,262 @@
+name: Swap live wallpapers and redesign benefit cards
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/swap-live-wallpapers-and-cards.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore exact organic wallpaper
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public/videos
+          PAGE='https://moewalls.com/abstract/abstract-organic-lines-live-wallpaper/'
+          TOKEN='NDvY%2FAupXwmOeJsJpK4rX3u76gbA07S9kTlVjroWxazC01%2BHgURu74Cg4nB07rlXTpkIQWjybjgC76bC'
+          URL="https://go.moewalls.com/download.php?video=${TOKEN}"
+          TARGET='public/videos/hero-organic-lines.mp4'
+
+          curl --fail --location --retry 3 --retry-all-errors \
+            --user-agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125 Safari/537.36' \
+            --referer "$PAGE" \
+            --output "$TARGET" "$URL"
+
+          test "$(stat -c%s "$TARGET")" = '53467423'
+          echo '382d42218ea0e82a37577bce1728f07ee51174ae08ef1b35e138208caa5fe5e6  public/videos/hero-organic-lines.mp4' | sha256sum --check --strict
+          test "$(stat -c%s public/videos/hero-r34-tunnel.mp4)" = '42331762'
+          echo 'c557d158faaacd66f5a7119949bca15b3bea0875476610f440ba03fcc4e93206  public/videos/hero-r34-tunnel.mp4' | sha256sum --check --strict
+
+      - name: Swap hero and footer sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          home_path = Path('src/pages/Home.tsx')
+          layout_path = Path('src/components/layout/WebLayout.tsx')
+          guard_path = Path('src/lib/persistentBackgroundVideos.ts')
+          main_path = Path('src/main.tsx')
+
+          home = home_path.read_text()
+          layout = layout_path.read_text()
+          guard = guard_path.read_text()
+          main = main_path.read_text()
+
+          home = home.replace('src="/videos/hero-r34-tunnel.mp4"', 'src="/videos/hero-organic-lines.mp4"', 1)
+          home = home.replace('className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/15"', 'className="hero-video-overlay absolute inset-0"', 1)
+
+          import re
+          layout = re.sub(
+              r'const FOOTER_LIVE_WALLPAPER = "[^"]+";',
+              'const FOOTER_LIVE_WALLPAPER = "/videos/hero-r34-tunnel.mp4";',
+              layout,
+              count=1,
+          )
+
+          guard = guard.replace(
+              'const TOP_HERO_SOURCE = "/videos/hero-r34-tunnel.mp4";',
+              'const TOP_HERO_SOURCE = "/videos/hero-organic-lines.mp4";\nconst FOOTER_SOURCE = "/videos/hero-r34-tunnel.mp4";',
+              1,
+          )
+          old = '''  if (isTopHero(video) && video.getAttribute("src") !== TOP_HERO_SOURCE) {\n    video.setAttribute("src", TOP_HERO_SOURCE);\n    video.removeAttribute("poster");\n    video.load();\n  }'''
+          new = '''  if (isTopHero(video) && video.getAttribute("src") !== TOP_HERO_SOURCE) {\n    video.setAttribute("src", TOP_HERO_SOURCE);\n    video.removeAttribute("poster");\n    video.load();\n  }\n\n  const footer = document.querySelector<HTMLVideoElement>("footer video");\n  if (footer === video && video.getAttribute("src") !== FOOTER_SOURCE) {\n    video.setAttribute("src", FOOTER_SOURCE);\n    video.removeAttribute("poster");\n    video.load();\n  }'''
+          if old not in guard:
+              raise SystemExit('Persistent playback source block not found')
+          guard = guard.replace(old, new, 1)
+
+          style_import = 'import "./styles/home-v3.css";'
+          if style_import not in main:
+              anchor = 'import "./styles/metallic-refresh.css";'
+              if anchor not in main:
+                  raise SystemExit('Style import anchor not found')
+              main = main.replace(anchor, anchor + '\n' + style_import, 1)
+
+          home_path.write_text(home)
+          layout_path.write_text(layout)
+          guard_path.write_text(guard)
+          main_path.write_text(main)
+          PY
+
+      - name: Add final visual overrides
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > src/styles/home-v3.css <<'CSS'
+          /* Home v3 — calmer metallic treatment, stronger contrast, no white-on-white cards. */
+
+          .hero-video-overlay {
+            background:
+              linear-gradient(90deg, hsl(177 63% 8% / 0.70) 0%, hsl(174 52% 13% / 0.44) 48%, hsl(172 48% 11% / 0.50) 100%),
+              radial-gradient(circle at 70% 25%, hsl(158 56% 48% / 0.12), transparent 40%);
+          }
+
+          /* Benefits section background: subtle mineral surface instead of flat white. */
+          section[class~="bg-secondary/30"] + section {
+            background:
+              radial-gradient(circle at 50% -20%, hsl(158 54% 68% / 0.11), transparent 42%),
+              repeating-linear-gradient(112deg, transparent 0 86px, hsl(171 33% 30% / 0.025) 87px, transparent 88px 174px),
+              linear-gradient(180deg, hsl(210 17% 96.5%), hsl(167 17% 91.5%)) !important;
+          }
+
+          section[class~="bg-secondary/30"] + section h2 {
+            position: relative;
+            width: fit-content;
+            margin-inline: auto;
+            padding-bottom: 0.8rem;
+          }
+
+          section[class~="bg-secondary/30"] + section h2::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 4.75rem;
+            height: 2px;
+            transform: translateX(-50%);
+            border-radius: 99px;
+            background: linear-gradient(90deg, transparent, hsl(170 58% 25%), hsl(151 69% 69%), hsl(168 54% 31%), transparent);
+            box-shadow: 0 0 14px hsl(158 56% 42% / 0.2);
+          }
+
+          /* Authored glass/metal cards. Thin gradient border, dark mist surface, restrained glow. */
+          section[class~="bg-secondary/30"] + section .grid > div {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            min-height: 13.25rem;
+            padding: 1.8rem 1.75rem 1.7rem !important;
+            border: 1px solid transparent !important;
+            border-radius: 1.45rem !important;
+            background:
+              linear-gradient(145deg, hsl(175 35% 21% / 0.96), hsl(177 37% 16% / 0.985) 52%, hsl(168 31% 23% / 0.97)) padding-box,
+              linear-gradient(120deg,
+                hsl(176 68% 25%),
+                hsl(156 62% 53%) 28%,
+                hsl(148 72% 78%) 48%,
+                hsl(164 58% 42%) 66%,
+                hsl(177 67% 20%)) border-box !important;
+            box-shadow:
+              inset 0 1px 0 hsl(0 0% 100% / 0.08),
+              inset 0 -1px 0 hsl(177 72% 6% / 0.5),
+              0 16px 36px hsl(177 54% 9% / 0.16) !important;
+            text-align: left !important;
+            transition: transform 240ms ease, box-shadow 240ms ease, filter 240ms ease !important;
+          }
+
+          section[class~="bg-secondary/30"] + section .grid > div::before {
+            content: '';
+            position: absolute;
+            z-index: 0;
+            inset: 0;
+            width: auto;
+            border-radius: inherit;
+            background:
+              linear-gradient(108deg, transparent 0 35%, hsl(0 0% 100% / 0.035) 45%, transparent 56%),
+              radial-gradient(circle at 88% 8%, hsl(153 68% 62% / 0.12), transparent 30%);
+            box-shadow: none;
+            pointer-events: none;
+          }
+
+          section[class~="bg-secondary/30"] + section .grid > div::after {
+            content: '';
+            position: absolute;
+            z-index: 0;
+            left: 1.7rem;
+            right: 1.7rem;
+            top: 0;
+            width: auto;
+            height: 2px;
+            border-radius: 99px;
+            background: linear-gradient(90deg, transparent, hsl(151 73% 78% / 0.9), hsl(164 62% 48% / 0.75), transparent);
+            box-shadow: 0 0 14px hsl(157 62% 48% / 0.18);
+          }
+
+          section[class~="bg-secondary/30"] + section .grid > div > * {
+            position: relative;
+            z-index: 1;
+          }
+
+          section[class~="bg-secondary/30"] + section .grid > div:hover {
+            transform: translateY(-5px);
+            filter: saturate(1.06) brightness(1.035);
+            box-shadow:
+              inset 0 1px 0 hsl(0 0% 100% / 0.1),
+              0 24px 48px hsl(177 58% 8% / 0.23),
+              0 0 0 1px hsl(153 64% 65% / 0.16) !important;
+          }
+
+          section[class~="bg-secondary/30"] + section .grid > div > div:first-child {
+            width: 3.2rem !important;
+            height: 3.2rem !important;
+            margin: 0 0 1.2rem !important;
+            border: 1px solid hsl(151 65% 72% / 0.34) !important;
+            border-radius: 1rem !important;
+            color: white !important;
+            background:
+              linear-gradient(145deg, hsl(176 56% 18%), hsl(163 49% 34%)) !important;
+            box-shadow:
+              inset 0 1px 0 hsl(0 0% 100% / 0.14),
+              0 10px 22px hsl(177 65% 7% / 0.3),
+              0 0 18px hsl(158 55% 48% / 0.08) !important;
+          }
+
+          section[class~="bg-secondary/30"] + section .grid > div h3 {
+            color: hsl(0 0% 100% / 0.96) !important;
+            letter-spacing: -0.025em !important;
+          }
+
+          section[class~="bg-secondary/30"] + section .grid > div p {
+            color: hsl(165 18% 86% / 0.76) !important;
+            line-height: 1.62 !important;
+          }
+
+          section[class~="bg-secondary/30"] + section .grid > div svg {
+            color: white !important;
+          }
+
+          /* Footer now carries the R34. Keep the image visible and the typography readable. */
+          footer.site-live-footer > video {
+            filter: saturate(1.08) contrast(1.08) brightness(0.72) !important;
+            transform: scale(1.01) !important;
+          }
+
+          footer.site-live-footer .footer-video-overlay {
+            background:
+              radial-gradient(circle at 18% 28%, hsl(158 55% 42% / 0.10), transparent 34%),
+              linear-gradient(100deg, hsl(178 72% 5% / 0.72), hsl(176 60% 7% / 0.52) 48%, hsl(178 72% 5% / 0.72)) !important;
+          }
+
+          footer.site-live-footer .site-shell {
+            text-shadow: 0 2px 14px hsl(178 88% 3% / 0.65);
+          }
+          CSS
+
+      - name: Build
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          npm run build
+
+      - name: Commit final state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/swap-live-wallpapers-and-cards.yml
+          git add public/videos/hero-organic-lines.mp4 src/pages/Home.tsx src/components/layout/WebLayout.tsx src/lib/persistentBackgroundVideos.ts src/main.tsx src/styles/home-v3.css
+          git commit -m 'style: swap live wallpapers and redesign benefit cards'
+          git push origin HEAD:main
