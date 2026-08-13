@@ -42,8 +42,8 @@ All colors MUST be HSL.
     --radius: 0.75rem;
     
     --gradient-hero: linear-gradient(135deg, hsl(175 60% 24%), hsl(174 60% 50%));
-    --shadow-card: 0 2px 8px hsl(220 20% 20% / 0.08);
-    --shadow-elevated: 0 4px 16px hsl(220 20% 20% / 0.12);
+    --shadow-card: 0 1px 2px hsl(220 20% 20% / 0.06), 0 2px 8px hsl(220 20% 20% / 0.06);
+    --shadow-elevated: 0 2px 4px hsl(220 20% 20% / 0.08), 0 8px 24px hsl(220 20% 20% / 0.12);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;
@@ -109,6 +109,19 @@ All colors MUST be HSL.
   html {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
+
+  /* Títulos usam Poppins (já carregada no index.html, mas nunca usada) —
+     separar a fonte de título da fonte de corpo é o que mais diferencia
+     uma interface "desenhada" de uma com cara de template genérico. */
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: 'Poppins', 'Inter', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  h1, .text-4xl.font-bold, .text-3xl.font-bold {
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
 }
 
 @layer components {
@@ -122,5 +135,15 @@ All colors MUST be HSL.
   
   .card-elevated {
     @apply bg-card rounded-xl shadow-[var(--shadow-card)] border border-border/50;
+  }
+
+  /* Levanta sutilmente no hover — usado em cards clicáveis (veículos,
+     reservas) para dar uma resposta tátil sem depender de cor. */
+  .hover-lift {
+    @apply transition-all duration-300 ease-out;
+  }
+  .hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-elevated);
   }
 }

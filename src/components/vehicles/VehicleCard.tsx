@@ -72,14 +72,14 @@ export const VehicleCard = ({
   return (
     <div
       onClick={() => navigate(`/vehicle/${id}`)}
-      className="card-elevated overflow-hidden cursor-pointer hover:shadow-[var(--shadow-elevated)] transition-shadow"
+      className="card-elevated hover-lift overflow-hidden cursor-pointer"
     >
-      <div className="relative h-48 bg-muted">
+      <div className="relative h-48 bg-muted overflow-hidden">
         {resolvedCover ? (
           <img
             src={resolvedCover}
             alt={vehicleTitle}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-300 ease-out hover:scale-105"
             loading="lazy"
             onError={tryFallbackFromStorage}
           />
