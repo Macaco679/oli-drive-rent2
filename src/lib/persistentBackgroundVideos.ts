@@ -1,4 +1,5 @@
-const TOP_HERO_SOURCE = "https://moewalls.com/wp-content/uploads/2021/11/abstract-organic-lines.mp4";
+const TOP_HERO_SOURCE = "/videos/hero-background.mp4";
+const TOP_HERO_POSTER = "/videos/hero-background-poster.jpg";
 const FOOTER_SOURCE = "/videos/hero-r34-tunnel.mp4";
 const managed = new WeakSet<HTMLVideoElement>();
 const timers = new WeakMap<HTMLVideoElement, number>();
@@ -35,10 +36,12 @@ const configure = (video: HTMLVideoElement) => {
   video.setAttribute("playsinline", "");
   video.setAttribute("preload", "auto");
 
-  if (isTopHero(video) && video.getAttribute("src") !== TOP_HERO_SOURCE) {
-    video.setAttribute("src", TOP_HERO_SOURCE);
-    video.removeAttribute("poster");
-    video.load();
+  if (isTopHero(video)) {
+    video.setAttribute("poster", TOP_HERO_POSTER);
+    if (video.getAttribute("src") !== TOP_HERO_SOURCE) {
+      video.setAttribute("src", TOP_HERO_SOURCE);
+      video.load();
+    }
   }
 
   const footer = document.querySelector<HTMLVideoElement>("footer video");
