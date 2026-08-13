@@ -13,7 +13,9 @@ type NotificationType =
   | "pickup_inspection_completed"
   | "dropoff_inspection_completed"
   | "cnh_approved"
-  | "cnh_rejected";
+  | "cnh_rejected"
+  | "vehicle_approved"
+  | "vehicle_rejected";
 
 interface NotificationPayload {
   type: NotificationType;
@@ -188,6 +190,36 @@ export async function notifyDropoffInspectionCompleted(
       vehicle_title: vehicleTitle,
       rental_id: rentalId,
       has_damages: hasDamages,
+    },
+  });
+}
+
+export async function notifyVehicleApproved(
+  ownerId: string,
+  vehicleTitle: string,
+  statusLabel?: string
+): Promise<boolean> {
+  return sendNotification({
+    type: "vehicle_approved",
+    recipient_id: ownerId,
+    data: {
+      vehicle_title: vehicleTitle,
+      status_label: statusLabel || "APROVADO",
+    },
+  });
+}
+
+export async function notifyVehicleRejected(
+  ownerId: string,
+  vehicleTitle: string,
+  statusLabel?: string
+): Promise<boolean> {
+  return sendNotification({
+    type: "vehicle_rejected",
+    recipient_id: ownerId,
+    data: {
+      vehicle_title: vehicleTitle,
+      status_label: statusLabel || "REPROVADO",
     },
   });
 }

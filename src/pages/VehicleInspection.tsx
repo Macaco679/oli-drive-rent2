@@ -40,6 +40,7 @@ import { InspectionFormFields } from "@/components/inspection/InspectionForm";
 import { InspectionStatusCard } from "@/components/inspection/InspectionStatusCard";
 import { InspectionFailedPhotos } from "@/components/inspection/InspectionFailedPhotos";
 import { generateInspectionPDF, InspectionReportData } from "@/lib/inspectionPdfService";
+import { notifyPickupInspectionCompleted, notifyDropoffInspectionCompleted } from "@/lib/notificationService";
 
 export default function VehicleInspection() {
   const { rentalId } = useParams<{ rentalId: string }>();
@@ -515,6 +516,38 @@ export default function VehicleInspection() {
 
       if (inspection) {
         toast.success(`${stepConfig.title} validada e concluída!`);
+
+        // E-mail de conclusão de vistoria (item pendente da lista de
+        // notificações): dispara nos dois momentos mais relevantes pro
+        // usuário — quando o locatário confirma a retirada (libera o uso do
+        // veículo) e quando o locatário registra a devolução (avisa o
+        // locador que precisa fazer a vistoria final). Não bloqueia a
+        // navegação em caso de falha.
+        try {
+          if (rental && vehicle) {
+            const vehicleTitle = vehicle.title || `${vehicle.brand} ${vehicle.model}`;
+            if (stepConfig.inspectionKind === "pickup" && stepConfig.performedByRole === "renter") {
+              await notifyPickupInspectionCompleted(
+                rental.renter_id,
+                owner?.full_name || "Locador",
+                vehicleTitle,
+                rental.id
+              );
+            } else if (stepConfig.inspectionKind === "dropoff" && stepConfig.performedByRole === "renter") {
+              const hasDamages = Object.values(photos).some((p) => p.hasDamage);
+              await notifyDropoffInspectionCompleted(
+                rental.owner_id,
+                renter?.full_name || "Locatário",
+                vehicleTitle,
+                rental.id,
+                hasDamages
+              );
+            }
+          }
+        } catch (notifyErr) {
+          console.warn("[Vistoria] Email de notificação falhou:", notifyErr);
+        }
+
         setTimeout(() => navigate("/reservations"), 1500);
       }
     } catch (error) {
