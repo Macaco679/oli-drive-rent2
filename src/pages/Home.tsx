@@ -370,16 +370,16 @@ export default function Home() {
           playsInline
           preload="metadata"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-accent/80" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/45 to-accent/35" />
         <div className="relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
           <div className="grid lg:grid-cols-2 gap-8 items-center">
             <div>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4" style={{ textShadow: "0 2px 12px rgba(0,0,0,0.45)" }}>
                 {profile ? `Olá, ${profile.full_name?.split(' ')[0] || 'Usuário'}!` : 'Alugue carros com facilidade'}<br />
                 {profile ? 'Qual carro você quer alugar hoje?' : 'Conectamos motoristas e proprietários'}
               </h1>
-              <p className="text-white/90 text-lg mb-6">
+              <p className="text-white/90 text-lg mb-6" style={{ textShadow: "0 1px 8px rgba(0,0,0,0.4)" }}>
                 Planos semanais e diários para motoristas de app e uso comum. Encontre o veículo ideal para suas necessidades.
               </p>
               {!profile && (
