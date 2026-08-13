@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/supabase";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { footerWallpaperDataUri } from "@/assets/footerWallpaper";
 
 interface WebLayoutProps {
   children: ReactNode;
@@ -73,7 +74,7 @@ export function WebLayout({ children }: WebLayoutProps) {
                         : "text-white/70 hover:bg-white/[0.08] hover:text-white"
                     )}
                   >
-                    <item.icon className="w-4.5 h-4.5" />
+                    <item.icon className="w-[18px] h-[18px]" />
                     <span className="font-medium text-sm lg:text-base">{item.label}</span>
                   </Link>
                 );
@@ -145,14 +146,13 @@ export function WebLayout({ children }: WebLayoutProps) {
       {/* Footer */}
       <footer className="relative isolate overflow-hidden border-t border-emerald-200/20 py-10 lg:py-12 mt-auto text-white">
         <video
-          className="absolute inset-0 -z-20 h-full w-full object-cover"
-          src="/videos/footer-organic-lines.mp4"
-          poster="/videos/footer-organic-lines-poster.jpg"
+          className="absolute inset-0 -z-20 h-full w-full scale-[1.02] object-cover blur-[0.35px]"
+          src={footerWallpaperDataUri}
           autoPlay
           loop
           muted
           playsInline
-          preload="metadata"
+          preload="auto"
           aria-hidden="true"
         />
         <div className="footer-video-overlay absolute inset-0 -z-10" />
@@ -165,7 +165,7 @@ export function WebLayout({ children }: WebLayoutProps) {
                 <h3 className="text-2xl font-bold text-white tracking-[-0.04em]">OLI</h3>
                 <span className="h-px w-14 bg-gradient-to-r from-emerald-200/80 to-transparent" />
               </div>
-              <p className="text-white/68 text-sm leading-6 max-w-md">
+              <p className="text-white/[0.68] text-sm leading-6 max-w-md">
                 Plataforma de aluguel de carros entre particulares. Conectando motoristas e proprietários de veículos.
               </p>
             </div>
@@ -205,7 +205,7 @@ export function WebLayout({ children }: WebLayoutProps) {
             </div>
           </div>
 
-          <div className="mt-10 pt-6 border-t border-white/12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-white/55">
+          <div className="mt-10 pt-6 border-t border-white/[0.12] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-white/[0.55]">
             <p>© {new Date().getFullYear()} Oli Locação. Todos os direitos reservados.</p>
             <p>CNPJ: 57.448.288/0001-89</p>
           </div>
