@@ -6,69 +6,24 @@ on:
     paths:
       - .github/workflows/restore-footer-wallpaper.yml
 
-permissions:
-  contents: write
-
 jobs:
-  restore:
+  inspect:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Inspect browser download tab
+      - name: Inspect download response
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install --quiet selenium
-          python - <<'PY'
-          import os, time
-          from selenium import webdriver
-          from selenium.webdriver.common.by import By
-          from selenium.webdriver.chrome.options import Options
-
-          page = 'https://moewalls.com/abstract/abstract-organic-lines-live-wallpaper/'
-          outdir = os.path.abspath('public/videos/.wallpaper-download')
-          os.makedirs(outdir, exist_ok=True)
-          opts = Options()
-          opts.add_argument('--headless=new')
-          opts.add_argument('--no-sandbox')
-          opts.add_argument('--disable-dev-shm-usage')
-          opts.add_argument('--window-size=1920,1080')
-          opts.add_argument('--disable-blink-features=AutomationControlled')
-          opts.add_experimental_option('excludeSwitches', ['enable-automation'])
-          opts.add_experimental_option('useAutomationExtension', False)
-          opts.add_experimental_option('prefs', {
-              'download.default_directory': outdir,
-              'download.prompt_for_download': False,
-              'download.directory_upgrade': True,
-              'safebrowsing.enabled': True,
-          })
-          d = webdriver.Chrome(options=opts)
-          try:
-              d.execute_cdp_cmd('Page.setDownloadBehavior', {'behavior':'allow','downloadPath':outdir})
-              d.get(page)
-              time.sleep(6)
-              d.execute_script("localStorage.removeItem('cf_country'); localStorage.removeItem('downloadFileUrl'); localStorage.removeItem('expiryTime');")
-              btn = d.find_element(By.ID, 'moe-download')
-              print('BUTTON_URL', btn.get_attribute('data-url'))
-              d.execute_script('arguments[0].click();', btn)
-              time.sleep(5)
-              print('HANDLES', len(d.window_handles), d.window_handles)
-              for h in d.window_handles:
-                  d.switch_to.window(h)
-                  print('\nHANDLE', h)
-                  print('URL', d.current_url)
-                  print('TITLE', d.title)
-                  print('BODY', d.page_source[:6000].replace('\n',' '))
-              if len(d.window_handles) > 1:
-                  d.switch_to.window(d.window_handles[-1])
-                  print('\nWAITING_ON_DOWNLOAD_TAB')
-                  for i in range(6):
-                      time.sleep(5)
-                      print('T+', (i+1)*5, 'URL', d.current_url, 'TITLE', d.title)
-                      print('FILES', os.listdir(outdir))
-          finally:
-              d.quit()
-          PY
+          PAGE='https://moewalls.com/abstract/abstract-organic-lines-live-wallpaper/'
+          URL='https://go.moewalls.com/download.php?video=NDvY%2FAupXwmOeJsJpK4rX3u76gbA07S9kTlVjroWxazC01%2BHgURu74Cg4nB07rlXTpkIQWjybjgC76bC'
+          UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
+          curl -sS -c cookies.txt -b cookies.txt -A "$UA" -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' "$PAGE" -o page.html
+          curl -sS -D headers.txt -c cookies.txt -b cookies.txt -A "$UA" -e "$PAGE" -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' -H 'sec-fetch-site: same-site' -H 'sec-fetch-mode: navigate' -H 'sec-fetch-dest: document' "$URL" -o body.bin || true
+          echo '=== HEADERS ==='
+          cat headers.txt
+          echo '=== SIZE ==='
+          wc -c body.bin
+          echo '=== TYPE ==='
+          file body.bin
+          echo '=== BODY ==='
+          head -c 12000 body.bin || true
