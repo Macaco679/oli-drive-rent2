@@ -1,4 +1,29 @@
 const QUICK_ACTION_HEADING = "O que você procura?";
+const QUICK_ACTION_HEADING_UPDATED = "Seu próximo passo começa aqui";
+
+const actionCopy = [
+  {
+    id: "app",
+    title: "Alugue para trabalhar com app",
+    description:
+      "Encontre veículos ideais para Uber, 99 e outros apps, com opções pensadas para quem precisa de praticidade e disponibilidade no dia a dia.",
+    cta: "Encontrar carro para app",
+  },
+  {
+    id: "travel",
+    title: "Pegue a estrada com liberdade",
+    description:
+      "Escolha um carro confortável para fins de semana, férias ou viagens mais longas, com espaço e flexibilidade para acompanhar o seu roteiro.",
+    cta: "Encontrar carro para viajar",
+  },
+  {
+    id: "owner",
+    title: "Transforme seu carro em renda",
+    description:
+      "Cadastre seu veículo na OLI, defina quando ele fica disponível e transforme os períodos em que estaria parado em uma nova fonte de renda.",
+    cta: "Cadastrar meu carro",
+  },
+] as const;
 
 const decorated = new WeakSet<HTMLElement>();
 let frame = 0;
@@ -12,28 +37,43 @@ const revealObserver =
     ? new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
             const element = entry.target as HTMLElement;
-            element.classList.add("is-visible");
-            revealObserver?.unobserve(element);
+
+            // Reveal only after a meaningful portion of the card enters the viewport.
+            // When it leaves, reset it so the left/right entrance also works while
+            // scrolling back up through the page.
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.16) {
+              requestAnimationFrame(() => element.classList.add("is-visible"));
+              return;
+            }
+
+            if (!entry.isIntersecting || entry.intersectionRatio <= 0.02) {
+              element.classList.remove("is-visible");
+            }
           });
         },
         {
-          threshold: 0.18,
-          rootMargin: "0px 0px -8% 0px",
+          threshold: [0, 0.02, 0.16, 0.4],
+          rootMargin: "-3% 0px -6% 0px",
         }
       )
     : null;
 
 const decorateQuickActions = () => {
-  const section = Array.from(document.querySelectorAll<HTMLElement>("section")).find(
-    (candidate) => candidate.querySelector("h2")?.textContent?.trim() === QUICK_ACTION_HEADING
-  );
+  const section =
+    document.querySelector<HTMLElement>(".oli-quick-actions") ??
+    Array.from(document.querySelectorAll<HTMLElement>("section")).find(
+      (candidate) => candidate.querySelector("h2")?.textContent?.trim() === QUICK_ACTION_HEADING
+    );
 
   if (!section) return;
 
   section.classList.add("oli-quick-actions");
-  const stack = section.querySelector<HTMLElement>(".grid");
+
+  const heading = section.querySelector<HTMLHeadingElement>("h2");
+  if (heading) heading.textContent = QUICK_ACTION_HEADING_UPDATED;
+
+  const stack = section.querySelector<HTMLElement>(".grid, .oli-quick-actions__stack");
   if (!stack) return;
 
   stack.classList.add("oli-quick-actions__stack");
@@ -42,15 +82,22 @@ const decorateQuickActions = () => {
     (child): child is HTMLButtonElement => child instanceof HTMLButtonElement
   );
 
-  const actions = ["app", "travel", "owner"];
-
   buttons.slice(0, 3).forEach((button, index) => {
+    const copy = actionCopy[index];
+    if (!copy) return;
+
     button.classList.add(
       "oli-quick-card",
       "oli-reveal",
       index % 2 === 0 ? "oli-reveal--left" : "oli-reveal--right"
     );
-    button.dataset.oliAction = actions[index];
+    button.dataset.oliAction = copy.id;
+    button.dataset.oliCta = copy.cta;
+
+    const title = button.querySelector<HTMLHeadingElement>("h3");
+    const description = button.querySelector<HTMLParagraphElement>("p");
+    if (title) title.textContent = copy.title;
+    if (description) description.textContent = copy.description;
 
     if (decorated.has(button)) return;
     decorated.add(button);
@@ -60,7 +107,10 @@ const decorateQuickActions = () => {
       return;
     }
 
-    revealObserver.observe(button);
+    // Give the browser one paint with the off-screen state before observing.
+    // This prevents cards already near the viewport from skipping the transition.
+    button.classList.remove("is-visible");
+    requestAnimationFrame(() => revealObserver.observe(button));
   });
 };
 
