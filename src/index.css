@@ -318,10 +318,24 @@ All colors MUST be HSL.
     background: var(--gradient-metal);
   }
 
+  .site-live-footer {
+    background:
+      linear-gradient(110deg, hsl(176 58% 7% / 0.42), hsl(172 54% 10% / 0.3)),
+      url('/videos/hero-background-poster.jpg') center / cover no-repeat,
+      hsl(176 58% 7%);
+  }
+
+  .site-live-footer__video {
+    max-width: none;
+    opacity: 1;
+    filter: saturate(1.08) contrast(1.05) brightness(0.82);
+    transform: scale(1.015);
+  }
+
   .footer-video-overlay {
     background:
-      radial-gradient(circle at 18% 24%, hsl(var(--metal-bright) / 0.12), transparent 34%),
-      linear-gradient(110deg, hsl(var(--metal-deep) / 0.94), hsl(174 47% 13% / 0.86) 52%, hsl(176 52% 10% / 0.93));
+      radial-gradient(circle at 18% 24%, hsl(var(--metal-bright) / 0.1), transparent 34%),
+      linear-gradient(110deg, hsl(var(--metal-deep) / 0.5), hsl(174 47% 13% / 0.38) 52%, hsl(176 52% 10% / 0.48));
   }
 
   .footer-link {
