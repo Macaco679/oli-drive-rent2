@@ -17,66 +17,34 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Locate download handler
+      - name: Download exact original 4K wallpaper
         shell: bash
         run: |
           set -euo pipefail
-          python - <<'PY'
-          import html
-          import re
-          import urllib.parse
-          import urllib.request
+          mkdir -p public/videos
+          PAGE='https://moewalls.com/abstract/abstract-organic-lines-live-wallpaper/'
+          TOKEN='NDvY%2FAupXwmOeJsJpK4rX3u76gbA07S9kTlVjroWxazC01%2BHgURu74Cg4nB07rlXTpkIQWjybjgC76bC'
+          URL="https://go.moewalls.com/download.php?video=${TOKEN}"
+          TARGET='public/videos/footer-organic-lines-original.mp4'
 
-          page_url = 'https://moewalls.com/abstract/abstract-organic-lines-live-wallpaper/'
-          headers = {
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125 Safari/537.36',
-              'Accept-Language': 'en-US,en;q=0.9',
-              'Referer': page_url,
-          }
+          curl --fail --location --retry 3 --retry-all-errors \
+            --user-agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125 Safari/537.36' \
+            --referer "$PAGE" \
+            --output "$TARGET" "$URL"
 
-          def fetch(url):
-              req = urllib.request.Request(url, headers=headers)
-              return urllib.request.urlopen(req, timeout=45).read().decode('utf-8', 'replace')
+          test "$(stat -c%s "$TARGET")" = '53467423'
+          echo '382d42218ea0e82a37577bce1728f07ee51174ae08ef1b35e138208caa5fe5e6  public/videos/footer-organic-lines-original.mp4' | sha256sum --check --strict
 
-          page = html.unescape(fetch(page_url)).replace('\\/', '/')
-          print('DOWNLOAD_BUTTON')
-          m = re.search(r'<a[^>]+id=["\']moe-download["\'][^>]*>', page, re.I)
-          print(m.group(0) if m else 'not found')
-
-          print('\nINLINE_MATCHES')
-          needles = ['moe-download', 'lcc-wall', 'data-url', 'admin-ajax.php']
-          for needle in needles:
-              pos = 0
-              while True:
-                  idx = page.lower().find(needle.lower(), pos)
-                  if idx < 0:
-                      break
-                  print('\n--', needle, '--')
-                  print(page[max(0, idx-900): min(len(page), idx+1800)].replace('\n',' '))
-                  pos = idx + len(needle)
-
-          scripts = re.findall(r'<script[^>]+src=["\']([^"\']+)["\']', page, re.I)
-          scripts = list(dict.fromkeys(urllib.parse.urljoin(page_url, s) for s in scripts))
-          print('\nSCRIPT_COUNT', len(scripts))
-
-          for url in scripts:
-              try:
-                  js = fetch(url)
-              except Exception as exc:
-                  print('FETCH_FAIL', url, repr(exc))
-                  continue
-              low = js.lower()
-              if any(n.lower() in low for n in ['moe-download', 'lcc-wall', 'data-url', 'admin-ajax.php', 'wp_ajax', 'ajaxurl']):
-                  print('\n===== SCRIPT', url, '=====')
-                  for needle in ['moe-download', 'lcc-wall', 'data-url', 'admin-ajax.php', 'ajaxurl']:
-                      pos = 0
-                      hits = 0
-                      while hits < 8:
-                          idx = low.find(needle.lower(), pos)
-                          if idx < 0:
-                              break
-                          print('\n--', needle, '--')
-                          print(js[max(0, idx-1200): min(len(js), idx+2600)].replace('\n',' '))
-                          pos = idx + len(needle)
-                          hits += 1
-          PY
+      - name: Commit original MP4
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/videos/footer-organic-lines-original.mp4
+          if git diff --cached --quiet; then
+            echo 'Original asset already present'
+            exit 0
+          fi
+          git commit -m 'asset: add exact original 4K footer wallpaper'
+          git push origin HEAD:main
