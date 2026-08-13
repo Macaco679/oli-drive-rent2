@@ -24,8 +24,7 @@ const authNavItems = [
   { path: "/profile", label: "Perfil", icon: User },
 ];
 
-const FOOTER_LIVE_WALLPAPER = "/videos/hero-background.mp4";
-const FOOTER_LIVE_WALLPAPER_POSTER = "/videos/hero-background-poster.jpg";
+const FOOTER_LIVE_WALLPAPER = "https://moewalls.com/wp-content/uploads/2021/11/abstract-organic-lines.mp4";
 
 export function WebLayout({ children }: WebLayoutProps) {
   const location = useLocation();
@@ -150,7 +149,6 @@ export function WebLayout({ children }: WebLayoutProps) {
         <video
           className="site-live-footer__video absolute inset-0 z-0 h-full w-full object-cover"
           src={FOOTER_LIVE_WALLPAPER}
-          poster={FOOTER_LIVE_WALLPAPER_POSTER}
           autoPlay
           loop
           muted
