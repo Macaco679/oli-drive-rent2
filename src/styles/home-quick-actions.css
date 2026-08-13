@@ -1,0 +1,259 @@
+/* OLI quick-action showcase: vertical editorial cards + alternating scroll reveal. */
+.oli-quick-actions {
+  position: relative;
+  overflow-x: clip !important;
+  padding-block: clamp(3rem, 6vw, 5.5rem) !important;
+  border-block: 1px solid rgba(54, 122, 105, .18) !important;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(89, 187, 159, .12), transparent 28%),
+    radial-gradient(circle at 88% 90%, rgba(34, 121, 101, .08), transparent 30%),
+    linear-gradient(180deg, #f3f8f6 0%, #eaf3f0 100%) !important;
+}
+
+.oli-quick-actions h2 {
+  margin-bottom: clamp(2rem, 4vw, 3.25rem) !important;
+  color: #153a33 !important;
+  letter-spacing: -.035em;
+}
+
+.oli-quick-actions .oli-quick-actions__stack {
+  display: flex !important;
+  max-width: 1120px;
+  margin-inline: auto;
+  flex-direction: column;
+  gap: clamp(1.4rem, 3vw, 2.4rem) !important;
+}
+
+.oli-quick-actions .oli-quick-card {
+  position: relative !important;
+  isolation: isolate;
+  display: grid !important;
+  grid-template-columns: minmax(300px, .95fr) minmax(0, 1.05fr);
+  grid-template-rows: auto auto auto;
+  column-gap: clamp(2rem, 5vw, 4.75rem) !important;
+  row-gap: .7rem !important;
+  min-height: 330px !important;
+  align-items: center !important;
+  overflow: hidden !important;
+  padding: clamp(1.65rem, 3vw, 3.2rem) !important;
+  border: 1px solid transparent !important;
+  border-radius: 1.8rem !important;
+  text-align: left !important;
+  background:
+    linear-gradient(145deg, rgba(253, 255, 254, .98), rgba(239, 247, 244, .98)) padding-box,
+    linear-gradient(118deg, #0d5b50 0%, #4bae93 30%, #d7fff1 49%, #3a917a 69%, #08473f 100%) border-box !important;
+  box-shadow:
+    0 18px 45px rgba(5, 57, 49, .10),
+    inset 0 1px 0 rgba(255, 255, 255, .95) !important;
+  cursor: pointer;
+  transition:
+    opacity 680ms ease,
+    transform 760ms cubic-bezier(.2, .75, .2, 1),
+    box-shadow 220ms ease,
+    border-color 220ms ease !important;
+}
+
+.oli-quick-actions .oli-quick-card::before {
+  content: "" !important;
+  position: relative !important;
+  z-index: 1;
+  inset: auto !important;
+  grid-column: 1;
+  grid-row: 1 / 4;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 260px;
+  border: 1px solid rgba(79, 157, 137, .16);
+  border-radius: 1.45rem;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain, cover !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .76),
+    0 12px 30px rgba(5, 66, 56, .06) !important;
+  transform: none !important;
+  transition: transform 260ms ease, filter 260ms ease !important;
+}
+
+.oli-quick-actions .oli-quick-card[data-oli-action="app"]::before {
+  background-image:
+    url("/illustrations/quick-app.svg"),
+    radial-gradient(circle at 50% 48%, rgba(88, 190, 160, .15), rgba(232, 246, 242, .64) 52%, rgba(232, 246, 242, .18) 72%, transparent 73%) !important;
+}
+
+.oli-quick-actions .oli-quick-card[data-oli-action="travel"]::before {
+  background-image:
+    url("/illustrations/quick-travel.svg"),
+    radial-gradient(circle at 50% 48%, rgba(68, 166, 140, .14), rgba(232, 246, 242, .66) 52%, rgba(232, 246, 242, .18) 72%, transparent 73%) !important;
+}
+
+.oli-quick-actions .oli-quick-card[data-oli-action="owner"]::before {
+  background-image:
+    url("/illustrations/quick-owner.svg"),
+    radial-gradient(circle at 50% 48%, rgba(72, 173, 146, .14), rgba(232, 246, 242, .66) 52%, rgba(232, 246, 242, .18) 72%, transparent 73%) !important;
+}
+
+.oli-quick-actions .oli-quick-card > div:first-child {
+  display: none !important;
+}
+
+.oli-quick-actions .oli-quick-card h3,
+.oli-quick-actions .oli-quick-card p,
+.oli-quick-actions .oli-quick-card::after {
+  position: relative !important;
+  z-index: 2;
+  grid-column: 2;
+}
+
+.oli-quick-actions .oli-quick-card h3 {
+  grid-row: 1;
+  align-self: end;
+  margin: 0 !important;
+  color: #153a33 !important;
+  font-size: clamp(1.5rem, 2.4vw, 2.15rem) !important;
+  font-weight: 750 !important;
+  line-height: 1.13 !important;
+  letter-spacing: -.035em;
+}
+
+.oli-quick-actions .oli-quick-card p {
+  grid-row: 2;
+  align-self: start;
+  max-width: 34rem !important;
+  margin: 0 !important;
+  color: #536c66 !important;
+  font-size: clamp(.98rem, 1.15vw, 1.08rem) !important;
+  line-height: 1.7 !important;
+}
+
+.oli-quick-actions .oli-quick-card::after {
+  grid-row: 3;
+  align-self: start;
+  justify-self: start;
+  inset: auto !important;
+  width: max-content !important;
+  margin-top: .65rem;
+  padding: .8rem 1.08rem !important;
+  border: 1px solid rgba(125, 213, 188, .28);
+  border-radius: .92rem;
+  background: linear-gradient(108deg, #0d564c 0%, #176f60 55%, #2a8d75 100%) !important;
+  color: #fff !important;
+  font-size: .88rem !important;
+  font-weight: 750;
+  line-height: 1 !important;
+  box-shadow:
+    0 10px 20px rgba(5, 74, 62, .14),
+    inset 0 1px 0 rgba(255, 255, 255, .13) !important;
+  transform: none !important;
+  transition: filter 180ms ease, transform 180ms ease !important;
+}
+
+.oli-quick-actions .oli-quick-card[data-oli-action="app"]::after { content: "Ver carros para app  →" !important; }
+.oli-quick-actions .oli-quick-card[data-oli-action="travel"]::after { content: "Ver carros para viagem  →" !important; }
+.oli-quick-actions .oli-quick-card[data-oli-action="owner"]::after { content: "Cadastrar meu carro  →" !important; }
+
+/* Editorial alternation: the middle story reverses image/content. */
+.oli-quick-actions .oli-quick-card:nth-child(2)::before {
+  grid-column: 2;
+}
+
+.oli-quick-actions .oli-quick-card:nth-child(2) h3,
+.oli-quick-actions .oli-quick-card:nth-child(2) p,
+.oli-quick-actions .oli-quick-card:nth-child(2)::after {
+  grid-column: 1;
+}
+
+/* Scroll reveal: left / right / left. */
+.oli-quick-actions .oli-quick-card.oli-reveal {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.oli-quick-actions .oli-quick-card.oli-reveal--left {
+  transform: translate3d(-78px, 18px, 0) scale(.985) !important;
+}
+
+.oli-quick-actions .oli-quick-card.oli-reveal--right {
+  transform: translate3d(78px, 18px, 0) scale(.985) !important;
+}
+
+.oli-quick-actions .oli-quick-card.oli-reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1) !important;
+}
+
+.oli-quick-actions .oli-quick-card.is-visible:hover {
+  transform: translate3d(0, -6px, 0) scale(1) !important;
+  box-shadow:
+    0 26px 58px rgba(5, 57, 49, .15),
+    inset 0 1px 0 rgba(255, 255, 255, .98) !important;
+}
+
+.oli-quick-actions .oli-quick-card:hover::before {
+  transform: scale(1.025) !important;
+  filter: saturate(1.05);
+}
+
+.oli-quick-actions .oli-quick-card:hover::after {
+  transform: translateX(.18rem) !important;
+  filter: brightness(1.04);
+}
+
+.oli-quick-actions .oli-quick-card:focus-visible {
+  outline: 3px solid rgba(36, 126, 106, .42) !important;
+  outline-offset: 5px !important;
+}
+
+@media (max-width: 820px) {
+  .oli-quick-actions .oli-quick-card {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto;
+    min-height: 0 !important;
+    gap: .72rem !important;
+    padding: 1.3rem !important;
+  }
+
+  .oli-quick-actions .oli-quick-card::before,
+  .oli-quick-actions .oli-quick-card:nth-child(2)::before {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: clamp(210px, 62vw, 300px);
+  }
+
+  .oli-quick-actions .oli-quick-card h3,
+  .oli-quick-actions .oli-quick-card:nth-child(2) h3 {
+    grid-column: 1;
+    grid-row: 2;
+    margin-top: .45rem !important;
+  }
+
+  .oli-quick-actions .oli-quick-card p,
+  .oli-quick-actions .oli-quick-card:nth-child(2) p {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .oli-quick-actions .oli-quick-card::after,
+  .oli-quick-actions .oli-quick-card:nth-child(2)::after {
+    grid-column: 1;
+    grid-row: 4;
+  }
+
+  .oli-quick-actions .oli-quick-card.oli-reveal--left,
+  .oli-quick-actions .oli-quick-card.oli-reveal--right {
+    transform: translate3d(0, 34px, 0) scale(.985) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oli-quick-actions .oli-quick-card,
+  .oli-quick-actions .oli-quick-card::before,
+  .oli-quick-actions .oli-quick-card::after {
+    transition: none !important;
+  }
+
+  .oli-quick-actions .oli-quick-card.oli-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
