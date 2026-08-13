@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { createVehicle, uploadVehiclePhoto, VehicleFormData, validatePhoto } from "@/lib/vehicleService";
+import { notifyVehicleApproved, notifyVehicleRejected } from "@/lib/notificationService";
 import { formatPostalCode, lookupAddressByPostalCode, sanitizePostalCode } from "@/lib/addressService";
 import carBgPattern from "@/assets/car-bg-pattern.png";
 
@@ -304,6 +305,22 @@ export default function RegisterVehicle() {
         await supabase.from("oli_vehicles").update({ status: (isApproved ? "available" : "inactive") as any, is_active: !!isApproved, updated_at: new Date().toISOString() }).eq("id", vehicle.id);
         setVerificationState(isApproved ? "approved" : "rejected");
         setVerificationMessage(result?.mensagem || result?.message || (isApproved ? "Veículo aprovado com sucesso!" : "Veículo nao aprovado. Verifique os documentos."));
+
+        // Envia e-mail de aprovação/reprovação do veículo (mesmo padrão do
+        // fluxo de CNH em DriverLicenseForm.tsx) — não bloqueia a tela em
+        // caso de falha no envio.
+        try {
+          const { data: { user: currentUser } } = await supabase.auth.getUser();
+          if (currentUser?.id) {
+            if (isApproved) {
+              await notifyVehicleApproved(currentUser.id, values.title, result?.status);
+            } else {
+              await notifyVehicleRejected(currentUser.id, values.title, result?.status);
+            }
+          }
+        } catch (emailErr) {
+          console.warn("[Veículo] Email de notificação falhou:", emailErr);
+        }
       } catch (fetchError) {
         if (timerRef.current) clearInterval(timerRef.current);
         console.error("Erro no webhook do veículo:", fetchError);
