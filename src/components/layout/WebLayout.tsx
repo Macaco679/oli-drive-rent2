@@ -25,7 +25,7 @@ const authNavItems = [
   { path: "/profile", label: "Perfil", icon: User },
 ];
 
-const FOOTER_LIVE_WALLPAPER = "https://moewalls.com/wp-content/uploads/2021/11/abstract-organic-lines.mp4";
+const FOOTER_LIVE_WALLPAPER = "/videos/hero-r34-tunnel.mp4";
 
 export function WebLayout({ children }: WebLayoutProps) {
   const location = useLocation();
