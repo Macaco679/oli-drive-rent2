@@ -1,0 +1,28 @@
+.hero-video-overlay {
+  background: linear-gradient(90deg, hsl(177 65% 7% / .72), hsl(174 54% 11% / .48) 48%, hsl(172 52% 9% / .56)), radial-gradient(circle at 72% 26%, hsl(158 58% 48% / .13), transparent 40%);
+}
+
+section[class~="bg-secondary/30"] + section {
+  background: radial-gradient(circle at 50% -20%, hsl(158 54% 68% / .10), transparent 42%), repeating-linear-gradient(112deg, transparent 0 86px, hsl(171 33% 30% / .025) 87px, transparent 88px 174px), linear-gradient(180deg, hsl(210 17% 96%), hsl(167 18% 91%)) !important;
+}
+
+section[class~="bg-secondary/30"] + section h2 { position: relative; width: fit-content; margin-inline: auto; padding-bottom: .8rem; }
+section[class~="bg-secondary/30"] + section h2::after { content: ''; position: absolute; left: 50%; bottom: 0; width: 4.75rem; height: 2px; transform: translateX(-50%); border-radius: 99px; background: linear-gradient(90deg, transparent, hsl(170 58% 25%), hsl(151 69% 69%), hsl(168 54% 31%), transparent); box-shadow: 0 0 14px hsl(158 56% 42% / .2); }
+
+section[class~="bg-secondary/30"] + section .grid > div {
+  position: relative; isolation: isolate; overflow: hidden; min-height: 13.25rem; padding: 1.8rem 1.75rem 1.7rem !important; border: 1px solid transparent !important; border-radius: 1.45rem !important;
+  background: linear-gradient(145deg, hsl(175 35% 21% / .965), hsl(177 39% 15% / .985) 52%, hsl(168 31% 22% / .97)) padding-box, linear-gradient(120deg, hsl(176 68% 25%), hsl(156 62% 53%) 28%, hsl(148 72% 78%) 48%, hsl(164 58% 42%) 66%, hsl(177 67% 20%)) border-box !important;
+  box-shadow: inset 0 1px 0 hsl(0 0% 100% / .08), inset 0 -1px 0 hsl(177 72% 6% / .5), 0 16px 36px hsl(177 54% 9% / .16) !important; text-align: left !important; transition: transform 240ms ease, box-shadow 240ms ease, filter 240ms ease !important;
+}
+section[class~="bg-secondary/30"] + section .grid > div::before { content: ''; position: absolute; z-index: 0; inset: 0; width: auto; border-radius: inherit; background: linear-gradient(108deg, transparent 0 35%, hsl(0 0% 100% / .035) 45%, transparent 56%), radial-gradient(circle at 88% 8%, hsl(153 68% 62% / .12), transparent 30%); box-shadow: none; pointer-events: none; }
+section[class~="bg-secondary/30"] + section .grid > div::after { content: ''; position: absolute; z-index: 0; left: 1.7rem; right: 1.7rem; top: 0; width: auto; height: 2px; border-radius: 99px; background: linear-gradient(90deg, transparent, hsl(151 73% 78% / .9), hsl(164 62% 48% / .75), transparent); box-shadow: 0 0 14px hsl(157 62% 48% / .18); }
+section[class~="bg-secondary/30"] + section .grid > div > * { position: relative; z-index: 1; }
+section[class~="bg-secondary/30"] + section .grid > div:hover { transform: translateY(-5px); filter: saturate(1.06) brightness(1.035); box-shadow: inset 0 1px 0 hsl(0 0% 100% / .10), 0 24px 48px hsl(177 58% 8% / .23), 0 0 0 1px hsl(153 64% 65% / .16) !important; }
+section[class~="bg-secondary/30"] + section .grid > div > div:first-child { width: 3.25rem !important; height: 3.25rem !important; margin: 0 0 1.15rem !important; border: 1px solid hsl(151 65% 72% / .36) !important; border-radius: 1rem !important; color: white !important; background: linear-gradient(145deg, hsl(176 58% 17%), hsl(163 50% 35%)) !important; box-shadow: inset 0 1px 0 hsl(0 0% 100% / .14), 0 10px 22px hsl(177 65% 7% / .30), 0 0 18px hsl(158 55% 48% / .08) !important; }
+section[class~="bg-secondary/30"] + section .grid > div h3 { color: hsl(0 0% 100% / .97) !important; letter-spacing: -.025em !important; }
+section[class~="bg-secondary/30"] + section .grid > div p { color: hsl(165 18% 87% / .78) !important; line-height: 1.62 !important; }
+section[class~="bg-secondary/30"] + section .grid > div svg { color: white !important; }
+
+footer.site-live-footer > video { filter: saturate(1.1) contrast(1.1) brightness(.74) !important; transform: scale(1.01) !important; }
+footer.site-live-footer .footer-video-overlay { background: radial-gradient(circle at 18% 28%, hsl(158 55% 42% / .08), transparent 34%), linear-gradient(100deg, hsl(178 72% 4% / .70), hsl(176 60% 6% / .46) 48%, hsl(178 72% 4% / .72)) !important; }
+footer.site-live-footer .site-shell { text-shadow: 0 2px 14px hsl(178 88% 3% / .65); }
