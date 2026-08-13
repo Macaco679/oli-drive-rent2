@@ -296,6 +296,17 @@ export default function Home() {
     emblaApi.on("reInit", onSelect);
   }, [emblaApi, onSelect]);
 
+  // Mesmo tratamento do componente Carousel compartilhado (ver
+  // src/components/ui/carousel.tsx): zoom do navegador pode não disparar
+  // o resize interno do Embla de forma confiável, deixando o carrossel
+  // desalinhado com espaço vazio na lateral até a próxima interação.
+  useEffect(() => {
+    if (!emblaApi) return;
+    const handleWindowResize = () => emblaApi.reInit();
+    window.addEventListener("resize", handleWindowResize);
+    return () => window.removeEventListener("resize", handleWindowResize);
+  }, [emblaApi]);
+
   const handleSearch = () => {
     navigate("/search", {
       state: { 
