@@ -1,28 +1,617 @@
-.hero-video-overlay {
-  background: linear-gradient(90deg, hsl(177 65% 7% / .72), hsl(174 54% 11% / .48) 48%, hsl(172 52% 9% / .56)), radial-gradient(circle at 72% 26%, hsl(158 58% 48% / .13), transparent 40%);
+/* Home refinement: stronger hierarchy, Gestalt grouping and restrained metallic detail. */
+
+/* ---------- HERO ---------- */
+main:has(> section[class~="bg-secondary/30"]) > section:first-child {
+  position: relative;
+  isolation: isolate;
+  background: #0b3732;
 }
 
+main:has(> section[class~="bg-secondary/30"]) > section:first-child > video {
+  opacity: 1 !important;
+  filter: saturate(1.08) contrast(1.06) brightness(.78) !important;
+  transform: scale(1.006);
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child > video + div {
+  background:
+    linear-gradient(90deg, rgba(4, 35, 31, .72) 0%, rgba(5, 45, 39, .46) 44%, rgba(7, 56, 48, .20) 72%, rgba(4, 35, 31, .36) 100%),
+    radial-gradient(circle at 76% 22%, rgba(80, 190, 159, .12), transparent 38%) !important;
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child h1 {
+  max-width: 46rem;
+  color: #fff;
+  letter-spacing: -.035em !important;
+  line-height: 1.08 !important;
+  text-shadow: 0 3px 24px rgba(1, 20, 18, .5) !important;
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child h1 + p {
+  max-width: 43rem;
+  color: rgba(243, 251, 248, .87) !important;
+  line-height: 1.62;
+  text-shadow: 0 2px 14px rgba(1, 20, 18, .42) !important;
+}
+
+/* Search card: one common region with consistent controls. */
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(1.25rem, 2vw, 1.8rem) !important;
+  border: 1px solid transparent !important;
+  border-radius: 1.45rem !important;
+  color: #17342f !important;
+  background:
+    linear-gradient(155deg, rgba(250, 252, 251, .975), rgba(238, 246, 243, .965)) padding-box,
+    linear-gradient(118deg, #0d5f53, #5bb69f 31%, #d6fff2 49%, #3d9882 68%, #0a5046) border-box !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .92),
+    0 24px 58px rgba(3, 39, 34, .22) !important;
+  backdrop-filter: blur(14px);
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"]::before {
+  content: '';
+  position: absolute;
+  inset: 0 1.5rem auto;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(190, 255, 237, .92), rgba(61, 164, 139, .72), transparent);
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > h3 {
+  margin: 0 0 1rem !important;
+  color: #16352f !important;
+  font-size: clamp(1.2rem, 1.45vw, 1.48rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: -.025em;
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > h3::before {
+  content: '' !important;
+  display: inline-block;
+  width: 1.75rem;
+  height: 2px;
+  margin-right: .65rem;
+  vertical-align: middle;
+  background: linear-gradient(90deg, #1b6f60, #72c8af) !important;
+}
+
+/* Vehicle + city fields: label, icon and input visually belong together. */
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(1),
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(2) {
+  display: grid !important;
+  grid-template-columns: 1.2rem minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  column-gap: .72rem !important;
+  row-gap: 0 !important;
+  min-height: 3.65rem;
+  padding: .48rem .9rem .4rem !important;
+  border: 1px solid #bfd2cd;
+  border-radius: .9rem;
+  background: #f8faf9;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .82);
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(1)::before,
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(2)::before {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: end;
+  color: #335b53;
+  font-size: .69rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: .025em;
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(1)::before { content: 'Veículo'; }
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(2)::before { content: 'Local de retirada'; }
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(1):focus-within,
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(2):focus-within {
+  border-color: #267a69;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(38, 122, 105, .17);
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(1) > svg,
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(2) > svg {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  align-self: center;
+  width: 1.05rem !important;
+  height: 1.05rem !important;
+  color: #5a8179 !important;
+  stroke-width: 1.8;
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(1) input,
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(2) input {
+  grid-column: 2;
+  grid-row: 2;
+  width: 100%;
+  min-width: 0;
+  height: 1.85rem !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #193c36 !important;
+  font-size: .91rem !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(1) input::placeholder,
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(2) input::placeholder {
+  color: #7b8f8b !important;
+  opacity: 1;
+}
+
+/* Date controls use the same shape, border and focus language as text inputs. */
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(3) { gap: .75rem !important; }
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(3) button {
+  min-width: 0;
+  height: 3.15rem !important;
+  padding-inline: .9rem !important;
+  border: 1px solid #bfd2cd !important;
+  border-radius: .9rem !important;
+  background: #f8faf9 !important;
+  color: #365751 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .82) !important;
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(3) button:focus-visible {
+  outline: none !important;
+  border-color: #267a69 !important;
+  box-shadow: 0 0 0 3px rgba(38, 122, 105, .17) !important;
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(3) button svg { color: #5a8179 !important; }
+
+/* Purpose chips form one compact filter group. */
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(4) {
+  gap: .45rem !important;
+  padding-top: .15rem;
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(4) > * {
+  min-height: 1.95rem;
+  padding: .42rem .72rem !important;
+  border: 1px solid #c6d7d2 !important;
+  border-radius: 999px !important;
+  background: rgba(249, 251, 250, .82);
+  color: #36564f;
+  font-size: .75rem !important;
+  font-weight: 650;
+  box-shadow: none !important;
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(4) > [class*="bg-primary"] {
+  border-color: #1b695b !important;
+  background: #1b695b !important;
+  color: #fff !important;
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > button:last-child {
+  height: 3.15rem !important;
+  margin-top: .15rem;
+  border: 1px solid rgba(117, 205, 180, .32) !important;
+  border-radius: .92rem !important;
+  background: linear-gradient(105deg, #0f5a50 0%, #176f60 58%, #2b8b75 100%) !important;
+  color: #fff !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  box-shadow: 0 12px 24px rgba(7, 77, 65, .18), inset 0 1px 0 rgba(255, 255, 255, .11) !important;
+}
+
+main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > button:last-child:focus-visible {
+  outline: 2px solid #d7fff3 !important;
+  outline-offset: 3px !important;
+}
+
+/* ---------- VEHICLE CARDS ---------- */
+.vehicle-card-v4 {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(155deg, #fbfcfc, #f3f7f6) padding-box,
+    linear-gradient(125deg, #0b594e 0%, #49ad92 30%, #d4fff0 49%, #358b76 68%, #0a473f 100%) border-box;
+  box-shadow: 0 12px 30px rgba(9, 61, 53, .08);
+  transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease;
+}
+
+.vehicle-card-v4:hover {
+  transform: translateY(-4px);
+  filter: saturate(1.025);
+  box-shadow: 0 22px 44px rgba(9, 61, 53, .14);
+}
+
+.vehicle-card-v4__metal-line {
+  position: absolute;
+  z-index: 20;
+  inset: 0 1.4rem auto;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(194, 255, 238, .9), rgba(55, 160, 134, .72), transparent);
+  pointer-events: none;
+}
+
+.vehicle-card-v4__media {
+  position: relative;
+  height: 12.8rem;
+  overflow: hidden;
+  background: linear-gradient(145deg, #e8eeec, #f2f5f4);
+}
+
+.vehicle-card-v4__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 420ms ease;
+}
+
+.vehicle-card-v4:hover .vehicle-card-v4__image { transform: scale(1.025); }
+
+.vehicle-card-v4__empty {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: #71847f;
+  font-size: .88rem;
+}
+
+.vehicle-card-v4__badge {
+  position: absolute !important;
+  top: .82rem !important;
+  right: .82rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: .42rem !important;
+  border: 1px solid rgba(71, 135, 119, .3) !important;
+  border-radius: 999px !important;
+  background: rgba(248, 252, 250, .94) !important;
+  color: #175e51 !important;
+  box-shadow: 0 6px 18px rgba(13, 71, 61, .1) !important;
+  backdrop-filter: blur(10px);
+}
+
+.vehicle-card-v4__status-dot {
+  width: .42rem;
+  height: .42rem;
+  border-radius: 999px;
+  background: #899994;
+}
+.vehicle-card-v4__status-dot.is-available {
+  background: #23b887;
+  box-shadow: 0 0 0 3px rgba(35, 184, 135, .10);
+}
+
+.vehicle-card-v4__body {
+  display: grid;
+  gap: 1rem;
+  padding: 1.2rem 1.25rem 1.15rem;
+}
+
+.vehicle-card-v4__title {
+  margin: 0;
+  color: #18332f;
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.02em;
+}
+
+.vehicle-card-v4__location {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  margin-top: .48rem;
+  color: #6a7e7a;
+  font-size: .84rem;
+}
+.vehicle-card-v4__location svg {
+  width: 1rem;
+  height: 1rem;
+  color: #4c8f80;
+}
+
+.vehicle-card-v4__rates {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid #d5e1de;
+  border-bottom: 1px solid #d5e1de;
+}
+
+.vehicle-card-v4__rate {
+  min-width: 0;
+  padding: .82rem .25rem .82rem 0;
+}
+.vehicle-card-v4__rate + .vehicle-card-v4__rate {
+  padding-left: 1rem;
+  border-left: 1px solid #d5e1de;
+}
+
+.vehicle-card-v4__rate-label {
+  display: block;
+  color: #728783;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.vehicle-card-v4__rate-value {
+  display: block;
+  margin-top: .24rem;
+  overflow: hidden;
+  color: #17695a;
+  font-size: 1rem;
+  font-weight: 750;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vehicle-card-v4__cta {
+  display: flex;
+  width: 100%;
+  min-height: 2.9rem;
+  align-items: center;
+  justify-content: center;
+  gap: .52rem;
+  padding: .72rem 1rem;
+  border: 1px solid rgba(112, 199, 176, .28);
+  border-radius: .84rem;
+  background: linear-gradient(105deg, #114f47, #176b5d 58%, #2e8b76);
+  color: #fff;
+  font-size: .86rem;
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .11);
+  transition: filter 180ms ease, transform 180ms ease;
+}
+.vehicle-card-v4__cta svg {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 180ms ease;
+}
+.vehicle-card-v4:hover .vehicle-card-v4__cta svg { transform: translate(.12rem, -.12rem); }
+.vehicle-card-v4__cta:focus-visible {
+  outline: 2px solid #267a69;
+  outline-offset: 3px;
+}
+
+/* ---------- QUICK ACTIONS ---------- */
+section[class~="bg-secondary/30"] {
+  position: relative;
+  overflow: hidden;
+  border-block: 1px solid #d0e1dc !important;
+  background:
+    radial-gradient(circle at 8% 18%, rgba(78, 179, 151, .10), transparent 30%),
+    linear-gradient(180deg, #edf4f2, #e5efec) !important;
+}
+
+section[class~="bg-secondary/30"] button {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: 12.5rem !important;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow: hidden;
+  padding: 1.7rem !important;
+  border: 1px solid rgba(99, 177, 156, .48) !important;
+  border-radius: 1.22rem !important;
+  text-align: left !important;
+  background:
+    radial-gradient(circle at 96% 6%, rgba(112, 213, 181, .17), transparent 32%),
+    linear-gradient(145deg, #123f39 0%, #174c43 55%, #1c5c50 100%) !important;
+  box-shadow: 0 16px 34px rgba(8, 59, 51, .13), inset 0 1px 0 rgba(255, 255, 255, .07) !important;
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease !important;
+}
+
+section[class~="bg-secondary/30"] button::before {
+  content: '' !important;
+  position: absolute;
+  z-index: 0;
+  inset: 0 1.35rem auto;
+  width: auto !important;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(197, 255, 238, .85), rgba(75, 179, 151, .72), transparent) !important;
+  box-shadow: none !important;
+}
+
+section[class~="bg-secondary/30"] button::after {
+  content: '↗' !important;
+  position: absolute;
+  z-index: 1;
+  inset: 1.25rem 1.28rem auto auto !important;
+  width: auto !important;
+  transform: none !important;
+  background: none !important;
+  color: rgba(225, 255, 247, .62);
+  font-size: 1rem;
+  transition: transform 180ms ease, color 180ms ease !important;
+}
+
+section[class~="bg-secondary/30"] button:hover {
+  transform: translateY(-4px) !important;
+  border-color: rgba(120, 216, 189, .66) !important;
+  box-shadow: 0 24px 44px rgba(8, 59, 51, .19), inset 0 1px 0 rgba(255, 255, 255, .09) !important;
+}
+section[class~="bg-secondary/30"] button:hover::after {
+  transform: translate(.12rem, -.12rem) !important;
+  color: #e6fff8;
+}
+section[class~="bg-secondary/30"] button:focus-visible {
+  outline: 2px solid #267a69;
+  outline-offset: 4px;
+}
+
+section[class~="bg-secondary/30"] button > div:first-child {
+  display: flex;
+  width: 3.25rem !important;
+  height: 3.25rem !important;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 1.3rem !important;
+  border: 1px solid rgba(191, 255, 237, .3) !important;
+  border-radius: 1rem !important;
+  background: linear-gradient(145deg, rgba(255, 255, 255, .15), rgba(89, 190, 162, .18)) !important;
+  color: #fff !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14) !important;
+}
+section[class~="bg-secondary/30"] button > div:first-child svg {
+  width: 1.45rem !important;
+  height: 1.45rem !important;
+  color: #fff !important;
+}
+section[class~="bg-secondary/30"] button h3 {
+  margin: 0 0 .45rem !important;
+  color: #fff !important;
+  font-size: 1.08rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -.02em;
+}
+section[class~="bg-secondary/30"] button p {
+  max-width: 90%;
+  margin: 0;
+  color: rgba(223, 240, 235, .77) !important;
+  font-size: .9rem;
+  line-height: 1.58 !important;
+}
+
+/* ---------- BENEFITS ---------- */
 section[class~="bg-secondary/30"] + section {
-  background: radial-gradient(circle at 50% -20%, hsl(158 54% 68% / .10), transparent 42%), repeating-linear-gradient(112deg, transparent 0 86px, hsl(171 33% 30% / .025) 87px, transparent 88px 174px), linear-gradient(180deg, hsl(210 17% 96%), hsl(167 18% 91%)) !important;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% -20%, rgba(87, 185, 159, .08), transparent 42%),
+    linear-gradient(180deg, #f7f9f8, #eef4f2) !important;
 }
 
-section[class~="bg-secondary/30"] + section h2 { position: relative; width: fit-content; margin-inline: auto; padding-bottom: .8rem; }
-section[class~="bg-secondary/30"] + section h2::after { content: ''; position: absolute; left: 50%; bottom: 0; width: 4.75rem; height: 2px; transform: translateX(-50%); border-radius: 99px; background: linear-gradient(90deg, transparent, hsl(170 58% 25%), hsl(151 69% 69%), hsl(168 54% 31%), transparent); box-shadow: 0 0 14px hsl(158 56% 42% / .2); }
+section[class~="bg-secondary/30"] + section h2 {
+  position: relative;
+  width: fit-content;
+  margin-inline: auto;
+  padding-bottom: .75rem;
+  color: #17342f;
+  letter-spacing: -.03em;
+}
+section[class~="bg-secondary/30"] + section h2::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 4.5rem;
+  height: 2px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #166456, #72cbb2, #2d8874, transparent);
+}
 
 section[class~="bg-secondary/30"] + section .grid > div {
-  position: relative; isolation: isolate; overflow: hidden; min-height: 13.25rem; padding: 1.8rem 1.75rem 1.7rem !important; border: 1px solid transparent !important; border-radius: 1.45rem !important;
-  background: linear-gradient(145deg, hsl(175 35% 21% / .965), hsl(177 39% 15% / .985) 52%, hsl(168 31% 22% / .97)) padding-box, linear-gradient(120deg, hsl(176 68% 25%), hsl(156 62% 53%) 28%, hsl(148 72% 78%) 48%, hsl(164 58% 42%) 66%, hsl(177 67% 20%)) border-box !important;
-  box-shadow: inset 0 1px 0 hsl(0 0% 100% / .08), inset 0 -1px 0 hsl(177 72% 6% / .5), 0 16px 36px hsl(177 54% 9% / .16) !important; text-align: left !important; transition: transform 240ms ease, box-shadow 240ms ease, filter 240ms ease !important;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 12.75rem !important;
+  padding: 1.7rem !important;
+  border: 1px solid transparent !important;
+  border-radius: 1.22rem !important;
+  text-align: left !important;
+  background:
+    linear-gradient(145deg, #fbfdfc, #eef4f2) padding-box,
+    linear-gradient(120deg, #0a594e 0%, #4eb497 30%, #d7fff1 49%, #378d78 68%, #09473f 100%) border-box !important;
+  box-shadow: 0 14px 34px rgba(8, 64, 55, .08), inset 0 1px 0 rgba(255, 255, 255, .9) !important;
+  transition: transform 220ms ease, box-shadow 220ms ease !important;
 }
-section[class~="bg-secondary/30"] + section .grid > div::before { content: ''; position: absolute; z-index: 0; inset: 0; width: auto; border-radius: inherit; background: linear-gradient(108deg, transparent 0 35%, hsl(0 0% 100% / .035) 45%, transparent 56%), radial-gradient(circle at 88% 8%, hsl(153 68% 62% / .12), transparent 30%); box-shadow: none; pointer-events: none; }
-section[class~="bg-secondary/30"] + section .grid > div::after { content: ''; position: absolute; z-index: 0; left: 1.7rem; right: 1.7rem; top: 0; width: auto; height: 2px; border-radius: 99px; background: linear-gradient(90deg, transparent, hsl(151 73% 78% / .9), hsl(164 62% 48% / .75), transparent); box-shadow: 0 0 14px hsl(157 62% 48% / .18); }
-section[class~="bg-secondary/30"] + section .grid > div > * { position: relative; z-index: 1; }
-section[class~="bg-secondary/30"] + section .grid > div:hover { transform: translateY(-5px); filter: saturate(1.06) brightness(1.035); box-shadow: inset 0 1px 0 hsl(0 0% 100% / .10), 0 24px 48px hsl(177 58% 8% / .23), 0 0 0 1px hsl(153 64% 65% / .16) !important; }
-section[class~="bg-secondary/30"] + section .grid > div > div:first-child { width: 3.25rem !important; height: 3.25rem !important; margin: 0 0 1.15rem !important; border: 1px solid hsl(151 65% 72% / .36) !important; border-radius: 1rem !important; color: white !important; background: linear-gradient(145deg, hsl(176 58% 17%), hsl(163 50% 35%)) !important; box-shadow: inset 0 1px 0 hsl(0 0% 100% / .14), 0 10px 22px hsl(177 65% 7% / .30), 0 0 18px hsl(158 55% 48% / .08) !important; }
-section[class~="bg-secondary/30"] + section .grid > div h3 { color: hsl(0 0% 100% / .97) !important; letter-spacing: -.025em !important; }
-section[class~="bg-secondary/30"] + section .grid > div p { color: hsl(165 18% 87% / .78) !important; line-height: 1.62 !important; }
-section[class~="bg-secondary/30"] + section .grid > div svg { color: white !important; }
 
-footer.site-live-footer > video { filter: saturate(1.1) contrast(1.1) brightness(.74) !important; transform: scale(1.01) !important; }
-footer.site-live-footer .footer-video-overlay { background: radial-gradient(circle at 18% 28%, hsl(158 55% 42% / .08), transparent 34%), linear-gradient(100deg, hsl(178 72% 4% / .70), hsl(176 60% 6% / .46) 48%, hsl(178 72% 4% / .72)) !important; }
-footer.site-live-footer .site-shell { text-shadow: 0 2px 14px hsl(178 88% 3% / .65); }
+section[class~="bg-secondary/30"] + section .grid > div::before {
+  content: '' !important;
+  position: absolute;
+  z-index: 0;
+  inset: 0 1.45rem auto !important;
+  width: auto !important;
+  height: 2px !important;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(201, 255, 240, .92), rgba(62, 166, 140, .7), transparent) !important;
+  box-shadow: none !important;
+}
+
+section[class~="bg-secondary/30"] + section .grid > div::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  width: 8rem;
+  height: 8rem;
+  right: -4rem;
+  bottom: -4rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(64, 163, 138, .09), transparent 68%) !important;
+}
+section[class~="bg-secondary/30"] + section .grid > div > * { position: relative; z-index: 1; }
+section[class~="bg-secondary/30"] + section .grid > div:hover {
+  transform: translateY(-3px) !important;
+  filter: none !important;
+  box-shadow: 0 20px 42px rgba(8, 64, 55, .12), inset 0 1px 0 rgba(255, 255, 255, .95) !important;
+}
+
+section[class~="bg-secondary/30"] + section .grid > div > div:first-child {
+  display: flex;
+  width: 3.05rem !important;
+  height: 3.05rem !important;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 1.15rem !important;
+  border: 1px solid rgba(74, 154, 134, .27) !important;
+  border-radius: .95rem !important;
+  background: linear-gradient(145deg, #14584e, #237d6b) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 18px rgba(9, 75, 64, .14), inset 0 1px 0 rgba(255, 255, 255, .12) !important;
+}
+section[class~="bg-secondary/30"] + section .grid > div > div:first-child svg {
+  width: 1.3rem !important;
+  height: 1.3rem !important;
+  color: #fff !important;
+}
+section[class~="bg-secondary/30"] + section .grid > div h3 {
+  margin: 0 0 .5rem !important;
+  color: #17332e !important;
+  font-size: 1.06rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -.02em;
+}
+section[class~="bg-secondary/30"] + section .grid > div p {
+  margin: 0;
+  color: #526965 !important;
+  font-size: .91rem;
+  line-height: 1.62 !important;
+}
+
+/* ---------- FOOTER ---------- */
+footer.site-live-footer > video {
+  filter: saturate(1.08) contrast(1.08) brightness(.76) !important;
+  transform: scale(1.008) !important;
+}
+footer.site-live-footer .footer-video-overlay {
+  background:
+    radial-gradient(circle at 18% 28%, rgba(54, 145, 122, .08), transparent 34%),
+    linear-gradient(100deg, rgba(3, 31, 28, .68), rgba(4, 43, 37, .46) 48%, rgba(3, 31, 28, .70)) !important;
+}
+footer.site-live-footer .site-shell { text-shadow: 0 2px 14px rgba(1, 24, 21, .58); }
+
+@media (max-width: 767px) {
+  main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > div:nth-of-type(3) {
+    grid-template-columns: 1fr !important;
+  }
+  section[class~="bg-secondary/30"] button,
+  section[class~="bg-secondary/30"] + section .grid > div {
+    min-height: auto !important;
+  }
+}
