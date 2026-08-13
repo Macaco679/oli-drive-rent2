@@ -1,73 +1,116 @@
-# Welcome to your Lovable project
+# OLI — Aluguel de Carros Entre Particulares
 
-## Project info
+Plataforma web mobile-first de aluguel de carros peer-to-peer: motoristas de
+aplicativo (Uber, 99, InDrive) e usuários em geral alugam carros diretamente
+de proprietários individuais, com cadastro de veículos, reservas, vistoria
+fotográfica, contrato digital, chat e pagamento (caução via Asaas).
 
-**URL**: https://lovable.dev/projects/62484da3-78f7-45d7-aa38-c85ebf573d00
+**Produção:** https://oli-drive-rent.lovable.app
+**Editor Lovable:** https://lovable.dev/projects/62484da3-78f7-45d7-aa38-c85ebf573d00
 
-## How can I edit this code?
+## Stack
 
-There are several ways of editing your application.
+- **Frontend:** Vite + React 18 + TypeScript
+- **UI:** shadcn-ui (Radix primitives) + Tailwind CSS
+- **Roteamento:** React Router
+- **Dados/estado servidor:** TanStack Query
+- **Formulários:** react-hook-form + zod
+- **Backend:** Supabase (Postgres, Auth, Storage, Edge Functions, Realtime)
+- **Automação externa:** n8n (fluxo de caução via Asaas)
 
-**Use Lovable**
+## Estrutura do projeto
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/62484da3-78f7-45d7-aa38-c85ebf573d00) and start prompting.
+```
+├── src/
+│   ├── pages/            # Uma página por rota (ver src/App.tsx)
+│   ├── components/       # ui/ (shadcn) + pastas por domínio
+│   │                     # (vehicles, reservations, payments, inspection,
+│   │                     # contracts, chat, profile, landing, layout)
+│   ├── hooks/            # Hooks de dados/realtime (contrato, caução,
+│   │                     # vistoria, pagamento, fotos de veículo)
+│   ├── contexts/         # DriverLicenseContext, ChatWidgetContext
+│   ├── lib/               # Camada de serviços (um arquivo por domínio:
+│   │                     # vehicleService, contractService, chatService, etc.)
+│   ├── integrations/supabase/  # Cliente Supabase + tipos gerados do schema
+│   └── assets/            # Imagens — ver docs/ARCHITECTURE.md sobre as
+│                         # pastas cars/ e vehicles/ (duplicação conhecida)
+├── supabase/
+│   ├── migrations/        # Migrations do schema (gerenciadas via Lovable/Supabase)
+│   └── functions/         # Edge Functions: send-notification-email, webhook-proxy
+├── n8n/workflows/          # Workflows de caução via Asaas (create/callback/release)
+├── public/                 # Assets estáticos servidos diretamente
+└── docs/ARCHITECTURE.md    # Visão geral da arquitetura e dos fluxos principais
+```
 
-Changes made via Lovable will be committed automatically to this repo.
+## Pré-requisitos
 
-**Use your preferred IDE**
+- Node.js 18+ e npm
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Instalação
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+git clone <URL_DO_REPO>
+cd oli-drive-rent2
+npm install
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## Configuração
 
-# Step 3: Install the necessary dependencies.
-npm i
+Copie `.env.example` para `.env` e preencha com as credenciais do seu
+projeto Supabase (Project Settings → API no painel do Supabase). Nunca
+commite valores reais de `.env`.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+## Desenvolvimento
+
+```sh
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Sobe o servidor Vite em `http://localhost:8080`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Scripts
 
-**Use GitHub Codespaces**
+| Comando            | Descrição                                  |
+|---------------------|---------------------------------------------|
+| `npm run dev`       | Servidor de desenvolvimento (porta 8080)     |
+| `npm run build`     | Build de produção                            |
+| `npm run build:dev` | Build em modo development (útil para debug)  |
+| `npm run lint`      | ESLint                                       |
+| `npm run preview`   | Preview local do build de produção           |
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Arquitetura
 
-## What technologies are used for this project?
+Veja [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) para o fluxo completo
+(frontend ↔ Supabase ↔ n8n/Asaas), autenticação, modelo de dados e
+integrações.
 
-This project is built with:
+## Deploy
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+O projeto é publicado através do Lovable (Share → Publish), que sincroniza
+automaticamente com este repositório GitHub — qualquer edição feita no
+editor Lovable gera um commit aqui (autor `lovable-dev`), e pushes manuais
+para este repositório também são refletidos de volta no projeto Lovable.
 
-## How can I deploy this project?
+Existe também um `vercel.json` na raiz configurando rewrite de SPA
+(`/* → /index.html`), indicativo de um possível deploy/preview alternativo
+via Vercel. Não altere a localização da raiz do projeto nem os arquivos de
+configuração (`vercel.json`, `vite.config.ts`, `tsconfig*.json`) sem
+entender o impacto no build da plataforma de deploy em uso.
 
-Simply open [Lovable](https://lovable.dev/projects/62484da3-78f7-45d7-aa38-c85ebf573d00) and click on Share -> Publish.
+## Convenções importantes
 
-## Can I connect a custom domain to my Lovable project?
+- Alias `@/*` aponta para `src/*` (configurado em `tsconfig*.json` e
+  `vite.config.ts`) — usado em praticamente todos os imports internos.
+- Variáveis de ambiente do frontend usam o prefixo `VITE_` (exigido pelo Vite
+  para serem expostas ao client-side).
+- As pastas `src/assets/cars/` e `src/assets/vehicles/` contêm imagens
+  parcialmente duplicadas, mas **ambas estão em uso** por componentes
+  diferentes (`CarsCarousel` e `VehicleCard`/`VehicleDetails`,
+  respectivamente) — não são arquivos mortos. Ver `docs/ARCHITECTURE.md`.
 
-Yes, you can!
+## Troubleshooting
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- `npm ci` falha com erro de lockfile fora de sincronia
+  (`embla-carousel-autoplay` ausente do `package-lock.json`). Use
+  `npm install` normalmente; isso é uma pendência conhecida, não introduzida
+  por esta reorganização. Ver detalhes em `docs/ARCHITECTURE.md`.
