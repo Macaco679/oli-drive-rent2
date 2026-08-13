@@ -199,7 +199,7 @@ export default function BookVehicle() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Form */}
           <div className="lg:col-span-2">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form id="booking-form" onSubmit={handleSubmit} className="space-y-6">
               {/* Vehicle Info */}
               <div className="bg-card border border-border rounded-2xl p-6 flex items-center gap-4">
                 <div className="w-16 h-16 bg-secondary rounded-xl flex items-center justify-center flex-shrink-0">
@@ -365,14 +365,6 @@ export default function BookVehicle() {
                 />
               </div>
 
-              <Button
-                type="submit"
-                disabled={loading || days === 0 || !isProfileComplete}
-                className="w-full h-14 text-lg"
-                size="lg"
-              >
-                {loading ? "Criando reserva..." : "Confirmar reserva"}
-              </Button>
             </form>
           </div>
 
@@ -433,6 +425,16 @@ export default function BookVehicle() {
                   Selecione as datas para ver o resumo
                 </p>
               )}
+
+              <Button
+                type="submit"
+                form="booking-form"
+                disabled={loading || days === 0 || !isProfileComplete}
+                className="w-full h-14 text-lg"
+                size="lg"
+              >
+                {loading ? "Criando reserva..." : "Confirmar reserva"}
+              </Button>
             </div>
           </div>
         </div>

@@ -10,6 +10,21 @@ export default function AuthCallback() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Quando o login é feito via popup (Google), esta página roda dentro do
+  // popup, não na aba principal. Nesse caso não navegamos — só garantimos
+  // que a sessão foi persistida e fechamos a janela; quem estava esperando
+  // na aba principal (signInWithGoogle) detecta o fechamento e segue o fluxo.
+  const isPopup = typeof window !== "undefined" && !!window.opener;
+
+  const finish = async () => {
+    await ensureProfile();
+    if (isPopup) {
+      window.close();
+    } else {
+      navigate("/home", { replace: true });
+    }
+  };
+
   useEffect(() => {
     const handleCallback = async () => {
       try {
@@ -24,39 +39,42 @@ export default function AuthCallback() {
         }
 
         if (session) {
-          // Sincronizar perfil com email usando ensureProfile
-          await ensureProfile();
-
-          // Redirecionar para home
-          navigate("/home", { replace: true });
+          await finish();
         } else {
           // Sem sessão - tentar escutar mudanças de auth
           const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
             if (event === "SIGNED_IN" && session) {
               subscription.unsubscribe();
-              
-              // Sincronizar perfil com email usando ensureProfile
-              await ensureProfile();
-
-              navigate("/home", { replace: true });
+              await finish();
             }
           });
 
           // Timeout para evitar espera infinita
           setTimeout(() => {
             subscription.unsubscribe();
-            setError("Tempo limite excedido. Por favor, tente novamente.");
-            setLoading(false);
+            if (isPopup) {
+              // Se travou dentro do popup, fecha para não deixar o usuário
+              // preso numa janela órfã; a aba principal mostra o erro dela.
+              window.close();
+            } else {
+              setError("Tempo limite excedido. Por favor, tente novamente.");
+              setLoading(false);
+            }
           }, 10000);
         }
       } catch (err) {
         console.error("Erro no callback:", err);
-        setError("Erro ao processar login. Tente novamente.");
-        setLoading(false);
+        if (isPopup) {
+          window.close();
+        } else {
+          setError("Erro ao processar login. Tente novamente.");
+          setLoading(false);
+        }
       }
     };
 
     handleCallback();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   if (error) {

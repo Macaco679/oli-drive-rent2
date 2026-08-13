@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import useEmblaCarousel from "embla-carousel-react";
 import { SupabaseDebugPanel } from "@/components/debug/SupabaseDebugPanel";
+import { CityAutocompleteInput } from "@/components/vehicles/CityAutocompleteInput";
 import { useVehiclePhotosRealtime } from "@/hooks/useVehiclePhotosRealtime";
 
 // Import static vehicle images
@@ -307,6 +308,18 @@ export default function Home() {
     });
   };
 
+  // Busca ao vivo: assim que o usuário digita pelo menos 2 caracteres no
+  // campo de carro, leva direto para os resultados após uma pequena pausa
+  // (debounce), sem precisar clicar em "Buscar carros".
+  useEffect(() => {
+    if (searchCar.trim().length < 2) return;
+    const timeout = setTimeout(() => {
+      handleSearch();
+    }, 600);
+    return () => clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchCar]);
+
   const usageTypes = [
     { id: "app", label: "Motorista de app" },
     { id: "daily", label: "Uso diário" },
@@ -355,10 +368,9 @@ export default function Home() {
 
               <div className="flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                <Input
-                  placeholder="Cidade ou região de retirada"
+                <CityAutocompleteInput
                   value={searchCity}
-                  onChange={(e) => setSearchCity(e.target.value)}
+                  onChange={setSearchCity}
                   className="flex-1"
                 />
               </div>

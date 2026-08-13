@@ -134,14 +134,49 @@ export const signIn = async (email: string, password: string) => {
   return { data, error };
 };
 
-export const signInWithGoogle = async () => {
+export const signInWithGoogle = async (): Promise<{ error: Error | null }> => {
+  // Pede a URL de autorização sem deixar o supabase-js navegar a aba
+  // principal para fora do nosso domínio (skipBrowserRedirect). O fluxo
+  // Google/Supabase acontece inteiro dentro de um popup; a aba principal
+  // nunca mostra a URL do Supabase na barra de endereço.
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
       redirectTo: window.location.origin + "/auth/callback",
+      skipBrowserRedirect: true,
     },
   });
-  return { data, error };
+
+  if (error || !data?.url) {
+    return { error: error ?? new Error("Não foi possível iniciar o login com Google.") };
+  }
+
+  const width = 480;
+  const height = 640;
+  const left = window.screenX + Math.max(0, (window.outerWidth - width) / 2);
+  const top = window.screenY + Math.max(0, (window.outerHeight - height) / 2);
+
+  const popup = window.open(
+    data.url,
+    "oli-google-oauth",
+    `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
+  );
+
+  if (!popup) {
+    return { error: new Error("Não foi possível abrir a janela de login. Verifique o bloqueador de pop-ups.") };
+  }
+
+  return new Promise((resolve) => {
+    // O AuthCallback (rodando dentro do popup) escreve a sessão no
+    // localStorage e depois fecha a própria janela. A aba principal só
+    // precisa perceber que o popup fechou.
+    const timer = window.setInterval(() => {
+      if (popup.closed) {
+        window.clearInterval(timer);
+        resolve({ error: null });
+      }
+    }, 400);
+  });
 };
 
 export const signOut = async () => {
