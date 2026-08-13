@@ -24,7 +24,8 @@ const authNavItems = [
   { path: "/profile", label: "Perfil", icon: User },
 ];
 
-const FOOTER_LIVE_WALLPAPER = "https://moewalls.com/wp-content/uploads/2021/11/abstract-organic-lines.mp4";
+const FOOTER_LIVE_WALLPAPER = "/videos/hero-background.mp4";
+const FOOTER_LIVE_WALLPAPER_POSTER = "/videos/hero-background-poster.jpg";
 
 export function WebLayout({ children }: WebLayoutProps) {
   const location = useLocation();
@@ -145,10 +146,11 @@ export function WebLayout({ children }: WebLayoutProps) {
       </main>
 
       {/* Footer */}
-      <footer className="relative isolate overflow-hidden border-t border-emerald-200/20 py-10 lg:py-12 mt-auto text-white">
+      <footer className="site-live-footer relative isolate overflow-hidden border-t border-emerald-200/20 py-10 lg:py-12 mt-auto text-white">
         <video
-          className="absolute inset-0 -z-20 h-full w-full object-cover"
+          className="site-live-footer__video absolute inset-0 z-0 h-full w-full object-cover"
           src={FOOTER_LIVE_WALLPAPER}
+          poster={FOOTER_LIVE_WALLPAPER_POSTER}
           autoPlay
           loop
           muted
@@ -156,10 +158,10 @@ export function WebLayout({ children }: WebLayoutProps) {
           preload="auto"
           aria-hidden="true"
         />
-        <div className="footer-video-overlay absolute inset-0 -z-10" />
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-200/60 to-transparent" />
+        <div className="footer-video-overlay absolute inset-0 z-[1]" aria-hidden="true" />
+        <div className="absolute inset-x-0 top-0 z-[2] h-px bg-gradient-to-r from-transparent via-emerald-200/60 to-transparent" />
 
-        <div className="site-shell">
+        <div className="site-shell relative z-[3]">
           <div className="grid grid-cols-1 md:grid-cols-[1.2fr_.8fr_1fr] gap-9 lg:gap-14">
             <div className="max-w-xl">
               <div className="flex items-center gap-3 mb-4">
