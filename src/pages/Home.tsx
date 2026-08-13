@@ -375,11 +375,24 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
           <div className="grid lg:grid-cols-2 gap-8 items-center">
             <div>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4" style={{ textShadow: "0 2px 12px rgba(0,0,0,0.45)" }}>
+              <h1
+                className="font-bold mb-4"
+                style={{
+                  textShadow: "0 2px 12px rgba(0,0,0,0.45)",
+                  fontSize: "clamp(1.75rem, 4vw + 1rem, 3rem)",
+                  lineHeight: 1.15,
+                }}
+              >
                 {profile ? `Olá, ${profile.full_name?.split(' ')[0] || 'Usuário'}!` : 'Alugue carros com facilidade'}<br />
                 {profile ? 'Qual carro você quer alugar hoje?' : 'Conectamos motoristas e proprietários'}
               </h1>
-              <p className="text-white/90 text-lg mb-6" style={{ textShadow: "0 1px 8px rgba(0,0,0,0.4)" }}>
+              <p
+                className="text-white/90 mb-6"
+                style={{
+                  textShadow: "0 1px 8px rgba(0,0,0,0.4)",
+                  fontSize: "clamp(0.95rem, 1vw + 0.7rem, 1.125rem)",
+                }}
+              >
                 Planos semanais e diários para motoristas de app e uso comum. Encontre o veículo ideal para suas necessidades.
               </p>
               {!profile && (
