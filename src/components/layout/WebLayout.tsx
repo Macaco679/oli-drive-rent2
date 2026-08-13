@@ -4,6 +4,7 @@ import { Home, Search, Calendar, MessageCircle, User, HelpCircle, LogIn, Car } f
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/supabase";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 interface WebLayoutProps {
   children: ReactNode;
@@ -90,6 +91,9 @@ export function WebLayout({ children }: WebLayoutProps) {
                   <LogIn className="w-4 h-4" />
                   Entrar
                 </Button>
+              )}
+              {!loading && isAuthenticated && (
+                <NotificationBell triggerClassName="text-primary-foreground" />
               )}
               <button className="p-2 hover:bg-primary-foreground/10 rounded-full transition-colors">
                 <HelpCircle className="w-6 h-6" />
