@@ -370,7 +370,7 @@ export default function Home() {
           playsInline
           preload="metadata"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/45 to-accent/35" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/15" />
         <div className="relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
           <div className="grid lg:grid-cols-2 gap-8 items-center">
@@ -378,7 +378,7 @@ export default function Home() {
               <h1
                 className="font-bold mb-4"
                 style={{
-                  textShadow: "0 2px 12px rgba(0,0,0,0.45)",
+                  textShadow: "0 2px 16px rgba(0,0,0,0.65), 0 1px 4px rgba(0,0,0,0.5)",
                   fontSize: "clamp(1.75rem, 4vw + 1rem, 3rem)",
                   lineHeight: 1.15,
                 }}
@@ -389,7 +389,7 @@ export default function Home() {
               <p
                 className="text-white/90 mb-6"
                 style={{
-                  textShadow: "0 1px 8px rgba(0,0,0,0.4)",
+                  textShadow: "0 1px 10px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.5)",
                   fontSize: "clamp(0.95rem, 1vw + 0.7rem, 1.125rem)",
                 }}
               >
