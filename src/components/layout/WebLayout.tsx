@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/supabase";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
+import "@/lib/persistentBackgroundVideos";
 
 interface WebLayoutProps {
   children: ReactNode;
