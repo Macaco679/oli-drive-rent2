@@ -102,6 +102,19 @@ const Carousel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
       };
     }, [api, onSelect]);
 
+    // O Embla calcula a posição/largura dos slides em pixels no momento em
+    // que é montado. Zoom do navegador (Ctrl +/-) muda a largura efetiva
+    // do container sem sempre disparar o ResizeObserver interno do Embla
+    // de forma confiável em todos os navegadores — isso deixa o carrossel
+    // desalinhado até a próxima interação. Forçar reInit() num resize
+    // (que o zoom também dispara) resolve.
+    React.useEffect(() => {
+      if (!api) return;
+      const handleWindowResize = () => api.reInit();
+      window.addEventListener("resize", handleWindowResize);
+      return () => window.removeEventListener("resize", handleWindowResize);
+    }, [api]);
+
     return (
       <CarouselContext.Provider
         value={{
