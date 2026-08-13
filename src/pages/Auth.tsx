@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signIn, signUp, signInWithGoogle } from "@/lib/supabase";
+import { signIn, signUp, signInWithGoogle, getCurrentUser } from "@/lib/supabase";
 import { ensureProfile } from "@/lib/ensureProfile";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -20,11 +20,23 @@ export default function Auth() {
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     const { error } = await signInWithGoogle();
+    setGoogleLoading(false);
+
     if (error) {
       toast.error("Erro ao entrar com Google: " + error.message);
-      setGoogleLoading(false);
+      return;
     }
-    // Se não houver erro, o usuário será redirecionado automaticamente
+
+    // O popup já persistiu a sessão no localStorage (mesma origem) antes de
+    // fechar. Confirma que a sessão existe antes de navegar.
+    const { session } = await getCurrentUser();
+    if (session) {
+      await ensureProfile();
+      toast.success("Login realizado com sucesso!");
+      navigate("/home");
+    } else {
+      toast.error("Login com Google não foi concluído. Tente novamente.");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
