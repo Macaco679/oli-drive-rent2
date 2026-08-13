@@ -17,112 +17,38 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download exact original wallpaper from source
+      - name: Inspect wallpaper source
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import html
-          import os
-          import re
-          import sys
-          import urllib.parse
-          import urllib.request
-
+          import html, re, urllib.request
           page_url = 'https://moewalls.com/abstract/abstract-organic-lines-live-wallpaper/'
-          target = 'public/videos/footer-organic-lines-original.mp4'
-          expected_size = 53467423
-          os.makedirs(os.path.dirname(target), exist_ok=True)
-
           headers = {
               'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125 Safari/537.36',
               'Accept-Language': 'en-US,en;q=0.9',
               'Referer': page_url,
           }
-
-          def get(url, timeout=45):
-              req = urllib.request.Request(url, headers=headers)
-              return urllib.request.urlopen(req, timeout=timeout)
-
-          with get(page_url) as r:
-              page = r.read().decode('utf-8', 'replace')
-
-          text = html.unescape(page).replace('\\/', '/')
-          candidates = []
-
-          for u in re.findall(r'https?://[^\\s"\'<>]+?\\.mp4(?:\\?[^\\s"\'<>]*)?', text, re.I):
-              candidates.append(u)
-
-          for u in re.findall(r'(?:src|href|data-src|data-video|data-url)=["\']([^"\']+?\\.mp4(?:\\?[^"\']*)?)["\']', text, re.I):
-              candidates.append(urllib.parse.urljoin(page_url, u))
-
-          # Known filename variants are only fallbacks; candidates found in the page are preferred.
-          candidates += [
-              'https://moewalls.com/wp-content/uploads/2021/11/abstract-organic-lines.mp4',
-              'https://moewalls.com/wp-content/uploads/2021/11/Abstract-Organic-Lines.mp4',
-              'https://moewalls.com/wp-content/uploads/2021/11/Abstract-Organic-Lines-Live-Wallpaper.mp4',
-          ]
-
-          seen = set()
-          ordered = []
-          for u in candidates:
-              u = u.strip().rstrip('\\')
-              if u and u not in seen:
-                  seen.add(u)
-                  ordered.append(u)
-
-          print('Candidates:', *ordered, sep='\n- ')
-
-          best = None
-          best_size = -1
-          tmp = target + '.part'
-
-          for url in ordered:
-              try:
-                  print('Trying', url)
-                  with get(url, timeout=90) as r, open(tmp, 'wb') as f:
-                      ctype = (r.headers.get('content-type') or '').lower()
-                      total = 0
-                      while True:
-                          chunk = r.read(1024 * 1024)
-                          if not chunk:
-                              break
-                          f.write(chunk)
-                          total += len(chunk)
-                  print('Downloaded', total, 'bytes; type=', ctype)
-                  if total > best_size and total > 40_000_000:
-                      best = url
-                      best_size = total
-                      os.replace(tmp, target)
-                      if total == expected_size:
-                          break
-                  elif os.path.exists(tmp):
-                      os.remove(tmp)
-              except Exception as exc:
-                  print('Failed:', url, exc)
-                  if os.path.exists(tmp):
-                      os.remove(tmp)
-
-          if not best or not os.path.exists(target):
-              raise SystemExit('Could not resolve a full-size original MP4 from the source page')
-
-          size = os.path.getsize(target)
-          print('Selected:', best)
-          print('Final size:', size)
-          if size < 40_000_000:
-              raise SystemExit(f'Refusing reduced asset: only {size} bytes')
+          req = urllib.request.Request(page_url, headers=headers)
+          text = urllib.request.urlopen(req, timeout=45).read().decode('utf-8', 'replace')
+          text = html.unescape(text).replace('\\/', '/')
+          print('HTML_LENGTH', len(text))
+          lower = text.lower()
+          for needle in ['download wallpaper', 'download', 'preview video', '<video', '<iframe', '.mp4', '.zip', 'wp-content', 'player', 'source']:
+              print('\n===== ', needle, ' =====')
+              start = 0
+              count = 0
+              while True:
+                  idx = lower.find(needle.lower(), start)
+                  if idx < 0 or count >= 12:
+                      break
+                  print(text[max(0, idx-700):min(len(text), idx+1400)].replace('\n',' '))
+                  start = idx + len(needle)
+                  count += 1
+          print('\n===== INTERESTING URLS =====')
+          urls = re.findall(r'https?://[^\\s"\'<>]+', text, re.I)
+          for u in dict.fromkeys(urls):
+              lu = u.lower()
+              if any(k in lu for k in ['download','video','player','stream','cdn','wp-content','mp4','zip','media']):
+                  print(u)
           PY
-
-      - name: Commit original MP4
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/videos/footer-organic-lines-original.mp4
-          if git diff --cached --quiet; then
-            echo "Original asset already present"
-            exit 0
-          fi
-          git commit -m "asset: add original 4K footer live wallpaper"
-          git push origin HEAD:main
