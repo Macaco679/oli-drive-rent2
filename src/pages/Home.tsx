@@ -300,11 +300,25 @@ export default function Home() {
   // src/components/ui/carousel.tsx): zoom do navegador pode não disparar
   // o resize interno do Embla de forma confiável, deixando o carrossel
   // desalinhado com espaço vazio na lateral até a próxima interação.
+  // ResizeObserver no próprio container é mais confiável que o evento
+  // window "resize" (que algumas combinações de navegador/extensão de
+  // zoom não disparam de forma consistente).
   useEffect(() => {
     if (!emblaApi) return;
-    const handleWindowResize = () => emblaApi.reInit();
-    window.addEventListener("resize", handleWindowResize);
-    return () => window.removeEventListener("resize", handleWindowResize);
+    const node = emblaApi.rootNode();
+    if (!node || typeof ResizeObserver === "undefined") return;
+
+    let frame = 0;
+    const observer = new ResizeObserver(() => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => emblaApi.reInit());
+    });
+    observer.observe(node);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
   }, [emblaApi]);
 
   const handleSearch = () => {
@@ -340,7 +354,24 @@ export default function Home() {
   return (
     <WebLayout>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary to-accent text-white">
+      <section className="relative overflow-hidden text-white">
+        {/* Live wallpaper: vídeo em loop no fundo, com overlay escuro por
+            cima para manter o texto e o card de busca legíveis. Poster
+            garante que algo apareça instantaneamente antes do vídeo
+            carregar; se o navegador não suportar vídeo, cai no gradiente
+            (mesma cor de antes) definido no <section> acima. */}
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src="/videos/hero-background.mp4"
+          poster="/videos/hero-background-poster.jpg"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-accent/80" />
+        <div className="relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
           <div className="grid lg:grid-cols-2 gap-8 items-center">
             <div>
@@ -460,6 +491,7 @@ export default function Home() {
               </Button>
             </div>
           </div>
+        </div>
         </div>
       </section>
 
