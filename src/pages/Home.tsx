@@ -362,7 +362,7 @@ export default function Home() {
             (mesma cor de antes) definido no <section> acima. */}
         <video
           className="absolute inset-0 w-full h-full object-cover"
-          src="/videos/hero-background.mp4"
+          src="/videos/hero-oli4-hq.mp4"
           autoPlay
           loop
           muted
@@ -407,7 +407,7 @@ export default function Home() {
             </div>
 
             {/* Search Card */}
-            <div className="bg-card text-foreground rounded-2xl shadow-xl p-6 space-y-4">
+            <div className="bg-card text-foreground rounded-2xl shadow-xl p-6 space-y-3 lg:w-[88%] lg:max-w-[35rem] lg:justify-self-end">
               <h3 className="text-xl font-semibold">Buscar veículos</h3>
               
               <div className="flex items-center gap-2">
@@ -497,7 +497,7 @@ export default function Home() {
 
               <Button
                 onClick={handleSearch}
-                className="w-full bg-primary hover:bg-primary/90 h-12 text-lg"
+                className="w-full bg-primary hover:bg-primary/90 h-11 text-base"
               >
                 Buscar carros
               </Button>

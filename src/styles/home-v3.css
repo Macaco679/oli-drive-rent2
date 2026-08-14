@@ -37,7 +37,7 @@ main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  padding: clamp(1.25rem, 2vw, 1.8rem) !important;
+  padding: clamp(1.1rem, 1.6vw, 1.35rem) !important;
   border: 1px solid transparent !important;
   border-radius: 1.45rem !important;
   color: #17342f !important;
@@ -59,7 +59,7 @@ main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="
 }
 
 main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="bg-card"][class~="text-foreground"][class~="rounded-2xl"] > h3 {
-  margin: 0 0 1rem !important;
+  margin: 0 0 .7rem !important;
   color: #16352f !important;
   font-size: clamp(1.2rem, 1.45vw, 1.48rem) !important;
   font-weight: 700 !important;
@@ -84,7 +84,7 @@ main:has(> section[class~="bg-secondary/30"]) > section:first-child div[class~="
   grid-template-rows: auto 1fr;
   column-gap: .72rem !important;
   row-gap: 0 !important;
-  min-height: 3.65rem;
+  min-height: 3.3rem;
   padding: .48rem .9rem .4rem !important;
   border: 1px solid #bfd2cd;
   border-radius: .9rem;
