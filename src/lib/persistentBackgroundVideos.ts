@@ -1,7 +1,6 @@
-// Use the exact 1080p master supplied by the client. The previous 4K file was
-// an AI-upscaled transcode and introduced visible softness during motion.
-const TOP_HERO_SOURCE = "/videos/hero-background.mp4";
-const TOP_HERO_POSTER = "/videos/hero-background-poster.jpg";
+// Serve the exact 1080p master supplied by the client, without transcoding.
+const TOP_HERO_SOURCE = "/videos/hero-oli3-original.mp4";
+const TOP_HERO_POSTER = "/videos/hero-oli3-poster.jpg";
 const FOOTER_SOURCE = "/videos/hero-r34-tunnel.mp4";
 const managed = new WeakSet<HTMLVideoElement>();
 const timers = new WeakMap<HTMLVideoElement, number>();
