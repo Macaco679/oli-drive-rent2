@@ -1,7 +1,7 @@
-/* Final fidelity layer for the 1200x960 vector benefit artwork.
-   Keep the 3D tilt on the card itself, but never scale/filter the artwork. */
+/* Final fidelity layer for the approved square benefit artwork.
+   Keep the 3D tilt on the card itself, but never crop, scale or filter the artwork. */
 body main .oli-benefits-3d .oli-benefits-3d__grid > .oli-benefit-tilt > .oli-benefit-tilt__media:first-child {
-  aspect-ratio: 1.25 / 1 !important;
+  aspect-ratio: 1 / 1 !important;
   background: #031b17 !important;
   box-shadow: none !important;
 }
@@ -16,7 +16,7 @@ body main .oli-benefits-3d .oli-benefits-3d__grid > .oli-benefit-tilt > .oli-ben
   height: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
-  object-fit: cover !important;
+  object-fit: contain !important;
   object-position: center !important;
   opacity: 1 !important;
   filter: none !important;
@@ -43,6 +43,6 @@ body main .oli-benefits-3d .oli-benefit-tilt__media-glow {
 
 @media (max-width: 720px) {
   body main .oli-benefits-3d .oli-benefits-3d__grid > .oli-benefit-tilt > .oli-benefit-tilt__media:first-child {
-    aspect-ratio: 1.25 / 1 !important;
+    aspect-ratio: 1 / 1 !important;
   }
 }
