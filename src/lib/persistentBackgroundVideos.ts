@@ -1,6 +1,6 @@
 // Serve the exact 1080p master supplied by the client, without transcoding.
-const TOP_HERO_SOURCE = "/videos/hero-oli3-original.mp4";
-const TOP_HERO_POSTER = "/videos/hero-oli3-poster.jpg";
+const TOP_HERO_SOURCE = "/videos/hero-untitled3-original.mp4";
+const TOP_HERO_POSTER = "/videos/hero-untitled3-poster.jpg";
 const FOOTER_SOURCE = "/videos/hero-r34-tunnel.mp4";
 const managed = new WeakSet<HTMLVideoElement>();
 const timers = new WeakMap<HTMLVideoElement, number>();

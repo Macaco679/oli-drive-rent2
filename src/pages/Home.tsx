@@ -362,8 +362,8 @@ export default function Home() {
             (mesma cor de antes) definido no <section> acima. */}
         <video
           className="absolute inset-0 w-full h-full object-cover"
-          src="/videos/hero-oli3-original.mp4"
-          poster="/videos/hero-oli3-poster.jpg"
+          src="/videos/hero-untitled3-original.mp4"
+          poster="/videos/hero-untitled3-poster.jpg"
           autoPlay
           loop
           muted
