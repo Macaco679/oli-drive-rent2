@@ -7,21 +7,21 @@ const content = [
     variant: "contracts",
     title: "Contratos digitais",
     description: "Assine e acompanhe cada etapa com registros centralizados e mais segurança para locador e motorista.",
-    image: "/benefits/benefit-contracts.webp",
+    image: "/benefits/benefit-contracts-v2.jpg",
     eyebrow: "Segurança digital",
   },
   {
     variant: "inspection",
     title: "Vistoria com fotos",
     description: "Compare o estado do carro antes e depois do aluguel com registros visuais organizados e fáceis de consultar.",
-    image: "/benefits/benefit-inspection.webp",
+    image: "/benefits/benefit-inspection-v2.jpg",
     eyebrow: "Registro visual",
   },
   {
     variant: "driver",
     title: "Para motoristas de app",
     description: "Encontre carros prontos para rodar com planos flexíveis e custos mais previsíveis no dia a dia.",
-    image: "/benefits/benefit-driver.webp",
+    image: "/benefits/benefit-driver-v2.jpg",
     eyebrow: "Pronto para rodar",
   },
 ] as const;
@@ -62,7 +62,7 @@ const createMedia = (item: (typeof content)[number]) => {
   image.src = item.image;
   image.alt = "";
   image.decoding = "async";
-  image.loading = "lazy";
+  image.loading = "eager";
 
   const gridFx = document.createElement("span");
   gridFx.className = "oli-benefit-tilt__gridfx";
