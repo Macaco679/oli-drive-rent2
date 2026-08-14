@@ -77,20 +77,7 @@ export default function Auth() {
       {/* Left side - Branding */}
       <div className="relative hidden h-full lg:flex lg:w-1/2 items-center justify-center overflow-hidden bg-[#050807]">
         <video
-          className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover opacity-45 blur-2xl saturate-75"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          disablePictureInPicture
-          disableRemotePlayback
-          aria-hidden="true"
-        >
-          <source src="/videos/oli-login.mp4" type="video/mp4" />
-        </video>
-        <video
-          className="pointer-events-none relative z-[1] h-full w-full object-contain"
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
           autoPlay
           loop
           muted
@@ -104,14 +91,6 @@ export default function Auth() {
           <source src="/videos/oli-login.mp4" type="video/mp4" />
           <img src="/videos/oli-login.gif" alt="" />
         </video>
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 px-10 pb-10 pt-24 text-left text-white [background:linear-gradient(to_top,rgba(0,0,0,.78),rgba(0,0,0,.34)_58%,transparent)]">
-          <h1 className="text-5xl font-bold mb-3 drop-shadow-lg">OLI</h1>
-          <p className="text-xl mb-2 drop-shadow-md">Aluguel de carros entre particulares</p>
-          <p className="max-w-lg text-white/85 text-base leading-relaxed drop-shadow-md">
-            Conectando motoristas e proprietários de veículos. 
-            Planos semanais e diários para motoristas de app e uso comum.
-          </p>
-        </div>
       </div>
 
       {/* Right side - Form */}
