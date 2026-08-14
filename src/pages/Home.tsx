@@ -362,14 +362,14 @@ export default function Home() {
             (mesma cor de antes) definido no <section> acima. */}
         <video
           className="absolute inset-0 w-full h-full object-cover"
-          src="/videos/hero-r34-tunnel.mp4"
+          src="/videos/hero-background.mp4"
           autoPlay
           loop
           muted
           playsInline
           preload="auto"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/15" />
+        <div className="pointer-events-none absolute inset-0 bg-transparent" />
         <div className="relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
           <div className="grid lg:grid-cols-2 gap-8 items-center">
