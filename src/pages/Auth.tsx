@@ -73,9 +73,9 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div className="flex h-[100dvh] max-h-[100dvh] overflow-hidden">
       {/* Left side - Branding */}
-      <div className="relative hidden lg:flex lg:w-1/2 items-center justify-center overflow-hidden bg-[#050807]">
+      <div className="relative hidden h-full lg:flex lg:w-1/2 items-center justify-center overflow-hidden bg-[#050807]">
         <video
           className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover opacity-45 blur-2xl saturate-75"
           autoPlay
@@ -115,8 +115,8 @@ export default function Auth() {
       </div>
 
       {/* Right side - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 bg-background">
-        <div className="w-full max-w-md space-y-8">
+      <div className="flex h-full w-full items-center justify-center overflow-y-auto bg-background px-6 py-4 lg:w-1/2">
+        <div className="w-full max-w-md space-y-4">
           {/* Mobile branding */}
           <div className="lg:hidden text-center">
             <h1 className="text-4xl font-bold text-primary mb-2">OLI</h1>
@@ -124,7 +124,7 @@ export default function Auth() {
           </div>
 
 
-          <div className="bg-card p-8 rounded-2xl shadow-xl border border-border">
+          <div className="bg-card p-6 rounded-2xl shadow-xl border border-border">
             <h2 className="text-2xl font-semibold mb-6 text-center">
               {isLogin ? "Entrar" : "Criar conta"}
             </h2>
