@@ -362,7 +362,7 @@ export default function Home() {
             (mesma cor de antes) definido no <section> acima. */}
         <video
           className="absolute inset-0 w-full h-full object-cover"
-          src="/videos/hero-oli4-ai-4k.mp4"
+          src="/videos/hero-background.mp4"
           autoPlay
           loop
           muted

@@ -1,4 +1,6 @@
-const TOP_HERO_SOURCE = "/videos/hero-oli4-ai-4k.mp4";
+// Use the exact 1080p master supplied by the client. The previous 4K file was
+// an AI-upscaled transcode and introduced visible softness during motion.
+const TOP_HERO_SOURCE = "/videos/hero-background.mp4";
 const TOP_HERO_POSTER = "/videos/hero-background-poster.jpg";
 const FOOTER_SOURCE = "/videos/hero-r34-tunnel.mp4";
 const managed = new WeakSet<HTMLVideoElement>();

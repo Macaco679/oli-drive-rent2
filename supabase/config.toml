@@ -1,5 +1,16 @@
 project_id = "sgpktbljjlixmyjmhppa"
 
+[auth]
+site_url = "https://www.olilocacao.com.br"
+additional_redirect_urls = [
+  "https://www.olilocacao.com.br",
+  "https://www.olilocacao.com.br/auth/callback",
+  "https://olilocacao.com.br",
+  "https://olilocacao.com.br/auth/callback",
+  "http://localhost:8080",
+  "http://localhost:8080/auth/callback",
+]
+
 [functions.send-notification-email]
 verify_jwt = false
 
