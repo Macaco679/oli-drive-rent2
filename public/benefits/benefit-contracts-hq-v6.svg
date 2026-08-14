@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 960" role="img" aria-labelledby="t d">
+<title id="t">Contratos digitais</title><desc id="d">Contrato digital em vidro, escudo metálico e chave automotiva em cenário verde neon.</desc>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#031a17"/><stop offset=".52" stop-color="#073b33"/><stop offset="1" stop-color="#020e0c"/></linearGradient>
+<radialGradient id="halo" cx="48%" cy="42%" r="58%"><stop stop-color="#39d7ae" stop-opacity=".34"/><stop offset="1" stop-color="#39d7ae" stop-opacity="0"/></radialGradient>
+<linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eafff9"/><stop offset=".18" stop-color="#79d9bf"/><stop offset=".42" stop-color="#183f39"/><stop offset=".65" stop-color="#aaf8e3"/><stop offset="1" stop-color="#0c5447"/></linearGradient>
+<linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9ff4da" stop-opacity=".32"/><stop offset=".5" stop-color="#0b4e42" stop-opacity=".64"/><stop offset="1" stop-color="#021c18" stop-opacity=".88"/></linearGradient>
+<linearGradient id="screen" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0c5b4d"/><stop offset="1" stop-color="#041f1b"/></linearGradient>
+<filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="24" stdDeviation="24" flood-color="#000" flood-opacity=".55"/></filter>
+<pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M64 0H0V64" fill="none" stroke="#8af2d4" stroke-opacity=".055"/></pattern>
+</defs>
+<rect width="1200" height="960" rx="52" fill="url(#bg)"/><rect width="1200" height="960" rx="52" fill="url(#grid)"/><ellipse cx="650" cy="470" rx="540" ry="430" fill="url(#halo)"/>
+<path d="M55 760C270 620 430 650 604 735S944 812 1155 665" fill="none" stroke="#5df0c3" stroke-opacity=".15" stroke-width="3"/><path d="M72 790C285 652 438 685 602 766S918 842 1130 707" fill="none" stroke="#d9fff3" stroke-opacity=".08" stroke-width="2"/>
+<!-- blurred premium car silhouette -->
+<g opacity=".42" transform="translate(705 338)" filter="url(#shadow)"><path d="M28 252c22-104 79-178 183-204l191 8c87 8 139 59 178 151l18 83H6z" fill="#0c4d42" stroke="#58c9aa" stroke-width="5"/><path d="M153 75c58-28 133-30 210-13 44 10 79 38 103 78H105c12-28 28-50 48-65z" fill="#102e2a" stroke="#8be8ce" stroke-opacity=".45" stroke-width="4"/><circle cx="137" cy="282" r="60" fill="#061814" stroke="#4cae95" stroke-width="8"/><circle cx="468" cy="282" r="60" fill="#061814" stroke="#4cae95" stroke-width="8"/></g>
+<!-- shield -->
+<g transform="translate(105 190) rotate(-7 210 245)" filter="url(#shadow)"><path d="M210 15C148 58 87 78 30 88v178c0 147 79 241 180 298 102-58 181-151 181-298V88c-59-10-120-31-181-73z" fill="url(#metal)"/><path d="M210 48c-51 35-101 53-147 62v153c0 118 62 196 147 247 84-51 147-129 147-247V110c-47-9-97-27-147-62z" fill="#062d27" stroke="#b5ffea" stroke-opacity=".7" stroke-width="4"/><path d="M210 75c-42 29-83 43-121 51v133c0 96 48 162 121 209 72-47 121-113 121-209V126c-39-8-80-23-121-51z" fill="url(#glass)"/>
+<path d="m137 263 48 49 104-129" fill="none" stroke="#72ffd2" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/><path d="m137 263 48 49 104-129" fill="none" stroke="#eafff8" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></g>
+<!-- contract tablet -->
+<g transform="translate(380 130) rotate(6 260 330)" filter="url(#shadow)"><rect x="10" y="10" width="520" height="650" rx="56" fill="url(#metal)"/><rect x="25" y="25" width="490" height="620" rx="45" fill="#06231f"/><rect x="50" y="68" width="440" height="530" rx="34" fill="url(#screen)" stroke="#70d9bd" stroke-opacity=".62" stroke-width="3"/>
+<text x="92" y="132" fill="#e8fff8" font-family="Inter,Arial,sans-serif" font-size="42" font-weight="700" letter-spacing="4">CONTRATO</text>
+<g stroke="#b2f8e5" stroke-linecap="round" opacity=".7"><path d="M92 183h258" stroke-width="9"/><path d="M92 220h328" stroke-width="7"/><path d="M92 255h294" stroke-width="7"/><path d="M92 290h337" stroke-width="7"/><path d="M92 325h236" stroke-width="7"/></g>
+<rect x="87" y="370" width="368" height="142" rx="20" fill="#041b17" stroke="#52c6a8" stroke-opacity=".5"/><text x="110" y="410" fill="#7edfc5" font-family="Inter,Arial,sans-serif" font-size="19">ASSINATURA DIGITAL</text><path d="M123 467c67-64 88 24 141-29 39-39 56 28 109-31" fill="none" stroke="#68ffce" stroke-width="6" stroke-linecap="round" filter="url(#glow)"/>
+<g transform="translate(94 535)"><rect width="353" height="43" rx="20" fill="#0b5a4c" stroke="#70e8c8" stroke-opacity=".45"/><path d="M20 20v-6a12 12 0 0 1 24 0v6m-27 0h30v20H17z" fill="none" stroke="#dffff7" stroke-width="3"/><text x="62" y="29" fill="#dffff7" font-family="Inter,Arial,sans-serif" font-size="17">Documento protegido</text><circle cx="325" cy="21" r="13" fill="#54d5b2"/><path d="m318 21 5 5 10-12" fill="none" stroke="#04221d" stroke-width="3"/></g>
+</g>
+<!-- key fob -->
+<g transform="translate(830 650) rotate(20 125 100)" filter="url(#shadow)"><ellipse cx="132" cy="181" rx="140" ry="34" fill="#000" opacity=".35"/><rect x="18" y="12" width="220" height="176" rx="65" fill="url(#metal)"/><rect x="30" y="24" width="196" height="152" rx="55" fill="#071e1a"/><rect x="55" y="48" width="146" height="104" rx="38" fill="#0a332c" stroke="#86e4ca" stroke-opacity=".45"/><path d="M127 57v87M61 100h132" stroke="#70d9bd" stroke-opacity=".38" stroke-width="2"/><path d="M113 82h28v26h-28zM118 82v-8a9 9 0 0 1 18 0v8" fill="none" stroke="#eafff8" stroke-width="4"/><path d="M115 127h24" stroke="#eafff8" stroke-width="4" stroke-linecap="round"/></g>
+<!-- highlights --> <g fill="#9bffe0" filter="url(#glow)"><circle cx="918" cy="155" r="5"/><circle cx="1026" cy="256" r="4"/><circle cx="309" cy="118" r="4"/><circle cx="1085" cy="598" r="5"/></g>
+</svg>
