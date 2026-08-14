@@ -14,7 +14,7 @@ const content = [
     variant: "inspection",
     title: "Vistoria com fotos",
     description: "Compare o estado do carro antes e depois do aluguel com registros visuais organizados e fáceis de consultar.",
-    image: "/benefits/benefit-inspection-v2.jpg",
+    image: "/benefits/benefit-inspection-v4.svg",
     eyebrow: "Registro visual",
   },
   {
@@ -62,7 +62,7 @@ const createMedia = (item: (typeof content)[number]) => {
   image.src = item.image;
   image.alt = "";
   image.decoding = "async";
-  image.loading = "eager";
+  image.loading = "lazy";
 
   const gridFx = document.createElement("span");
   gridFx.className = "oli-benefit-tilt__gridfx";
