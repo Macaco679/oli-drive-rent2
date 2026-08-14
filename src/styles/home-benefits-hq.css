@@ -32,10 +32,8 @@ body main .oli-benefits-3d .oli-benefit-tilt:focus-within .oli-benefit-tilt__ima
   transform: none !important;
 }
 
-/* Alternate the center composition: only its artwork is mirrored. */
-body main .oli-benefits-3d .oli-benefit-tilt__media[data-variant="inspection"] > .oli-benefit-tilt__image,
-body main .oli-benefits-3d .oli-benefit-tilt:hover .oli-benefit-tilt__media[data-variant="inspection"] > .oli-benefit-tilt__image,
-body main .oli-benefits-3d .oli-benefit-tilt:focus-within .oli-benefit-tilt__media[data-variant="inspection"] > .oli-benefit-tilt__image {
+/* Alternate the center composition at rest and through every interaction state. */
+body #root main .oli-benefits-3d .oli-benefits-3d__grid > .oli-benefit-tilt > .oli-benefit-tilt__media[data-variant="inspection"]:first-child > .oli-benefit-tilt__image {
   transform: scaleX(-1) !important;
 }
 
