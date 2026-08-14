@@ -25,7 +25,7 @@ const authNavItems = [
   { path: "/profile", label: "Perfil", icon: User },
 ];
 
-const FOOTER_LIVE_WALLPAPER = "/videos/hero-r34-tunnel.mp4";
+const FOOTER_LIVE_WALLPAPER = "/videos/footer-untitled6-original.mp4";
 
 export function WebLayout({ children }: WebLayoutProps) {
   const location = useLocation();
