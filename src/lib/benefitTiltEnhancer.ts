@@ -63,6 +63,7 @@ const createMedia = (item: (typeof content)[number]) => {
   image.alt = "";
   image.decoding = "async";
   image.loading = "eager";
+  image.fetchPriority = "high";
 
   const gridFx = document.createElement("span");
   gridFx.className = "oli-benefit-tilt__gridfx";
@@ -119,6 +120,7 @@ const decorateBenefits = () => {
     } else if (existingImage && existingImage.getAttribute("src") !== item.image) {
       existingImage.src = item.image;
       existingImage.loading = "eager";
+      existingImage.fetchPriority = "high";
     }
 
     bindTilt(card);
