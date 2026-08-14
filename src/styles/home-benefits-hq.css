@@ -1,0 +1,48 @@
+/* Final fidelity layer for the 1200x960 vector benefit artwork.
+   Keep the 3D tilt on the card itself, but never scale/filter the artwork. */
+body main .oli-benefits-3d .oli-benefits-3d__grid > .oli-benefit-tilt > .oli-benefit-tilt__media:first-child {
+  aspect-ratio: 1.25 / 1 !important;
+  background: #031b17 !important;
+  box-shadow: none !important;
+}
+
+body main .oli-benefits-3d .oli-benefits-3d__grid > .oli-benefit-tilt > .oli-benefit-tilt__media:first-child > .oli-benefit-tilt__image {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: none !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+  transition: none !important;
+  image-rendering: auto !important;
+}
+
+body main .oli-benefits-3d .oli-benefit-tilt:hover .oli-benefit-tilt__image,
+body main .oli-benefits-3d .oli-benefit-tilt:focus-within .oli-benefit-tilt__image {
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+body main .oli-benefits-3d .oli-benefit-tilt__media::before {
+  background: linear-gradient(180deg, transparent 76%, rgba(2, 18, 15, .08) 100%) !important;
+}
+
+body main .oli-benefits-3d .oli-benefit-tilt__gridfx,
+body main .oli-benefits-3d .oli-benefit-tilt__media-glow {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  body main .oli-benefits-3d .oli-benefits-3d__grid > .oli-benefit-tilt > .oli-benefit-tilt__media:first-child {
+    aspect-ratio: 1.25 / 1 !important;
+  }
+}
