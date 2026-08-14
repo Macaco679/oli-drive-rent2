@@ -1,15 +1,29 @@
-import basaltBranco from "@/assets/vehicles/basalt-branco-2024.jpeg";
-import kicksPreto from "@/assets/vehicles/kicks-preto-2024.png";
-import hb20Prata from "@/assets/vehicles/hb20-prata-2024.png";
-
 const BENEFITS_HEADING = "Por que escolher a OLI?";
 const decorated = new WeakSet<HTMLElement>();
 let scheduled = false;
 
 const content = [
-  { variant: "contracts", title: "Contratos digitais", description: "Assine e acompanhe cada etapa com registros centralizados e mais segurança para locador e motorista.", image: basaltBranco, eyebrow: "Segurança digital" },
-  { variant: "inspection", title: "Vistoria com fotos", description: "Compare o estado do carro antes e depois do aluguel com registros visuais organizados e fáceis de consultar.", image: kicksPreto, eyebrow: "Registro visual" },
-  { variant: "driver", title: "Para motoristas de app", description: "Encontre carros prontos para rodar com planos flexíveis e custos mais previsíveis no dia a dia.", image: hb20Prata, eyebrow: "Pronto para rodar" },
+  {
+    variant: "contracts",
+    title: "Contratos digitais",
+    description: "Assine e acompanhe cada etapa com registros centralizados e mais segurança para locador e motorista.",
+    image: "/benefits/benefit-contracts.webp",
+    eyebrow: "Segurança digital",
+  },
+  {
+    variant: "inspection",
+    title: "Vistoria com fotos",
+    description: "Compare o estado do carro antes e depois do aluguel com registros visuais organizados e fáceis de consultar.",
+    image: "/benefits/benefit-inspection.webp",
+    eyebrow: "Registro visual",
+  },
+  {
+    variant: "driver",
+    title: "Para motoristas de app",
+    description: "Encontre carros prontos para rodar com planos flexíveis e custos mais previsíveis no dia a dia.",
+    image: "/benefits/benefit-driver.webp",
+    eyebrow: "Pronto para rodar",
+  },
 ] as const;
 
 const bindTilt = (card: HTMLElement) => {
@@ -98,8 +112,13 @@ const decorateBenefits = () => {
     if (description && description.textContent !== item.description) description.textContent = item.description;
 
     const existingMedia = card.querySelector<HTMLElement>(".oli-benefit-tilt__media");
+    const existingImage = existingMedia?.querySelector<HTMLImageElement>(".oli-benefit-tilt__image");
     if (existingMedia && existingMedia.dataset.variant !== item.variant) existingMedia.remove();
-    if (!card.querySelector(".oli-benefit-tilt__media")) card.insertBefore(createMedia(item), card.firstChild);
+    if (!card.querySelector(".oli-benefit-tilt__media")) {
+      card.insertBefore(createMedia(item), card.firstChild);
+    } else if (existingImage && existingImage.getAttribute("src") !== item.image) {
+      existingImage.src = item.image;
+    }
 
     bindTilt(card);
   });
