@@ -8,6 +8,7 @@ import "./styles/quick-action-art-app.css";
 import "./styles/quick-action-art-travel.css";
 import "./styles/quick-action-art-owner.css";
 import "./styles/home-benefits-tilt.css";
+import "./styles/home-benefits-tilt-override.css";
 import "./lib/quickActionReveal";
 import "./lib/benefitTiltEnhancer";
 
