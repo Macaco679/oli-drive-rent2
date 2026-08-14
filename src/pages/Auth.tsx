@@ -75,25 +75,39 @@ export default function Auth() {
   return (
     <div className="min-h-screen flex">
       {/* Left side - Branding */}
-      <div className="relative hidden lg:flex lg:w-1/2 items-center justify-center overflow-hidden p-12">
+      <div className="relative hidden lg:flex lg:w-1/2 items-center justify-center overflow-hidden bg-[#050807]">
         <video
-          className="absolute inset-0 h-full w-full object-cover"
+          className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover opacity-45 blur-2xl saturate-75"
           autoPlay
           loop
           muted
           playsInline
           preload="auto"
-          poster="/videos/hero-background-poster.jpg"
+          disablePictureInPicture
+          disableRemotePlayback
+          aria-hidden="true"
+        >
+          <source src="/videos/oli-login.mp4" type="video/mp4" />
+        </video>
+        <video
+          className="pointer-events-none relative z-[1] h-full w-full object-contain"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          disablePictureInPicture
+          disableRemotePlayback
+          controlsList="nodownload noplaybackrate noremoteplayback"
           aria-hidden="true"
         >
           <source src="/videos/oli-login.mp4" type="video/mp4" />
           <img src="/videos/oli-login.gif" alt="" />
         </video>
-        <div className="absolute inset-0 bg-gradient-to-br from-[#063f3a]/80 via-[#0a756c]/45 to-[#18b9aa]/35" />
-        <div className="relative z-10 text-center text-white max-w-md">
-          <h1 className="text-6xl font-bold mb-6">OLI</h1>
-          <p className="text-2xl mb-4">Aluguel de carros entre particulares</p>
-          <p className="text-white/80 text-lg">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 px-10 pb-10 pt-24 text-left text-white [background:linear-gradient(to_top,rgba(0,0,0,.78),rgba(0,0,0,.34)_58%,transparent)]">
+          <h1 className="text-5xl font-bold mb-3 drop-shadow-lg">OLI</h1>
+          <p className="text-xl mb-2 drop-shadow-md">Aluguel de carros entre particulares</p>
+          <p className="max-w-lg text-white/85 text-base leading-relaxed drop-shadow-md">
             Conectando motoristas e proprietários de veículos. 
             Planos semanais e diários para motoristas de app e uso comum.
           </p>
