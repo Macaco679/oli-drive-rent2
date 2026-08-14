@@ -95,19 +95,19 @@
 
 .oli-quick-actions .oli-quick-card[data-oli-action="app"]::before {
   background-image:
-    url("/illustrations/quick-app.webp"),
+    url("/benefits/cards1-driver-hq.png"),
     radial-gradient(circle at 50% 48%, rgba(75, 185, 153, .19), rgba(234, 248, 244, .72) 52%, rgba(228, 244, 239, .34) 72%, transparent 74%) !important;
 }
 
 .oli-quick-actions .oli-quick-card[data-oli-action="travel"]::before {
   background-image:
-    url("/illustrations/quick-travel.webp"),
+    url("/benefits/cards1-travel-hq.png"),
     radial-gradient(circle at 50% 48%, rgba(61, 168, 139, .18), rgba(234, 248, 244, .74) 52%, rgba(228, 244, 239, .32) 72%, transparent 74%) !important;
 }
 
 .oli-quick-actions .oli-quick-card[data-oli-action="owner"]::before {
   background-image:
-    url("/illustrations/quick-owner.webp"),
+    url("/benefits/cards1-owner-hq.png"),
     radial-gradient(circle at 50% 48%, rgba(64, 173, 143, .18), rgba(234, 248, 244, .74) 52%, rgba(228, 244, 239, .32) 72%, transparent 74%) !important;
 }
 

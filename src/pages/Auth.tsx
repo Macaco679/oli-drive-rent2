@@ -75,8 +75,22 @@ export default function Auth() {
   return (
     <div className="min-h-screen flex">
       {/* Left side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary to-accent items-center justify-center p-12">
-        <div className="text-center text-white max-w-md">
+      <div className="relative hidden lg:flex lg:w-1/2 items-center justify-center overflow-hidden p-12">
+        <video
+          className="absolute inset-0 h-full w-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          poster="/videos/hero-background-poster.jpg"
+          aria-hidden="true"
+        >
+          <source src="/videos/oli-login.mp4" type="video/mp4" />
+          <img src="/videos/oli-login.gif" alt="" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#063f3a]/80 via-[#0a756c]/45 to-[#18b9aa]/35" />
+        <div className="relative z-10 text-center text-white max-w-md">
           <h1 className="text-6xl font-bold mb-6">OLI</h1>
           <p className="text-2xl mb-4">Aluguel de carros entre particulares</p>
           <p className="text-white/80 text-lg">
