@@ -73,7 +73,7 @@ export default function Auth() {
   };
 
   return (
-    <div className="flex h-[100dvh] max-h-[100dvh] overflow-hidden">
+    <div className="platform-standalone flex h-[100dvh] max-h-[100dvh] overflow-hidden">
       {/* Left side - Branding */}
       <div className="relative hidden h-full lg:flex lg:w-1/2 items-center justify-center overflow-hidden bg-[#050807]">
         <video
@@ -94,7 +94,7 @@ export default function Auth() {
       </div>
 
       {/* Right side - Form */}
-      <div className="flex h-full w-full items-center justify-center overflow-y-auto bg-background px-6 py-4 lg:w-1/2">
+      <div className="flex h-full w-full items-center justify-center overflow-y-auto bg-transparent px-6 py-4 lg:w-1/2">
         <div className="w-full max-w-md space-y-4">
           {/* Mobile branding */}
           <div className="lg:hidden text-center">
@@ -103,7 +103,7 @@ export default function Auth() {
           </div>
 
 
-          <div className="bg-card p-6 rounded-2xl shadow-xl border border-border">
+          <div className="platform-standalone-card bg-card p-6 rounded-2xl shadow-xl border border-border">
             <h2 className="text-2xl font-semibold mb-6 text-center">
               {isLogin ? "Entrar" : "Criar conta"}
             </h2>

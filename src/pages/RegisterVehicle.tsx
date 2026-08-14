@@ -17,6 +17,7 @@ import { createVehicle, uploadVehiclePhoto, VehicleFormData, validatePhoto } fro
 import { notifyVehicleApproved, notifyVehicleRejected } from "@/lib/notificationService";
 import { formatPostalCode, lookupAddressByPostalCode, sanitizePostalCode } from "@/lib/addressService";
 import carBgPattern from "@/assets/car-bg-pattern.png";
+import { WebLayout } from "@/components/layout/WebLayout";
 
 const vehicleTypeOptions = [
   { value: "car", label: "Carro", icon: Car },
@@ -336,10 +337,11 @@ export default function RegisterVehicle() {
   };
 
   return (
-    <div className="min-h-screen bg-primary/5 relative">
+    <WebLayout>
+    <div className="platform-page-frame relative">
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `url(${carBgPattern})`, backgroundSize: "600px auto", backgroundPosition: "center", backgroundRepeat: "repeat" }} />
 
-      <div className="bg-primary text-primary-foreground sticky top-0 z-50 shadow-lg">
+      <div className="platform-page-banner max-w-3xl mx-auto mb-6">
         <div className="max-w-3xl mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="text-primary-foreground hover:bg-primary-foreground/10">
@@ -507,5 +509,6 @@ export default function RegisterVehicle() {
         </div>
       )}
     </div>
+    </WebLayout>
   );
 }

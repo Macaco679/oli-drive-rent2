@@ -203,8 +203,8 @@ export default function Onboarding() {
   ];
 
   return (
-    <div className="min-h-screen flex">
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary to-accent items-center justify-center p-12">
+    <div className="platform-standalone min-h-screen flex">
+      <div className="platform-standalone-brand hidden lg:flex lg:w-1/2 items-center justify-center p-12">
         <div className="text-center text-white max-w-md">
           <h1 className="text-6xl font-bold mb-6">OLI</h1>
           <p className="text-2xl mb-4">Bem-vindo!</p>
@@ -214,7 +214,7 @@ export default function Onboarding() {
         </div>
       </div>
 
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 bg-background">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 bg-transparent">
         <div className="w-full max-w-2xl space-y-8">
           <div className="lg:hidden text-center">
             <h1 className="text-4xl font-bold text-primary mb-2">OLI</h1>
@@ -225,7 +225,7 @@ export default function Onboarding() {
             <p className="text-muted-foreground">Complete suas informações para começar</p>
           </div>
 
-          <div className="bg-card p-8 rounded-2xl shadow-xl border border-border space-y-6">
+          <div className="platform-standalone-card bg-card p-8 rounded-2xl shadow-xl border border-border space-y-6">
             <div className="space-y-4">
               <div>
                 <Label htmlFor="fullName">Nome completo</Label>

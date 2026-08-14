@@ -30,6 +30,7 @@ const FOOTER_LIVE_WALLPAPER = "/videos/hero-r34-tunnel.mp4";
 export function WebLayout({ children }: WebLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
+  const isHomeRoute = location.pathname === "/home" || location.pathname === "/";
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -50,7 +51,7 @@ export function WebLayout({ children }: WebLayoutProps) {
   const navItems = isAuthenticated ? authNavItems : publicNavItems;
 
   return (
-    <div className="min-h-screen min-w-0 overflow-x-clip bg-background flex flex-col">
+    <div className="platform-shell min-h-screen min-w-0 overflow-x-clip bg-background flex flex-col">
       {/* Header */}
       <header className="metal-header sticky top-0 z-50 text-primary-foreground">
         <div className="site-shell">
@@ -141,7 +142,13 @@ export function WebLayout({ children }: WebLayoutProps) {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 min-w-0">
+      <main
+        className={cn(
+          "platform-main flex-1 min-w-0",
+          isHomeRoute ? "platform-main--home" : "platform-main--internal"
+        )}
+        data-route={location.pathname}
+      >
         {children}
       </main>
 

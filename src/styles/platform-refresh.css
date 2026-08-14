@@ -1,0 +1,289 @@
+/* Shared OLI application language. Home keeps its cinematic composition;
+   operational routes inherit the same mineral/metal material system. */
+
+.platform-main--internal {
+  position: relative;
+  isolation: isolate;
+  min-height: 58vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 4% 4%, hsl(var(--metal-pale) / 0.82), transparent 25rem),
+    radial-gradient(circle at 96% 24%, hsl(var(--metal-bright) / 0.12), transparent 30rem),
+    linear-gradient(150deg, hsl(168 28% 97%), hsl(220 20% 97%) 48%, hsl(166 25% 93%));
+}
+
+.platform-main--internal::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.42;
+  background-image:
+    linear-gradient(108deg, transparent 0 11rem, hsl(var(--metal-mid) / 0.035) 11.05rem, transparent 11.1rem 22rem),
+    radial-gradient(circle at 50% 0%, transparent 0 28rem, hsl(var(--metal-mid) / 0.035) 28.05rem, transparent 28.1rem);
+}
+
+.platform-main--internal > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Legacy legal chrome is retained in markup for now, but the shared WebLayout
+   is the only visible navigation/footer across the platform. */
+.platform-main--internal > header,
+.platform-main--internal > footer {
+  display: none;
+}
+
+.platform-main--internal > div[class*='max-w-'],
+.platform-main--internal > section > div[class*='max-w-'] {
+  width: min(100%, 92rem);
+}
+
+.platform-main--internal h1,
+.platform-main--internal h2,
+.platform-main--internal h3 {
+  color: hsl(var(--metal-deep));
+}
+
+.platform-main--internal h1 {
+  letter-spacing: -0.035em;
+}
+
+.platform-main--internal h1::after,
+.platform-page-title::after {
+  content: '';
+  display: block;
+  width: 3.4rem;
+  height: 2px;
+  margin-top: 0.7rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, hsl(var(--metal-mid)), hsl(var(--metal-bright)), transparent);
+}
+
+.platform-main--internal :is(.bg-card, [class*='bg-card']) {
+  border-color: hsl(var(--metal-line) / 0.3);
+}
+
+.platform-main--internal :is(.rounded-lg.border.bg-card, .rounded-xl.border.bg-card, .rounded-2xl.border.bg-card),
+.platform-main--internal :is(.rounded-lg.border[class*='bg-card'], .rounded-xl.border[class*='bg-card'], .rounded-2xl.border[class*='bg-card']) {
+  position: relative;
+  overflow: hidden;
+  border-color: hsl(var(--metal-line) / 0.34) !important;
+  background:
+    radial-gradient(circle at 100% 0%, hsl(var(--metal-bright) / 0.1), transparent 35%),
+    linear-gradient(145deg, hsl(0 0% 100% / 0.96), hsl(168 26% 97% / 0.94)) !important;
+  box-shadow:
+    inset 0 1px 0 hsl(0 0% 100% / 0.92),
+    0 16px 38px hsl(var(--metal-deep) / 0.085) !important;
+}
+
+.platform-main--internal :is(.rounded-lg.border.bg-card, .rounded-xl.border.bg-card, .rounded-2xl.border.bg-card)::before,
+.platform-main--internal :is(.rounded-lg.border[class*='bg-card'], .rounded-xl.border[class*='bg-card'], .rounded-2xl.border[class*='bg-card'])::before {
+  content: '';
+  position: absolute;
+  inset: 0 1.5rem auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(var(--metal-bright) / 0.75), transparent);
+  pointer-events: none;
+}
+
+.platform-main--internal button,
+.platform-main--internal [role='button'] {
+  border-radius: 0.85rem;
+}
+
+.platform-main--internal button[class*='bg-primary'],
+.platform-main--internal a[class*='bg-primary'] {
+  border: 1px solid hsl(var(--metal-bright) / 0.24);
+  background: var(--gradient-metal) !important;
+  box-shadow: 0 10px 24px hsl(var(--metal-deep) / 0.15);
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.platform-main--internal button[class*='bg-primary']:hover,
+.platform-main--internal a[class*='bg-primary']:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 15px 30px hsl(var(--metal-deep) / 0.2);
+}
+
+.platform-main--internal :is(input, textarea, select, [role='combobox']) {
+  border-color: hsl(var(--metal-line) / 0.34);
+  border-radius: 0.85rem;
+  background: hsl(0 0% 100% / 0.78);
+  box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.82);
+}
+
+.platform-main--internal :is(input, textarea, select, [role='combobox']):focus-visible {
+  border-color: hsl(var(--metal-bright) / 0.72);
+  box-shadow: 0 0 0 3px hsl(var(--metal-bright) / 0.13);
+}
+
+.platform-main--internal [role='tablist'] {
+  border: 1px solid hsl(var(--metal-line) / 0.25);
+  border-radius: 1rem;
+  background: hsl(0 0% 100% / 0.62);
+  padding: 0.25rem;
+  box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.85);
+}
+
+.platform-main--internal [role='tab'][data-state='active'] {
+  color: white;
+  background: var(--gradient-metal);
+  box-shadow: 0 8px 18px hsl(var(--metal-deep) / 0.14);
+}
+
+.platform-main--internal .bg-secondary {
+  background: linear-gradient(145deg, hsl(var(--metal-pale) / 0.62), hsl(168 26% 94%));
+}
+
+.platform-main--internal .text-primary {
+  color: hsl(var(--metal-mid));
+}
+
+.platform-main--internal :is([class*='hover:shadow'], .hover-lift) {
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.platform-main--internal :is([class*='hover:shadow'], .hover-lift):hover {
+  transform: translateY(-3px);
+  border-color: hsl(var(--metal-line) / 0.55);
+  box-shadow: 0 22px 44px hsl(var(--metal-deep) / 0.13);
+}
+
+.platform-page-frame {
+  min-height: 58vh;
+  padding: clamp(1.5rem, 3vw, 3rem) clamp(1rem, 3vw, 3rem) clamp(3rem, 7vw, 6rem);
+}
+
+.platform-page-frame__inner {
+  width: min(100%, 64rem);
+  margin-inline: auto;
+}
+
+.platform-page-banner {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid hsl(var(--metal-line) / 0.34);
+  border-radius: 1.45rem;
+  color: white;
+  background:
+    radial-gradient(circle at 90% 0%, hsl(var(--metal-bright) / 0.26), transparent 38%),
+    var(--gradient-metal);
+  box-shadow: 0 18px 42px hsl(var(--metal-deep) / 0.18);
+}
+
+.platform-page-banner::after {
+  content: '';
+  position: absolute;
+  inset: auto -3rem -6rem auto;
+  width: 14rem;
+  height: 14rem;
+  border-radius: 999px;
+  border: 1px solid hsl(0 0% 100% / 0.12);
+  box-shadow: 0 0 0 2.5rem hsl(0 0% 100% / 0.035), 0 0 0 5rem hsl(0 0% 100% / 0.025);
+}
+
+.platform-page-banner :is(h1, h2, h3),
+.platform-legal-hero :is(h1, h2, h3) {
+  position: relative;
+  z-index: 1;
+  color: white;
+}
+
+.platform-page-banner h1::after,
+.platform-legal-hero h1::after {
+  background: linear-gradient(90deg, hsl(154 74% 78%), hsl(0 0% 100% / 0.85), transparent);
+}
+
+.platform-standalone {
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  color: hsl(var(--foreground));
+  background:
+    radial-gradient(circle at 8% 12%, hsl(var(--metal-bright) / 0.18), transparent 28rem),
+    linear-gradient(145deg, hsl(168 28% 96%), hsl(220 20% 97%) 48%, hsl(166 24% 92%));
+}
+
+.platform-standalone-card {
+  border: 1px solid hsl(var(--metal-line) / 0.38) !important;
+  border-radius: 1.5rem !important;
+  background:
+    radial-gradient(circle at 100% 0%, hsl(var(--metal-bright) / 0.11), transparent 34%),
+    hsl(0 0% 100% / 0.93) !important;
+  box-shadow: 0 24px 60px hsl(var(--metal-deep) / 0.14) !important;
+  backdrop-filter: blur(16px);
+}
+
+.platform-standalone-brand {
+  color: white;
+  background:
+    radial-gradient(circle at 22% 14%, hsl(var(--metal-bright) / 0.32), transparent 35%),
+    linear-gradient(145deg, hsl(var(--metal-deep)), hsl(174 52% 21%) 58%, hsl(161 39% 31%));
+}
+
+.platform-standalone-card :is(input, textarea, [role='combobox']) {
+  border-color: hsl(var(--metal-line) / 0.36);
+  border-radius: 0.85rem;
+  background: hsl(0 0% 100% / 0.8);
+}
+
+.platform-standalone-card button[class*='bg-primary'] {
+  border: 1px solid hsl(var(--metal-bright) / 0.24);
+  border-radius: 0.85rem;
+  background: var(--gradient-metal) !important;
+  box-shadow: 0 12px 26px hsl(var(--metal-deep) / 0.16);
+}
+
+.platform-legal-hero {
+  position: relative;
+  overflow: hidden;
+  color: white;
+  background:
+    radial-gradient(circle at 82% 10%, hsl(var(--metal-bright) / 0.28), transparent 32%),
+    linear-gradient(125deg, hsl(var(--metal-deep)), hsl(var(--metal-mid)) 72%, hsl(163 39% 34%));
+}
+
+.platform-legal-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(108deg, transparent 0 6rem, hsl(0 0% 100% / 0.025) 6.05rem, transparent 6.1rem 12rem);
+}
+
+@keyframes oli-platform-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.platform-main--internal > * {
+  animation: oli-platform-enter 420ms cubic-bezier(.2,.75,.2,1) both;
+}
+
+@media (max-width: 767px) {
+  .platform-main--internal h1::after,
+  .platform-page-title::after {
+    margin-top: 0.5rem;
+  }
+
+  .platform-page-frame {
+    padding-top: 1.25rem;
+  }
+
+  .platform-page-banner {
+    border-radius: 1.2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .platform-main--internal > *,
+  .platform-main--internal button,
+  .platform-main--internal [role='button'] {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}

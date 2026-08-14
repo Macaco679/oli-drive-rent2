@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Phone, MessageCircle, ArrowLeft, FileText, ShieldCheck, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { WebLayout } from "@/components/layout/WebLayout";
 
 const PHONE = "+55 11 94017-5031";
 const WHATSAPP_URL = "https://wa.me/5511940175031";
@@ -23,7 +24,7 @@ export function LegalLayout({ title, subtitle, toc, children }: LegalLayoutProps
   const otherPage = LEGAL_PAGES.find((p) => p.path !== pathname) ?? LEGAL_PAGES[0];
   const OtherIcon = otherPage.icon;
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <WebLayout>
       {/* Header */}
       <header className="sticky top-0 z-50 bg-card border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -45,7 +46,7 @@ export function LegalLayout({ title, subtitle, toc, children }: LegalLayoutProps
       </header>
 
       {/* Hero */}
-      <section className="bg-primary text-primary-foreground py-16 lg:py-20">
+      <section className="platform-legal-hero py-14 lg:py-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link to="/home" className="inline-flex items-center gap-2 text-primary-foreground/80 hover:text-accent text-sm mb-6">
             <ArrowLeft className="w-4 h-4" /> Voltar para o site
@@ -56,7 +57,7 @@ export function LegalLayout({ title, subtitle, toc, children }: LegalLayoutProps
       </section>
 
       {/* Content */}
-      <section className="py-12 lg:py-16 bg-background">
+      <section className="py-12 lg:py-16 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[260px_1fr] gap-10">
           {/* TOC */}
           <aside className="hidden lg:block">
@@ -185,6 +186,6 @@ export function LegalLayout({ title, subtitle, toc, children }: LegalLayoutProps
           </div>
         </div>
       </footer>
-    </div>
+    </WebLayout>
   );
 }

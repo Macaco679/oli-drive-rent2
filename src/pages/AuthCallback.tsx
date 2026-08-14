@@ -79,8 +79,8 @@ export default function AuthCallback() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-4">
-        <div className="bg-card p-8 rounded-2xl shadow-xl border border-border max-w-md w-full text-center">
+      <div className="platform-standalone min-h-screen flex items-center justify-center p-4">
+        <div className="platform-standalone-card bg-card p-8 rounded-2xl shadow-xl border border-border max-w-md w-full text-center">
           <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertTriangle className="w-8 h-8 text-destructive" />
           </div>
@@ -107,8 +107,8 @@ export default function AuthCallback() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
+    <div className="platform-standalone min-h-screen flex items-center justify-center p-4">
+      <div className="platform-standalone-card text-center px-10 py-9">
         <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
         <p className="text-muted-foreground">Finalizando login...</p>
       </div>
