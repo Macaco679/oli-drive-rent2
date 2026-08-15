@@ -5,20 +5,36 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// Host do servidor n8n.
+//
+// ATENCAO: o servidor antigo (n8n.srv1153225.hstgr.cloud) foi desativado e
+// nem resolve mais em DNS. Enquanto a whitelist apontava para ele, TODAS as
+// integracoes de servidor ficaram fora do ar - CNH, validacao de veiculo,
+// contrato, as quatro etapas de vistoria e os pagamentos.
+//
+// O host fica isolado nesta constante justamente para que uma proxima
+// migracao de servidor seja uma linha, e nao doze.
+const N8N_BASE = "https://n8n-gurh.srv1643933.hstgr.cloud";
+
 // Allowed webhook destinations (whitelist for security)
 const ALLOWED_URLS: Record<string, string> = {
-  "validarcarro": "https://n8n.srv1153225.hstgr.cloud/webhook/validarcarro",
-  "oli-contrato": "https://n8n.srv1153225.hstgr.cloud/webhook/oli-contrato",
-  "cnhcheck": "https://n8n.srv1153225.hstgr.cloud/webhook/cnhcheck",
-  "oli-vistoria-validar": "https://n8n.srv1153225.hstgr.cloud/webhook/oli-vistoria-validar",
-  "oli-vistoria": "https://n8n.srv1153225.hstgr.cloud/webhook/oli-vistoria",
-  "oli-asaas-criar-cobranca": "https://n8n.srv1153225.hstgr.cloud/webhook/oli-asaas-criar-cobranca",
-  "oli-caucao-asaas": "https://n8n.srv1153225.hstgr.cloud/webhook/oli-caucao-asaas",
-  "oli-pagamento-pix": "https://n8n.srv1153225.hstgr.cloud/webhook/oli/sp/pagar",
-  "oli-pagamento-cartao": "https://n8n.srv1153225.hstgr.cloud/webhook/oli/sp/pagar",
-  "oli-vistoria-locatario-retirada": "https://n8n.srv1153225.hstgr.cloud/webhook/oli-vistoria-locatário-retirada",
-  "oli-vistoria-locatario-devolucao": "https://n8n.srv1153225.hstgr.cloud/webhook/oli-vistoria-locatário-devolucao",
-  "oli-vistoria-locador-final": "https://n8n.srv1153225.hstgr.cloud/webhook/oli-vistoria-locador-final",
+  "validarcarro": `${N8N_BASE}/webhook/validarcarro`,
+  "oli-contrato": `${N8N_BASE}/webhook/oli-contrato`,
+  "cnhcheck": `${N8N_BASE}/webhook/cnhcheck`,
+  "oli-vistoria-validar": `${N8N_BASE}/webhook/oli-vistoria-validar`,
+  "oli-vistoria": `${N8N_BASE}/webhook/oli-vistoria`,
+  "oli-asaas-criar-cobranca": `${N8N_BASE}/webhook/oli-asaas-criar-cobranca`,
+  "oli-caucao-asaas": `${N8N_BASE}/webhook/oli-caucao-asaas`,
+  "oli-pagamento-pix": `${N8N_BASE}/webhook/oli/sp/pagar`,
+  "oli-pagamento-cartao": `${N8N_BASE}/webhook/oli/sp/pagar`,
+  "oli-vistoria-locatario-retirada": `${N8N_BASE}/webhook/oli-vistoria-locatário-retirada`,
+  "oli-vistoria-locatario-devolucao": `${N8N_BASE}/webhook/oli-vistoria-locatário-devolucao`,
+  "oli-vistoria-locador-final": `${N8N_BASE}/webhook/oli-vistoria-locador-final`,
+  // Validacao facial. O workflow correspondente ainda NAO existe no n8n -
+  // a chamada vai retornar 404 ate ele ser criado. O frontend trata isso
+  // como nao-critico (o status fica "pending"), mas a rota entra aqui para
+  // que a URL do n8n saia do bundle do cliente.
+  "oli-face-validation": `${N8N_BASE}/webhook/oli-face-validation`,
 };
 
 serve(async (req) => {
