@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,45 @@ import { ensureProfile } from "@/lib/ensureProfile";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
+// Client ID Web confirmado no Google Cloud da OLI.
+// Nao usamos variavel de ambiente aqui para evitar que um valor antigo da Vercel
+// sobrescreva silenciosamente o cliente OAuth que possui as origens corretas.
+const GOOGLE_CLIENT_ID =
+  "782627582997-i394igrd61r7ca34ne1tugvkh49dsp04.apps.googleusercontent.com";
+
+type GoogleCredentialResponse = {
+  credential?: string;
+};
+
+type GoogleIdConfiguration = {
+  client_id: string;
+  callback: (response: GoogleCredentialResponse) => void;
+  auto_select?: boolean;
+};
+
+type GoogleButtonConfiguration = {
+  type?: "standard" | "icon";
+  theme?: "outline" | "filled_blue" | "filled_black";
+  size?: "large" | "medium" | "small";
+  text?: "signin_with" | "signup_with" | "continue_with" | "signin";
+  shape?: "rectangular" | "pill" | "circle" | "square";
+  logo_alignment?: "left" | "center";
+  width?: number;
+};
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (config: GoogleIdConfiguration) => void;
+          renderButton: (parent: HTMLElement, config: GoogleButtonConfiguration) => void;
+        };
+      };
+    };
+  }
+}
+
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
@@ -16,34 +55,99 @@ export default function Auth() {
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const googleButtonRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  const handleGoogleLogin = async () => {
-    if (loading || googleLoading) return;
+  const handleGoogleCredential = useCallback(
+    async (response: GoogleCredentialResponse) => {
+      if (!response.credential) {
+        toast.error("O Google nao retornou uma credencial valida. Tente novamente.");
+        return;
+      }
 
-    setGoogleLoading(true);
+      setGoogleLoading(true);
 
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-          queryParams: {
-            prompt: "select_account",
-          },
-        },
-      });
+      try {
+        // Google autentica diretamente no dominio da OLI. O Supabase recebe
+        // somente o ID token em segundo plano, sem redirect visivel para *.supabase.co.
+        const { error } = await supabase.auth.signInWithIdToken({
+          provider: "google",
+          token: response.credential,
+        });
 
-      if (error) {
-        toast.error("Erro ao entrar com Google: " + error.message);
+        if (error) {
+          toast.error("Erro ao entrar com Google: " + error.message);
+          return;
+        }
+
+        await ensureProfile();
+        toast.success("Login realizado com sucesso!");
+        navigate("/home");
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Erro inesperado no login com Google.";
+        toast.error("Erro ao entrar com Google: " + message);
+      } finally {
         setGoogleLoading(false);
       }
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Erro inesperado no login com Google.";
-      toast.error("Erro ao entrar com Google: " + message);
-      setGoogleLoading(false);
+    },
+    [navigate]
+  );
+
+  useEffect(() => {
+    let disposed = false;
+
+    const renderGoogleButton = () => {
+      if (disposed || !window.google?.accounts?.id || !googleButtonRef.current) return;
+
+      // Configuracao minima recomendada pelo Google para callback JS em popup.
+      // Nao passamos login_uri/redirect_uri nem parametros de FedCM aqui.
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredential,
+        auto_select: false,
+      });
+
+      googleButtonRef.current.replaceChildren();
+      const width = Math.max(240, Math.min(400, googleButtonRef.current.clientWidth || 400));
+
+      window.google.accounts.id.renderButton(googleButtonRef.current, {
+        type: "standard",
+        theme: "outline",
+        size: "large",
+        text: "continue_with",
+        shape: "rectangular",
+        logo_alignment: "left",
+        width,
+      });
+    };
+
+    const existingScript = document.querySelector<HTMLScriptElement>(
+      'script[src="https://accounts.google.com/gsi/client"]'
+    );
+
+    if (window.google?.accounts?.id) {
+      renderGoogleButton();
+    } else if (existingScript) {
+      existingScript.addEventListener("load", renderGoogleButton, { once: true });
+    } else {
+      const script = document.createElement("script");
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      script.addEventListener("load", renderGoogleButton, { once: true });
+      script.addEventListener(
+        "error",
+        () => toast.error("Nao foi possivel carregar o login do Google. Tente novamente."),
+        { once: true }
+      );
+      document.head.appendChild(script);
     }
-  };
+
+    return () => {
+      disposed = true;
+      existingScript?.removeEventListener("load", renderGoogleButton);
+    };
+  }, [handleGoogleCredential]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +158,7 @@ export default function Auth() {
       if (error) {
         toast.error("Erro ao entrar: " + error.message);
       } else if (data.user) {
-        await ensureProfile(); // Sincroniza email no perfil
+        await ensureProfile();
         toast.success("Login realizado com sucesso!");
         navigate("/home");
       }
@@ -69,7 +173,7 @@ export default function Auth() {
       if (error) {
         toast.error("Erro ao criar conta: " + error.message);
       } else {
-        await ensureProfile(); // Sincroniza email no perfil
+        await ensureProfile();
         toast.success("Conta criada! Verifique seu e-mail para confirmar.");
         navigate("/onboarding");
       }
@@ -80,7 +184,6 @@ export default function Auth() {
 
   return (
     <div className="platform-standalone auth-viewport flex">
-      {/* Left side - Branding */}
       <div className="relative hidden h-full lg:flex lg:w-1/2 items-center justify-center overflow-hidden bg-[#050807]">
         <video
           className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
@@ -99,10 +202,8 @@ export default function Auth() {
         </video>
       </div>
 
-      {/* Right side - Form */}
       <div className="flex h-full w-full items-center justify-center overflow-y-auto bg-transparent px-6 py-4 lg:w-1/2">
         <div className="w-full max-w-md space-y-4">
-          {/* Mobile branding */}
           <div className="lg:hidden text-center">
             <h1 className="text-4xl font-bold text-primary mb-2">OLI</h1>
             <p className="text-muted-foreground">Aluguel de carros entre particulares</p>
@@ -113,27 +214,19 @@ export default function Auth() {
               {isLogin ? "Entrar" : "Criar conta"}
             </h2>
 
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleGoogleLogin}
-              disabled={loading || googleLoading}
-              className="h-11 w-full gap-3 bg-background text-foreground hover:bg-muted"
+            <div
+              className={`relative flex min-h-11 w-full items-center justify-center overflow-hidden ${
+                googleLoading || loading ? "pointer-events-none opacity-60" : ""
+              }`}
             >
-              {googleLoading ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-                <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-                  <path fill="#4285F4" d="M21.6 12.23c0-.71-.06-1.4-.18-2.07H12v3.92h5.38a4.6 4.6 0 0 1-2 3.02v2.54h3.24c1.9-1.75 2.98-4.33 2.98-7.41Z" />
-                  <path fill="#34A853" d="M12 22c2.7 0 4.97-.9 6.63-2.36l-3.24-2.54c-.9.6-2.05.96-3.39.96-2.61 0-4.82-1.76-5.61-4.13H3.04v2.62A10 10 0 0 0 12 22Z" />
-                  <path fill="#FBBC05" d="M6.39 13.93A6.02 6.02 0 0 1 6.07 12c0-.67.11-1.32.32-1.93V7.45H3.04A10 10 0 0 0 2 12c0 1.61.38 3.14 1.04 4.55l3.35-2.62Z" />
-                  <path fill="#EA4335" d="M12 5.94c1.47 0 2.79.5 3.83 1.5l2.87-2.87A9.64 9.64 0 0 0 12 2 10 10 0 0 0 3.04 7.45l3.35 2.62C7.18 7.7 9.39 5.94 12 5.94Z" />
-                </svg>
+              <div ref={googleButtonRef} className="flex w-full justify-center" />
+              {googleLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-card/80">
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                </div>
               )}
-              <span>{googleLoading ? "Abrindo Google..." : "Continuar com o Google"}</span>
-            </Button>
+            </div>
 
-            {/* Divider */}
             <div className="relative my-4">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t border-border" />
@@ -182,7 +275,7 @@ export default function Auth() {
                   required
                   minLength={6}
                   className="mt-1 h-12"
-                  placeholder="Mínimo 6 caracteres"
+                  placeholder="Minimo 6 caracteres"
                 />
               </div>
 
@@ -202,14 +295,14 @@ export default function Auth() {
                 className="text-sm text-primary hover:underline"
               >
                 {isLogin
-                  ? "Não tem conta? Criar conta"
-                  : "Já tem conta? Entrar"}
+                  ? "Nao tem conta? Criar conta"
+                  : "Ja tem conta? Entrar"}
               </button>
             </div>
           </div>
 
           <p className="text-center text-sm text-muted-foreground">
-            Ao criar sua conta, você concorda com nossos termos de uso e política de privacidade.
+            Ao criar sua conta, voce concorda com nossos termos de uso e politica de privacidade.
           </p>
         </div>
       </div>
