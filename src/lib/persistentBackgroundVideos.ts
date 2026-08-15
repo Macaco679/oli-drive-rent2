@@ -14,9 +14,11 @@ const getTopHero = () =>
 const liveWallpapers = () => {
   const videos: HTMLVideoElement[] = [];
   const topHero = getTopHero();
-  const footer = document.querySelector<HTMLVideoElement>("footer video");
+  const footerVideos = document.querySelectorAll<HTMLVideoElement>("footer video");
   if (topHero) videos.push(topHero);
-  if (footer && footer !== topHero) videos.push(footer);
+  footerVideos.forEach((video) => {
+    if (video !== topHero) videos.push(video);
+  });
   return videos;
 };
 
@@ -45,8 +47,7 @@ const configure = (video: HTMLVideoElement) => {
     }
   }
 
-  const footer = document.querySelector<HTMLVideoElement>("footer video");
-  if (footer === video && video.getAttribute("src") !== FOOTER_SOURCE) {
+  if (video.closest("footer") && video.getAttribute("src") !== FOOTER_SOURCE) {
     video.setAttribute("src", FOOTER_SOURCE);
     video.removeAttribute("poster");
     video.load();

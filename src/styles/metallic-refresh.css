@@ -279,8 +279,11 @@ section[class~="bg-secondary/30"] + section .grid > div p {
 
 /* The live wallpaper must read as VIDEO: no blur and only a light tint. */
 footer > video {
+  object-fit: contain !important;
+  object-position: center center !important;
+  background: #062d29;
   filter: saturate(1.12) contrast(1.06) brightness(0.94) !important;
-  transform: scale(1.005) !important;
+  transform: none !important;
 }
 
 .footer-video-overlay {
