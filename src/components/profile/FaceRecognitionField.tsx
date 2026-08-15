@@ -309,15 +309,22 @@ export function FaceRecognitionField({ currentFaceUrl, validation, onFaceChange 
       let resolvedValidatedAt: string | null = null;
 
       try {
-        const webhookUrl = "https://n8n.srv1153225.hstgr.cloud/webhook/oli-face-validation";
-        const webhookResponse = await fetch(webhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(faceRequestPayload),
-        });
+        // Passa pelo webhook-proxy como todos os outros fluxos, em vez de
+        // chamar o n8n direto do navegador. Isso mantém a URL do n8n fora
+        // do bundle do cliente e evita CORS.
+        const { data: webhookData, error: webhookError } = await supabase.functions.invoke(
+          "webhook-proxy",
+          {
+            body: {
+              _webhook_target: "oli-face-validation",
+              ...faceRequestPayload,
+            },
+          }
+        );
 
-        if (webhookResponse.ok) {
-          const webhookData = await webhookResponse.json().catch(() => null);
+        if (webhookError) {
+          console.warn("[OLI] validação facial indisponível (não-crítico):", webhookError);
+        } else {
           if (webhookData && typeof webhookData === "object") {
             const payload = webhookData as {
               status?: string;
