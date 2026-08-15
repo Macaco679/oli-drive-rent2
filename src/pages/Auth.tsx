@@ -88,7 +88,7 @@ export default function Auth() {
           controlsList="nodownload noplaybackrate noremoteplayback"
           aria-hidden="true"
         >
-          <source src="/videos/oli-login.mp4" type="video/mp4" />
+          <source src="/videos/oli-login-untitled12-original.mp4" type="video/mp4" />
           <img src="/videos/oli-login.gif" alt="" />
         </video>
       </div>
