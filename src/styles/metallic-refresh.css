@@ -281,7 +281,7 @@ section[class~="bg-secondary/30"] + section .grid > div p {
 footer > video {
   object-fit: contain !important;
   object-position: center center !important;
-  background: #062d29;
+  background: transparent;
   filter: saturate(1.12) contrast(1.06) brightness(0.94) !important;
   transform: none !important;
 }

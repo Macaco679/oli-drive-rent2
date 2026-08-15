@@ -596,7 +596,7 @@ section[class~="bg-secondary/30"] + section .grid > div p {
 footer.site-live-footer > video {
   object-fit: contain !important;
   object-position: center center !important;
-  background: #062d29;
+  background: transparent;
   filter: saturate(1.08) contrast(1.08) brightness(.76) !important;
   transform: none !important;
 }
@@ -607,11 +607,15 @@ footer.site-live-footer > video.site-live-footer__backdrop {
   transform: scale(1.06) !important;
 }
 footer.site-live-footer > video.site-live-footer__video {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
   object-fit: contain !important;
+  background: transparent !important;
   filter: saturate(1.04) contrast(1.04) brightness(.82) !important;
-  transform: none !important;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
-  mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+  transform: translateX(-50%) !important;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
 }
 footer.site-live-footer .footer-video-overlay {
   background:

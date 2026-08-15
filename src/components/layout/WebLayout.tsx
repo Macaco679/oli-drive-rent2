@@ -165,7 +165,7 @@ export function WebLayout({ children }: WebLayoutProps) {
           aria-hidden="true"
         />
         <video
-          className="site-live-footer__video absolute inset-0 z-[1] h-full w-full object-contain object-center"
+          className="site-live-footer__video absolute left-1/2 top-0 z-[1] h-full w-auto max-w-none"
           src={FOOTER_LIVE_WALLPAPER}
           autoPlay
           loop
