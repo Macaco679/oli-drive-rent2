@@ -134,7 +134,7 @@ export default function Profile() {
 
         <div className="grid gap-8">
           {/* Profile Card */}
-          <div className="bg-card border border-border rounded-2xl p-8">
+          <div className="platform-surface bg-card border border-border p-8">
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <div className="w-24 h-24 rounded-full bg-primary text-primary-foreground text-3xl font-bold flex items-center justify-center">
                 {getInitials(profile.full_name)}
@@ -176,7 +176,7 @@ export default function Profile() {
           <DriverLicenseCard status={licenseStatus} />
 
           {/* Menu Items */}
-          <div className="bg-card border border-border rounded-2xl divide-y divide-border overflow-hidden">
+          <div className="platform-surface platform-list bg-card border border-border overflow-hidden">
             {menuItems.map((item, index) => (
               <button
                 key={index}

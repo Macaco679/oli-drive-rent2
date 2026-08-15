@@ -1,15 +1,17 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useChatWidget } from "@/contexts/ChatWidgetContext";
 import { getCurrentUser } from "@/lib/supabase";
-import { getOrCreateDirectConversation, getMyConversations, markConversationAsRead } from "@/lib/chatService";
+import { getOrCreateDirectConversation, getMyConversations, markConversationAsRead, type Message } from "@/lib/chatService";
 import { supabase } from "@/integrations/supabase/client";
 import { MessageCircle, X } from "lucide-react";
 import { ChatConversationList } from "./ChatConversationList";
 import { ChatConversationView } from "./ChatConversationView";
 import { cn } from "@/lib/utils";
 import { useNotificationSound } from "@/hooks/useNotificationSound";
+import { useLocation } from "react-router-dom";
 
 export function ChatWidget() {
+  const location = useLocation();
   const {
     isOpen,
     activeConversationId,
@@ -66,7 +68,7 @@ export function ChatWidget() {
           table: "oli_messages",
         },
         async (payload) => {
-          const newMsg = payload.new as any;
+          const newMsg = payload.new as Message;
           if (!newMsg) return;
 
           // Ignore own messages
@@ -155,7 +157,9 @@ export function ChatWidget() {
     setTimeout(loadUnreadCount, 300);
   }, [openConversation, loadUnreadCount]);
 
-  if (loading || !isAuthenticated) {
+  const isStandaloneRoute = ["/auth", "/auth/callback", "/onboarding"].includes(location.pathname);
+
+  if (loading || !isAuthenticated || isStandaloneRoute) {
     return null;
   }
 

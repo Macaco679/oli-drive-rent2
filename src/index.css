@@ -40,6 +40,9 @@ All colors MUST be HSL.
     --ring: 175 60% 24%;
 
     --radius: 0.75rem;
+    --radius-control: 0.875rem;
+    --radius-surface: 1.25rem;
+    --radius-feature: 1.5rem;
 
     --metal-deep: 175 62% 16%;
     --metal-mid: 172 48% 28%;
@@ -51,6 +54,10 @@ All colors MUST be HSL.
     --gradient-metal: linear-gradient(115deg, hsl(var(--metal-deep)), hsl(var(--metal-mid)) 48%, hsl(var(--metal-bright)) 100%);
     --shadow-card: 0 1px 2px hsl(220 20% 20% / 0.06), 0 2px 8px hsl(220 20% 20% / 0.06);
     --shadow-elevated: 0 4px 12px hsl(175 45% 16% / 0.08), 0 18px 42px hsl(175 45% 16% / 0.13);
+    --surface-border: hsl(var(--metal-line) / 0.34);
+    --surface-divider: hsl(var(--metal-line) / 0.22);
+    --surface-background: linear-gradient(145deg, hsl(0 0% 100% / 0.96), hsl(168 26% 97% / 0.94));
+    --surface-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.92), 0 16px 38px hsl(var(--metal-deep) / 0.085);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;

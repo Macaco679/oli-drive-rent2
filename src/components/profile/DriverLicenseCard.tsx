@@ -55,7 +55,7 @@ export function DriverLicenseCard({ status }: DriverLicenseCardProps) {
 
   return (
     <div 
-      className="bg-card border-2 border-primary/20 rounded-2xl overflow-hidden cursor-pointer hover:border-primary/40 transition-colors"
+      className="platform-surface bg-card border border-border overflow-hidden cursor-pointer hover:border-primary/40 transition-colors"
       onClick={handleClick}
     >
       <div className="p-6 flex items-center gap-4">

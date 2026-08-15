@@ -73,7 +73,7 @@ export default function Auth() {
   };
 
   return (
-    <div className="platform-standalone flex h-[100dvh] max-h-[100dvh] overflow-hidden">
+    <div className="platform-standalone auth-viewport flex">
       {/* Left side - Branding */}
       <div className="relative hidden h-full lg:flex lg:w-1/2 items-center justify-center overflow-hidden bg-[#050807]">
         <video
