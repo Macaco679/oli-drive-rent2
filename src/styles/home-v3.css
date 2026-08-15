@@ -594,33 +594,11 @@ section[class~="bg-secondary/30"] + section .grid > div p {
 
 /* ---------- FOOTER ---------- */
 footer.site-live-footer > video {
-  object-fit: contain !important;
+  object-fit: cover !important;
   object-position: center center !important;
   background: transparent;
-  filter: saturate(1.08) contrast(1.08) brightness(.76) !important;
+  filter: none !important;
   transform: none !important;
-}
-footer.site-live-footer > video.site-live-footer__backdrop {
-  object-fit: cover !important;
-  background: transparent;
-  filter: blur(12px) saturate(.9) brightness(.62) !important;
-  transform: scale(1.06) !important;
-}
-footer.site-live-footer > video.site-live-footer__video {
-  width: auto !important;
-  min-width: 0 !important;
-  max-width: none !important;
-  object-fit: contain !important;
-  background: transparent !important;
-  filter: saturate(1.04) contrast(1.04) brightness(.82) !important;
-  transform: translateX(-50%) !important;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
-  mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
-}
-footer.site-live-footer .footer-video-overlay {
-  background:
-    radial-gradient(circle at 18% 28%, rgba(54, 145, 122, .08), transparent 34%),
-    linear-gradient(100deg, rgba(3, 31, 28, .68), rgba(4, 43, 37, .46) 48%, rgba(3, 31, 28, .70)) !important;
 }
 footer.site-live-footer .site-shell { text-shadow: 0 2px 14px rgba(1, 24, 21, .58); }
 

@@ -318,12 +318,6 @@ All colors MUST be HSL.
     background: var(--gradient-metal);
   }
 
-  .footer-video-overlay {
-    background:
-      radial-gradient(circle at 18% 24%, hsl(var(--metal-bright) / 0.12), transparent 34%),
-      linear-gradient(110deg, hsl(var(--metal-deep) / 0.94), hsl(174 47% 13% / 0.86) 52%, hsl(176 52% 10% / 0.93));
-  }
-
   .footer-link {
     color: hsl(0 0% 100% / 0.72);
     transition: color 180ms ease, transform 180ms ease;

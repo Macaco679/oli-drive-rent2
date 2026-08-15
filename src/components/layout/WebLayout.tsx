@@ -155,7 +155,7 @@ export function WebLayout({ children }: WebLayoutProps) {
       {/* Footer */}
       <footer className="site-live-footer relative isolate overflow-hidden border-t border-emerald-200/20 py-10 lg:py-12 mt-auto text-white">
         <video
-          className="site-live-footer__backdrop absolute inset-0 z-0 h-full w-full"
+          className="site-live-footer__video absolute inset-0 z-0 h-full w-full object-cover object-center"
           src={FOOTER_LIVE_WALLPAPER}
           autoPlay
           loop
@@ -164,20 +164,9 @@ export function WebLayout({ children }: WebLayoutProps) {
           preload="auto"
           aria-hidden="true"
         />
-        <video
-          className="site-live-footer__video absolute left-1/2 top-0 z-[1] h-full w-auto max-w-none"
-          src={FOOTER_LIVE_WALLPAPER}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          aria-hidden="true"
-        />
-        <div className="footer-video-overlay absolute inset-0 z-[2]" aria-hidden="true" />
-        <div className="absolute inset-x-0 top-0 z-[3] h-px bg-gradient-to-r from-transparent via-emerald-200/60 to-transparent" />
+        <div className="absolute inset-x-0 top-0 z-[1] h-px bg-gradient-to-r from-transparent via-emerald-200/60 to-transparent" />
 
-        <div className="site-shell relative z-[4]">
+        <div className="site-shell relative z-[2]">
           <div className="grid grid-cols-1 md:grid-cols-[1.2fr_.8fr_1fr] gap-9 lg:gap-14">
             <div className="max-w-xl">
               <div className="flex items-center gap-3 mb-4">
