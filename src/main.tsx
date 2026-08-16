@@ -8,6 +8,7 @@ import "./styles/home-quick-actions.css";
 import "./styles/home-benefits-tilt.css";
 import "./styles/home-benefits-tilt-override.css";
 import "./styles/home-benefits-hq.css";
+import "./styles/mobile-responsive.css";
 import "./lib/quickActionReveal";
 import "./lib/benefitTiltEnhancer";
 
