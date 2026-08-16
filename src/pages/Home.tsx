@@ -333,18 +333,6 @@ export default function Home() {
     });
   };
 
-  // Busca ao vivo: assim que o usuário digita pelo menos 2 caracteres no
-  // campo de carro, leva direto para os resultados após uma pequena pausa
-  // (debounce), sem precisar clicar em "Buscar carros".
-  useEffect(() => {
-    if (searchCar.trim().length < 2) return;
-    const timeout = setTimeout(() => {
-      handleSearch();
-    }, 600);
-    return () => clearTimeout(timeout);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchCar]);
-
   const usageTypes = [
     { id: "app", label: "Motorista de app" },
     { id: "daily", label: "Uso diário" },
