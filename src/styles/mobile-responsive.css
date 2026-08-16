@@ -1,0 +1,326 @@
+/* OLI mobile hardening.
+   Everything in this file is mobile-only so the approved desktop layout stays untouched. */
+
+@media (max-width: 767px) {
+  html,
+  body,
+  #root,
+  .platform-shell,
+  .platform-main {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: clip;
+  }
+
+  body {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  .site-shell {
+    padding-inline: 1rem;
+  }
+
+  /* Header: keep all controls inside the viewport and make authenticated
+     navigation scroll instead of squeezing labels or overflowing. */
+  .metal-header > .site-shell > div {
+    height: 3.75rem;
+    gap: .75rem;
+  }
+
+  .metal-header > .site-shell a > span:first-child {
+    font-size: 1.65rem;
+    line-height: 1;
+  }
+
+  .metal-header nav.md\:hidden > div {
+    justify-content: flex-start;
+    gap: .25rem;
+    padding: .45rem .6rem .55rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .metal-header nav.md\:hidden > div::-webkit-scrollbar {
+    display: none;
+  }
+
+  .metal-header nav.md\:hidden a {
+    flex: 1 0 4.8rem;
+    min-width: 4.8rem;
+    max-width: 6.5rem;
+    min-height: 3.15rem;
+    padding: .42rem .5rem;
+    scroll-snap-align: start;
+  }
+
+  .metal-header nav.md\:hidden a span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: .72rem;
+  }
+
+  /* Shared internal pages: prevent long text, tabs, buttons, cards and forms
+     from forcing horizontal overflow. */
+  .platform-main--internal,
+  .platform-main--internal > *,
+  .platform-main--internal :is(section, article, aside, form, div) {
+    min-width: 0;
+  }
+
+  .platform-main--internal :is(h1, h2, h3, h4, p, span, a, button, label) {
+    overflow-wrap: anywhere;
+  }
+
+  .platform-main--internal > div[class*='max-w-'],
+  .platform-main--internal > section > div[class*='max-w-'],
+  .platform-page-frame__inner {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .platform-page-frame {
+    padding: 1.1rem .9rem 2.75rem;
+  }
+
+  .platform-page-banner {
+    padding-inline: 1rem !important;
+  }
+
+  .platform-main--internal [role='tablist'] {
+    max-width: 100%;
+    overflow-x: auto;
+    justify-content: flex-start;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .platform-main--internal [role='tablist']::-webkit-scrollbar {
+    display: none;
+  }
+
+  .platform-main--internal [role='tab'] {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .platform-main--internal table {
+    max-width: 100%;
+  }
+
+  .platform-main--internal :is(input, textarea, select, [role='combobox']),
+  .platform-standalone-card :is(input, textarea, select, [role='combobox']) {
+    min-width: 0;
+    max-width: 100%;
+    font-size: 16px !important; /* prevents Safari/iOS input zoom */
+  }
+
+  /* Radix/shadcn overlays should never render wider/taller than a phone. */
+  [role='dialog'] {
+    max-width: calc(100vw - 1.25rem) !important;
+    max-height: calc(100dvh - 1.25rem) !important;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  [data-radix-popper-content-wrapper] {
+    max-width: 100vw !important;
+  }
+
+  [data-radix-popper-content-wrapper] > * {
+    max-width: calc(100vw - 1rem) !important;
+  }
+
+  /* Authentication/onboarding remain centered but gain safe phone gutters. */
+  .auth-viewport > div:last-child {
+    padding-inline: 1rem !important;
+    padding-block: .75rem !important;
+  }
+
+  .auth-viewport .platform-standalone-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.2rem !important;
+  }
+
+  /* ---------- HOME HERO ----------
+     The desktop hero intentionally uses cover. On portrait phones that crops
+     the landscape master heavily and can remove the branded OLI plate/sign.
+     On mobile we show the COMPLETE original frame and let the poster fill the
+     remaining hero area behind it. No desktop rule is changed. */
+  .platform-main--home > section:first-child {
+    background-color: #0b3732 !important;
+    background-image:
+      linear-gradient(180deg, rgba(5, 31, 28, .16), rgba(5, 31, 28, .44)),
+      url('/videos/hero-untitled3-poster.jpg') !important;
+    background-position: center center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+  }
+
+  .platform-main--home > section:first-child > video {
+    object-fit: contain !important;
+    object-position: center top !important;
+    background: transparent !important;
+  }
+
+  .platform-main--home > section:first-child > video + div {
+    background:
+      linear-gradient(180deg, rgba(3, 24, 21, .12) 0%, rgba(3, 24, 21, .08) 32%, rgba(3, 24, 21, .34) 100%) !important;
+  }
+
+  .platform-main--home > section:first-child > div.relative.z-10 > div {
+    padding: 1.65rem 1rem 2rem !important;
+  }
+
+  .platform-main--home > section:first-child .grid.lg\:grid-cols-2 {
+    gap: 1.25rem !important;
+  }
+
+  .platform-main--home > section:first-child h1 {
+    margin-top: 0 !important;
+    margin-bottom: .7rem !important;
+    max-width: 100% !important;
+    font-size: clamp(1.8rem, 9.4vw, 2.55rem) !important;
+    line-height: 1.05 !important;
+    letter-spacing: -.04em !important;
+  }
+
+  .platform-main--home > section:first-child h1 + p {
+    margin-bottom: 1rem !important;
+    max-width: 100% !important;
+    font-size: .98rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .platform-main--home > section:first-child div[class~='bg-card'][class~='text-foreground'][class~='rounded-2xl'] {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 1rem !important;
+    border-radius: 1.2rem !important;
+    gap: .7rem !important;
+  }
+
+  .platform-main--home > section:first-child div[class~='bg-card'][class~='text-foreground'][class~='rounded-2xl'] > h3 {
+    margin-bottom: .35rem !important;
+    font-size: 1.22rem !important;
+  }
+
+  .platform-main--home > section:first-child div[class~='bg-card'][class~='text-foreground'][class~='rounded-2xl'] > div:nth-of-type(1),
+  .platform-main--home > section:first-child div[class~='bg-card'][class~='text-foreground'][class~='rounded-2xl'] > div:nth-of-type(2) {
+    min-height: 3.55rem !important;
+    padding: .5rem .8rem .42rem !important;
+  }
+
+  .platform-main--home > section:first-child div[class~='bg-card'][class~='text-foreground'][class~='rounded-2xl'] > div:nth-of-type(1) input,
+  .platform-main--home > section:first-child div[class~='bg-card'][class~='text-foreground'][class~='rounded-2xl'] > div:nth-of-type(2) input {
+    height: 1.9rem !important;
+    font-size: 16px !important;
+  }
+
+  .platform-main--home > section:first-child div[class~='bg-card'][class~='text-foreground'][class~='rounded-2xl'] > div:nth-of-type(3) {
+    grid-template-columns: 1fr !important;
+    gap: .6rem !important;
+  }
+
+  .platform-main--home > section:first-child div[class~='bg-card'][class~='text-foreground'][class~='rounded-2xl'] > div:nth-of-type(3) button {
+    width: 100% !important;
+    height: 3rem !important;
+  }
+
+  .platform-main--home > section:first-child div[class~='bg-card'][class~='text-foreground'][class~='rounded-2xl'] > div:nth-of-type(4) {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: .4rem !important;
+  }
+
+  .platform-main--home > section:first-child div[class~='bg-card'][class~='text-foreground'][class~='rounded-2xl'] > div:nth-of-type(4) > * {
+    flex: 0 1 auto;
+    min-width: 0;
+    padding: .42rem .62rem !important;
+  }
+
+  .platform-main--home > section:first-child div[class~='bg-card'][class~='text-foreground'][class~='rounded-2xl'] > button:last-child {
+    width: 100% !important;
+    height: 3.05rem !important;
+  }
+
+  /* Home sections/cards: tighter phone rhythm without changing tablet/desktop. */
+  .platform-main--home > section:not(:first-child) {
+    overflow-x: clip;
+  }
+
+  .platform-main--home > section:not(:first-child) > div[class*='max-w-'] {
+    padding-inline: 1rem !important;
+  }
+
+  .vehicle-card-v4__media {
+    height: 11.5rem !important;
+  }
+
+  /* Footer video uses the same no-crop rule on phones. The footer itself
+     supplies the dark brand background where the master does not fill. */
+  footer.site-live-footer {
+    background: #092f2b !important;
+    padding-block: 2.25rem !important;
+  }
+
+  footer.site-live-footer > video,
+  footer.site-live-footer .site-live-footer__video {
+    object-fit: contain !important;
+    object-position: center center !important;
+  }
+
+  footer.site-live-footer .site-shell {
+    padding-inline: 1rem;
+  }
+
+  footer.site-live-footer .grid {
+    gap: 1.75rem !important;
+  }
+
+  footer.site-live-footer .footer-pill {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  /* Touch devices do not need desktop hover translation, which can leave
+     cards visually offset after a tap in iOS Safari. */
+  .metal-card:hover,
+  .vehicle-card-v4:hover,
+  .platform-main--internal :is([class*='hover:shadow'], .hover-lift):hover,
+  .platform-main--internal button[class*='bg-primary']:hover,
+  .platform-main--internal a[class*='bg-primary']:hover {
+    transform: none !important;
+  }
+}
+
+/* Very narrow devices (older iPhones / embedded browsers). */
+@media (max-width: 390px) {
+  .site-shell {
+    padding-inline: .8rem;
+  }
+
+  .platform-main--home > section:first-child > div.relative.z-10 > div {
+    padding-inline: .8rem !important;
+  }
+
+  .platform-main--home > section:first-child div[class~='bg-card'][class~='text-foreground'][class~='rounded-2xl'] {
+    padding: .85rem !important;
+  }
+
+  .platform-main--home > section:first-child h1 {
+    font-size: clamp(1.68rem, 9.2vw, 2.2rem) !important;
+  }
+
+  .metal-header nav.md\:hidden a {
+    flex-basis: 4.55rem;
+    min-width: 4.55rem;
+  }
+}
