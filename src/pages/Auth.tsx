@@ -9,9 +9,6 @@ import { ensureProfile } from "@/lib/ensureProfile";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
-// Client ID Web confirmado no Google Cloud da OLI.
-// Nao usamos variavel de ambiente aqui para evitar que um valor antigo da Vercel
-// sobrescreva silenciosamente o cliente OAuth que possui as origens corretas.
 const GOOGLE_CLIENT_ID =
   "782627582997-i394igrd61r7ca34ne1tugvkh49dsp04.apps.googleusercontent.com";
 
@@ -61,15 +58,13 @@ export default function Auth() {
   const handleGoogleCredential = useCallback(
     async (response: GoogleCredentialResponse) => {
       if (!response.credential) {
-        toast.error("O Google nao retornou uma credencial valida. Tente novamente.");
+        toast.error("O Google não retornou uma credencial válida. Tente novamente.");
         return;
       }
 
       setGoogleLoading(true);
 
       try {
-        // Google autentica diretamente no dominio da OLI. O Supabase recebe
-        // somente o ID token em segundo plano, sem redirect visivel para *.supabase.co.
         const { error } = await supabase.auth.signInWithIdToken({
           provider: "google",
           token: response.credential,
@@ -85,7 +80,13 @@ export default function Auth() {
         navigate("/home");
       } catch (error) {
         const message = error instanceof Error ? error.message : "Erro inesperado no login com Google.";
-        toast.error("Erro ao entrar com Google: " + message);
+        const isNetworkError = /failed to fetch|networkerror|load failed/i.test(message);
+
+        toast.error(
+          isNetworkError
+            ? "Não foi possível conectar ao servidor de autenticação. Tente novamente em instantes ou use e-mail e senha."
+            : "Erro ao entrar com Google: " + message
+        );
       } finally {
         setGoogleLoading(false);
       }
@@ -99,8 +100,6 @@ export default function Auth() {
     const renderGoogleButton = () => {
       if (disposed || !window.google?.accounts?.id || !googleButtonRef.current) return;
 
-      // Configuracao minima recomendada pelo Google para callback JS em popup.
-      // Nao passamos login_uri/redirect_uri nem parametros de FedCM aqui.
       window.google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         callback: handleGoogleCredential,
@@ -137,7 +136,7 @@ export default function Auth() {
       script.addEventListener("load", renderGoogleButton, { once: true });
       script.addEventListener(
         "error",
-        () => toast.error("Nao foi possivel carregar o login do Google. Tente novamente."),
+        () => toast.error("Não foi possível carregar o login do Google. Tente novamente."),
         { once: true }
       );
       document.head.appendChild(script);
@@ -275,7 +274,7 @@ export default function Auth() {
                   required
                   minLength={6}
                   className="mt-1 h-12"
-                  placeholder="Minimo 6 caracteres"
+                  placeholder="Mínimo 6 caracteres"
                 />
               </div>
 
@@ -295,14 +294,14 @@ export default function Auth() {
                 className="text-sm text-primary hover:underline"
               >
                 {isLogin
-                  ? "Nao tem conta? Criar conta"
-                  : "Ja tem conta? Entrar"}
+                  ? "Não tem conta? Criar conta"
+                  : "Já tem conta? Entrar"}
               </button>
             </div>
           </div>
 
           <p className="text-center text-sm text-muted-foreground">
-            Ao criar sua conta, voce concorda com nossos termos de uso e politica de privacidade.
+            Ao criar sua conta, você concorda com nossos termos de uso e política de privacidade.
           </p>
         </div>
       </div>
