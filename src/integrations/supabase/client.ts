@@ -5,10 +5,44 @@ import type { Database } from './types';
 const SUPABASE_URL = "https://sgpktbljjlixmyjmhppa.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNncGt0YmxqamxpeG15am1ocHBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE5MjksImV4cCI6MjA4NDQ4NzkyOX0.OoTf_1N0KWWGSfnk-6ZE-M2yg5z8wmej6E83bdWKUAU";
 
+// O login visual continua sendo feito diretamente pelo Google Identity Services.
+// A única chamada roteada pelo domínio da OLI é a troca do ID token do Google
+// pela sessão da aplicação. Isso evita falhas de rede/CORS no POST direto para
+// /auth/v1/token sem alterar REST, Storage, Realtime ou os demais fluxos de Auth.
+const oliFetch: typeof fetch = async (input, init) => {
+  const requestUrl =
+    typeof input === 'string'
+      ? input
+      : input instanceof URL
+        ? input.toString()
+        : input.url;
+
+  if (typeof window !== 'undefined') {
+    try {
+      const url = new URL(requestUrl);
+      const isGoogleIdTokenExchange =
+        url.origin === new URL(SUPABASE_URL).origin &&
+        url.pathname === '/auth/v1/token' &&
+        url.searchParams.get('grant_type') === 'id_token';
+
+      if (isGoogleIdTokenExchange) {
+        return fetch('/api/google-auth-token', init);
+      }
+    } catch {
+      // URL inválida: deixa o fetch padrão lidar com o erro normalmente.
+    }
+  }
+
+  return fetch(input, init);
+};
+
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  global: {
+    fetch: oliFetch,
+  },
   auth: {
     storage: localStorage,
     persistSession: true,
