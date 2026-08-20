@@ -1,5 +1,9 @@
 {
   "rewrites": [
+    {
+      "source": "/api/google-auth-token",
+      "destination": "https://sgpktbljjlixmyjmhppa.supabase.co/auth/v1/token?grant_type=id_token"
+    },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
