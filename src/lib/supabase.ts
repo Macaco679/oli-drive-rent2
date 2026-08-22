@@ -251,7 +251,7 @@ export const updateProfile = async (userId: string, updates: Partial<OliProfile>
 
 export const getAvailableVehicles = async (limit?: number): Promise<OliVehicle[]> => {
   let query = supabase
-    .from("oli_vehicles")
+    .from("oli_vehicles_public")
     .select("*")
     .eq("is_active", true)
     .eq("status", "available");
