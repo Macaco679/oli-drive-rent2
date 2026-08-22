@@ -352,6 +352,13 @@ export type Database = {
             referencedRelation: "oli_vehicles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "oli_inspections_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "oli_vehicles_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       oli_messages: {
@@ -775,6 +782,13 @@ export type Database = {
             referencedRelation: "oli_vehicles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "oli_rentals_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "oli_vehicles_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       oli_user_addresses: {
@@ -903,6 +917,13 @@ export type Database = {
             referencedRelation: "oli_vehicles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "oli_vehicle_photos_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "oli_vehicles_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       oli_vehicles: {
@@ -1025,7 +1046,106 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      oli_vehicles_public: {
+        Row: {
+          body_type: Database["public"]["Enums"]["oli_vehicle_body_type"] | null
+          brand: string | null
+          color: string | null
+          created_at: string | null
+          daily_price: number | null
+          deposit_amount: number | null
+          driver_daily_price: string | null
+          driver_notes: string | null
+          fuel_type: string | null
+          has_driver_option: string | null
+          id: string | null
+          is_active: boolean | null
+          is_popular: boolean | null
+          location_city: string | null
+          location_state: string | null
+          mileage_limit_per_day: string | null
+          model: string | null
+          monthly_price: number | null
+          owner_id: string | null
+          pickup_neighborhood: string | null
+          seats: number | null
+          segment: Database["public"]["Enums"]["oli_vehicle_segment"] | null
+          status: Database["public"]["Enums"]["oli_vehicle_status"] | null
+          title: string | null
+          transmission: Database["public"]["Enums"]["oli_transmission"] | null
+          updated_at: string | null
+          vehicle_type: Database["public"]["Enums"]["oli_vehicle_type"] | null
+          weekly_price: number | null
+          year: number | null
+        }
+        Insert: {
+          body_type?:
+            | Database["public"]["Enums"]["oli_vehicle_body_type"]
+            | null
+          brand?: string | null
+          color?: string | null
+          created_at?: string | null
+          daily_price?: number | null
+          deposit_amount?: number | null
+          driver_daily_price?: string | null
+          driver_notes?: string | null
+          fuel_type?: string | null
+          has_driver_option?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_popular?: boolean | null
+          location_city?: string | null
+          location_state?: string | null
+          mileage_limit_per_day?: string | null
+          model?: string | null
+          monthly_price?: number | null
+          owner_id?: string | null
+          pickup_neighborhood?: string | null
+          seats?: number | null
+          segment?: Database["public"]["Enums"]["oli_vehicle_segment"] | null
+          status?: Database["public"]["Enums"]["oli_vehicle_status"] | null
+          title?: string | null
+          transmission?: Database["public"]["Enums"]["oli_transmission"] | null
+          updated_at?: string | null
+          vehicle_type?: Database["public"]["Enums"]["oli_vehicle_type"] | null
+          weekly_price?: number | null
+          year?: number | null
+        }
+        Update: {
+          body_type?:
+            | Database["public"]["Enums"]["oli_vehicle_body_type"]
+            | null
+          brand?: string | null
+          color?: string | null
+          created_at?: string | null
+          daily_price?: number | null
+          deposit_amount?: number | null
+          driver_daily_price?: string | null
+          driver_notes?: string | null
+          fuel_type?: string | null
+          has_driver_option?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_popular?: boolean | null
+          location_city?: string | null
+          location_state?: string | null
+          mileage_limit_per_day?: string | null
+          model?: string | null
+          monthly_price?: number | null
+          owner_id?: string | null
+          pickup_neighborhood?: string | null
+          seats?: number | null
+          segment?: Database["public"]["Enums"]["oli_vehicle_segment"] | null
+          status?: Database["public"]["Enums"]["oli_vehicle_status"] | null
+          title?: string | null
+          transmission?: Database["public"]["Enums"]["oli_transmission"] | null
+          updated_at?: string | null
+          vehicle_type?: Database["public"]["Enums"]["oli_vehicle_type"] | null
+          weekly_price?: number | null
+          year?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       oli_create_direct_conversation: {
