@@ -117,6 +117,7 @@ export const Footer = () => {
           <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 mb-3">
             <Link to="/politica-de-privacidade" className="text-white/80 hover:text-primary transition-colors">Política de Privacidade</Link>
             <Link to="/termos-de-uso" className="text-white/80 hover:text-primary transition-colors">Termos de Uso</Link>
+            <Link to="/politica-de-seguranca" className="text-white/80 hover:text-primary transition-colors">Política de Segurança</Link>
             <Link to="/auth" className="text-white/80 hover:text-primary transition-colors">Área do Cliente</Link>
           </div>
           <p>© {currentYear} Oli Locação. Todos os direitos reservados.</p>
