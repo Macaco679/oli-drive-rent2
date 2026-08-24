@@ -7,7 +7,7 @@ import { ensureProfile } from "@/lib/ensureProfile";
 import { DriverLicenseCard } from "@/components/profile/DriverLicenseCard";
 import { DriverLicenseDebug } from "@/components/profile/DriverLicenseDebug";
 import { useDriverLicense } from "@/contexts/DriverLicenseContext";
-import { User, Car, HelpCircle, LogOut, ChevronRight, Mail, Phone, Receipt, MessageCircle } from "lucide-react";
+import { User, Car, HelpCircle, LogOut, ChevronRight, Mail, Phone, Receipt, MessageCircle, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Profile() {
@@ -102,6 +102,12 @@ export default function Profile() {
       label: "Histórico de pagamentos",
       subtitle: "Ver recibos e comprovantes PIX",
       onClick: () => navigate("/profile/payments"),
+    },
+    {
+      icon: ShieldCheck,
+      label: "Segurança",
+      subtitle: "Autenticação de dois fatores",
+      onClick: () => navigate("/profile/security"),
     },
     {
       icon: Car,
