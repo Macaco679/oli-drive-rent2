@@ -28,6 +28,7 @@ import VehicleInspection from "./pages/VehicleInspection";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfUse from "./pages/TermsOfUse";
 import PoliticaDeSeguranca from "./pages/PoliticaDeSeguranca";
+import SecuritySettings from "./pages/SecuritySettings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -55,6 +56,7 @@ const App = () => (
               <Route path="/profile" element={<Profile />} />
               <Route path="/profile/edit" element={<ProfileEdit />} />
               <Route path="/profile/payments" element={<PaymentHistory />} />
+              <Route path="/profile/security" element={<SecuritySettings />} />
               <Route path="/profile/driver-license" element={<DriverLicenseForm />} />
               <Route path="/profile/register-vehicle" element={<RegisterVehicle />} />
               <Route path="/my-vehicles" element={<MyVehicles />} />
