@@ -5,6 +5,7 @@
 import jsPDF from "jspdf";
 import { Inspection, InspectionPhoto, INSPECTION_PHOTO_TYPES } from "./inspectionService";
 import { OliVehicle, OliRental, OliProfile } from "./supabase";
+import { resolvePrivateStorageUrl } from "./storageUrl";
 
 export interface InspectionReportData {
   inspection: Inspection;
@@ -18,7 +19,9 @@ export interface InspectionReportData {
 // Convert image URL to base64 for embedding in PDF
 async function imageUrlToBase64(url: string): Promise<string | null> {
   try {
-    const response = await fetch(url);
+    const resolvedUrl = await resolvePrivateStorageUrl("inspection-photos", url);
+    if (!resolvedUrl) return null;
+    const response = await fetch(resolvedUrl);
     const blob = await response.blob();
     return new Promise((resolve) => {
       const reader = new FileReader();
