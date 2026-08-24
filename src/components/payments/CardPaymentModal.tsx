@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { OliRental, OliVehicle } from "@/lib/supabase";
 import { supabase } from "@/integrations/supabase/client";
+import { tokenizeCard } from "@/lib/asaasTokenize";
 import { toast } from "sonner";
 
 interface CardPaymentModalProps {
@@ -152,6 +153,29 @@ export function CardPaymentModal({
       const numInstallments = parseInt(installments);
       const installmentValue = amount / numInstallments;
 
+      // O número completo e o CVV vão direto do navegador para a Asaas
+      // (via Edge Function dedicada) e voltam só como um token — nunca
+      // trafegam pelo webhook-proxy nem pelo n8n em texto puro.
+      let tokenized;
+      try {
+        tokenized = await tokenizeCard(
+          { nome: clientName, email: clientEmail, cpf: cleanCPF, celular: cleanPhone },
+          {
+            holderName: cardName,
+            number: cleanCardNumber,
+            expiryMonth,
+            expiryYear: `20${expiryYear}`,
+            cvv,
+          },
+        );
+      } catch (tokenizeError) {
+        const msg = tokenizeError instanceof Error ? tokenizeError.message : "Cartão recusado. Verifique os dados.";
+        setErrorMsg(msg);
+        toast.error(msg);
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke("webhook-proxy", {
         body: {
           _webhook_target: "oli-pagamento-cartao",
@@ -166,11 +190,9 @@ export function CardPaymentModal({
           valor_parcela: installmentValue,
           cartao: {
             holderName: cardName,
-            number: cleanCardNumber,
-            expiryMonth: expiryMonth,
-            expiryYear: `20${expiryYear}`,
-            cvv: cvv,
+            token: tokenized.creditCardToken,
           },
+          asaasCustomerId: tokenized.asaasCustomerId,
           veículo: {
             placa: rental.vehicle?.plate || "",
           },
