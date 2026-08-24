@@ -1,5 +1,6 @@
 import { MessageSquare, Phone, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
+// rebuild-sync
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
