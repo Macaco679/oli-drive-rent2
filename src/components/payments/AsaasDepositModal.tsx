@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
+import { tokenizeCard } from "@/lib/asaasTokenize";
 import { OliRental, OliVehicle } from "@/lib/supabase";
 import { useContractRealtime } from "@/hooks/useContractRealtime";
 import { useDepositRealtime } from "@/hooks/useDepositRealtime";
@@ -188,6 +189,29 @@ export function AsaasDepositModal({ open, onOpenChange, rental, onDepositComplet
       const numInstallments = parseInt(installments);
       const installmentValue = depositAmount / numInstallments;
 
+      // O número completo e o CVV vão direto do navegador para a Asaas
+      // (via Edge Function dedicada) e voltam só como um token — nunca
+      // trafegam pelo webhook-proxy nem pelo n8n em texto puro.
+      let tokenized;
+      try {
+        tokenized = await tokenizeCard(
+          { nome: clientName, email: clientEmail, cpf: cleanCPF, celular: cleanPhone },
+          {
+            holderName: cardName,
+            number: cleanCardNumber,
+            expiryMonth,
+            expiryYear: `20${expiryYear}`,
+            cvv,
+          },
+        );
+      } catch (tokenizeError) {
+        const msg = tokenizeError instanceof Error ? tokenizeError.message : "Cartão recusado. Verifique os dados.";
+        setErrorMsg(msg);
+        toast.error(msg);
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke("webhook-proxy", {
         body: {
           _webhook_target: "oli-pagamento-cartao",
@@ -202,11 +226,9 @@ export function AsaasDepositModal({ open, onOpenChange, rental, onDepositComplet
           valor_parcela: installmentValue,
           cartao: {
             holderName: cardName,
-            number: cleanCardNumber,
-            expiryMonth,
-            expiryYear: `20${expiryYear}`,
-            cvv,
+            token: tokenized.creditCardToken,
           },
+          asaasCustomerId: tokenized.asaasCustomerId,
           veículo: {
             placa: rental.vehicle?.plate || "",
           },
@@ -231,7 +253,7 @@ export function AsaasDepositModal({ open, onOpenChange, rental, onDepositComplet
         paymentInfo?.status === "CONFIRMED" ||
         paymentInfo?.status === "paid" ||
         raw?.ok === true;
-      const isDeclined =
+    const isDeclined =
         paymentInfo?.status === "DECLINED" ||
         paymentInfo?.status === "failed" ||
         paymentInfo?.approved === false;
@@ -265,8 +287,8 @@ export function AsaasDepositModal({ open, onOpenChange, rental, onDepositComplet
       }
     } catch (err) {
       console.error("Erro ao processar caução:", err);
-      toast.error("Não foi possível processar a caução. Tente novamente.");
-      setErrorMsg("Erro ao processar a caução. Tente novamente.");
+      toast.error("Não foi possível processar a caução, Tente novamente.");
+      setErrorMsg("Erro ao processar a caução, Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -406,7 +428,7 @@ export function AsaasDepositModal({ open, onOpenChange, rental, onDepositComplet
                       <Label htmlFor="depositCvv">CVV</Label>
                       <Input id="depositCvv" type="password" placeholder="•••" value={cvv} onChange={(e) => setCvv(formatCVV(e.target.value))} disabled={loading} />
                     </div>
-                  </div>
+                </div>
                   <div className="space-y-2">
                     <Label htmlFor="depositInstallments">Parcelas</Label>
                     <Select value={installments} onValueChange={setInstallments} disabled={loading}>
