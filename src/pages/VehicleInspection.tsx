@@ -41,6 +41,35 @@ import { InspectionStatusCard } from "@/components/inspection/InspectionStatusCa
 import { InspectionFailedPhotos } from "@/components/inspection/InspectionFailedPhotos";
 import { generateInspectionPDF, InspectionReportData } from "@/lib/inspectionPdfService";
 import { notifyPickupInspectionCompleted, notifyDropoffInspectionCompleted } from "@/lib/notificationService";
+import { resolvePrivateStorageUrl } from "@/lib/storageUrl";
+
+function InspectionPhotoThumb({ photo }: { photo: InspectionPhoto }) {
+  const [url, setUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    resolvePrivateStorageUrl("inspection-photos", photo.image_url).then((resolved) => {
+      if (!cancelled) setUrl(resolved);
+    });
+    return () => { cancelled = true; };
+  }, [photo.image_url]);
+
+  return (
+    <div className="relative rounded-lg overflow-hidden">
+      {url ? (
+        <img src={url} alt={photo.description || "Foto"} className="w-full h-32 object-cover" />
+      ) : (
+        <div className="w-full h-32 bg-secondary flex items-center justify-center">
+          <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+        </div>
+      )}
+      <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs p-2 flex justify-between">
+        <span>{photo.description}</span>
+        {photo.has_damage && <Badge variant="destructive" className="text-[10px]">Avaria</Badge>}
+      </div>
+    </div>
+  );
+}
 
 export default function VehicleInspection() {
   const { rentalId } = useParams<{ rentalId: string }>();
@@ -623,13 +652,7 @@ export default function VehicleInspection() {
             </h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {existingInspection.photos.map((photo) => (
-                <div key={photo.id} className="relative rounded-lg overflow-hidden">
-                  <img src={photo.image_url} alt={photo.description || "Foto"} className="w-full h-32 object-cover" />
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs p-2 flex justify-between">
-                    <span>{photo.description}</span>
-                    {photo.has_damage && <Badge variant="destructive" className="text-[10px]">Avaria</Badge>}
-                  </div>
-                </div>
+                <InspectionPhotoThumb key={photo.id} photo={photo} />
               ))}
             </div>
           </div>
