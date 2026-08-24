@@ -7,7 +7,7 @@ import { signIn, signUp } from "@/lib/supabase";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureProfile } from "@/lib/ensureProfile";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, ShieldCheck } from "lucide-react";
 
 // Client ID Web confirmado no Google Cloud da OLI.
 // Nao usamos variavel de ambiente aqui para evitar que um valor antigo da Vercel
@@ -58,6 +58,33 @@ export default function Auth() {
   const googleButtonRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  // Autenticacao de dois fatores: quando o login (senha ou Google) e valido
+  // mas a conta tem um fator TOTP verificado, o acesso fica pendente ate o
+  // usuario informar o codigo de 6 digitos do app autenticador.
+  const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
+  const [mfaCode, setMfaCode] = useState("");
+  const [mfaVerifying, setMfaVerifying] = useState(false);
+
+  // Chamado depois de QUALQUER login bem-sucedido (senha ou Google). Decide
+  // se o usuario pode entrar direto ou se precisa completar o segundo fator.
+  const proceedAfterAuth = useCallback(async () => {
+    const { data: aal, error: aalError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+
+    if (!aalError && aal && aal.nextLevel === "aal2" && aal.nextLevel !== aal.currentLevel) {
+      const { data: factorsData } = await supabase.auth.mfa.listFactors();
+      const verifiedFactor = factorsData?.totp?.find((f) => f.status === "verified");
+
+      if (verifiedFactor) {
+        setMfaFactorId(verifiedFactor.id);
+        return;
+      }
+    }
+
+    await ensureProfile();
+    toast.success("Login realizado com sucesso!");
+    navigate("/home");
+  }, [navigate]);
+
   const handleGoogleCredential = useCallback(
     async (response: GoogleCredentialResponse) => {
       if (!response.credential) {
@@ -80,9 +107,7 @@ export default function Auth() {
           return;
         }
 
-        await ensureProfile();
-        toast.success("Login realizado com sucesso!");
-        navigate("/home");
+        await proceedAfterAuth();
       } catch (error) {
         const message = error instanceof Error ? error.message : "Erro inesperado no login com Google.";
         toast.error("Erro ao entrar com Google: " + message);
@@ -90,7 +115,7 @@ export default function Auth() {
         setGoogleLoading(false);
       }
     },
-    [navigate]
+    [proceedAfterAuth]
   );
 
   useEffect(() => {
@@ -158,9 +183,7 @@ export default function Auth() {
       if (error) {
         toast.error("Erro ao entrar: " + error.message);
       } else if (data.user) {
-        await ensureProfile();
-        toast.success("Login realizado com sucesso!");
-        navigate("/home");
+        await proceedAfterAuth();
       }
     } else {
       if (!fullName.trim()) {
@@ -181,6 +204,54 @@ export default function Auth() {
 
     setLoading(false);
   };
+
+  const handleMfaVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!mfaFactorId) return;
+
+    const trimmedCode = mfaCode.trim();
+    if (trimmedCode.length !== 6) {
+      toast.error("Digite o código de 6 dígitos do seu aplicativo autenticador");
+      return;
+    }
+
+    setMfaVerifying(true);
+    try {
+      const { data: challenge, error: challengeError } = await supabase.auth.mfa.challenge({
+        factorId: mfaFactorId,
+      });
+
+      if (challengeError || !challenge) {
+        toast.error("Erro ao gerar verificação: " + (challengeError?.message || "tente novamente"));
+        return;
+      }
+
+      const { error: verifyError } = await supabase.auth.mfa.verify({
+        factorId: mfaFactorId,
+        challengeId: challenge.id,
+        code: trimmedCode,
+      });
+
+      if (verifyError) {
+        toast.error("Código inválido. Tente novamente.");
+        return;
+      }
+
+      await ensureProfile();
+      toast.success("Login realizado com sucesso!");
+      navigate("/home");
+    } finally {
+      setMfaVerifying(false);
+    }
+  };
+
+  const handleMfaCancel = async () => {
+    await supabase.auth.signOut();
+    setMfaFactorId(null);
+    setMfaCode("");
+  };
+
+  const mfaStep = mfaFactorId !== null;
 
   return (
     <div className="platform-standalone auth-viewport flex">
@@ -209,97 +280,147 @@ export default function Auth() {
             <p className="text-muted-foreground">Aluguel de carros entre particulares</p>
           </div>
 
-          <div className="platform-standalone-card bg-card p-6 rounded-2xl shadow-xl border border-border">
-            <h2 className="text-2xl font-semibold mb-6 text-center">
-              {isLogin ? "Entrar" : "Criar conta"}
-            </h2>
-
-            <div
-              className={`relative flex min-h-11 w-full items-center justify-center overflow-hidden ${
-                googleLoading || loading ? "pointer-events-none opacity-60" : ""
-              }`}
-            >
-              <div ref={googleButtonRef} className="flex w-full justify-center" />
-              {googleLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-card/80">
-                  <Loader2 className="h-5 w-5 animate-spin" />
+          {mfaStep ? (
+            <div className="platform-standalone-card bg-card p-6 rounded-2xl shadow-xl border border-border">
+              <div className="flex flex-col items-center text-center mb-6">
+                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                  <ShieldCheck className="w-7 h-7 text-primary" />
                 </div>
-              )}
-            </div>
-
-            <div className="relative my-4">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-border" />
+                <h2 className="text-2xl font-semibold">Verificação em duas etapas</h2>
+                <p className="text-muted-foreground mt-1">
+                  Digite o código de 6 dígitos do seu aplicativo autenticador
+                </p>
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">ou</span>
-              </div>
-            </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              {!isLogin && (
+              <form onSubmit={handleMfaVerify} className="space-y-5">
                 <div>
-                  <Label htmlFor="fullName">Nome completo</Label>
+                  <Label htmlFor="mfaCode">Código</Label>
                   <Input
-                    id="fullName"
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required={!isLogin}
-                    className="mt-1 h-12"
-                    placeholder="Seu nome completo"
+                    id="mfaCode"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    maxLength={6}
+                    value={mfaCode}
+                    onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, ""))}
+                    required
+                    className="mt-1 h-12 text-center text-lg tracking-[0.5em]"
+                    placeholder="000000"
+                    autoFocus
                   />
                 </div>
-              )}
 
-              <div>
-                <Label htmlFor="email">E-mail</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="mt-1 h-12"
-                  placeholder="seu@email.com"
-                />
+                <Button
+                  type="submit"
+                  disabled={mfaVerifying}
+                  className="w-full h-12 text-lg"
+                >
+                  {mfaVerifying ? "Verificando..." : "Confirmar"}
+                </Button>
+              </form>
+
+              <div className="mt-6 text-center">
+                <button
+                  type="button"
+                  onClick={handleMfaCancel}
+                  className="text-sm text-muted-foreground hover:underline"
+                >
+                  Cancelar e voltar para o login
+                </button>
               </div>
-
-              <div>
-                <Label htmlFor="password">Senha</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={6}
-                  className="mt-1 h-12"
-                  placeholder="Minimo 6 caracteres"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                disabled={loading || googleLoading}
-                className="w-full h-12 text-lg"
-              >
-                {loading ? "Carregando..." : isLogin ? "Entrar" : "Criar conta"}
-              </Button>
-            </form>
-
-            <div className="mt-6 text-center">
-              <button
-                type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-sm text-primary hover:underline"
-              >
-                {isLogin
-                  ? "Nao tem conta? Criar conta"
-                  : "Ja tem conta? Entrar"}
-              </button>
             </div>
-          </div>
+          ) : (
+            <div className="platform-standalone-card bg-card p-6 rounded-2xl shadow-xl border border-border">
+              <h2 className="text-2xl font-semibold mb-6 text-center">
+                {isLogin ? "Entrar" : "Criar conta"}
+              </h2>
+
+              <div
+                className={`relative flex min-h-11 w-full items-center justify-center overflow-hidden ${
+                  googleLoading || loading ? "pointer-events-none opacity-60" : ""
+                }`}
+              >
+                <div ref={googleButtonRef} className="flex w-full justify-center" />
+                {googleLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-card/80">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  </div>
+                )}
+              </div>
+
+              <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-border" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-card px-2 text-muted-foreground">ou</span>
+                </div>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {!isLogin && (
+                  <div>
+                    <Label htmlFor="fullName">Nome completo</Label>
+                    <Input
+                      id="fullName"
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      required={!isLogin}
+                      className="mt-1 h-12"
+                      placeholder="Seu nome completo"
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <Label htmlFor="email">E-mail</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="mt-1 h-12"
+                    placeholder="seu@email.com"
+                />
+                </div>
+
+                <div>
+                  <Label htmlFor="password">Senha</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={6}
+                    className="mt-1 h-12"
+                    placeholder="Minimo 6 caracteres"
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={loading || googleLoading}
+                  className="w-full h-12 text-lg"
+              >
+                  {loading ? "Carregando..." : isLogin ? "Entrar" : "Criar conta"}
+                </Button>
+              </form>
+
+              <div className="mt-6 text-center">
+                <button
+                  type="button"
+                  onClick={() => setIsLogin(!isLogin)}
+                  className="text-sm text-primary hover:underline"
+                >
+                  {isLogin
+                    ? "Nao tem conta? Criar conta"
+                    : "Ja tem conta? Entrar"}
+                </button>
+              </div>
+            </div>
+          )}
 
           <p className="text-center text-sm text-muted-foreground">
             Ao criar sua conta, voce concorda com nossos termos de uso e politica de privacidade.
