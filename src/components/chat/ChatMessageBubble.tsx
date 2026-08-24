@@ -2,9 +2,10 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { Message } from "@/lib/chatService";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Check, CheckCheck, Clock } from "lucide-react";
 import { ChatAudioPlayer } from "./ChatAudioPlayer";
+import { resolvePrivateStorageUrl } from "@/lib/storageUrl";
 
 export type MessageStatus = "sending" | "sent" | "delivered" | "read";
 
@@ -17,6 +18,8 @@ interface ChatMessageBubbleProps {
 export function ChatMessageBubble({ message, isOwn, status = "sent" }: ChatMessageBubbleProps) {
   const [imageLoading, setImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
+  const [resolvedImageUrl, setResolvedImageUrl] = useState<string | null>(null);
+  const [resolvedAudioUrl, setResolvedAudioUrl] = useState<string | null>(null);
   
   // Check if this is an optimistic message (temp id)
   const isSending = message.id.startsWith("temp-");
@@ -25,7 +28,7 @@ export function ChatMessageBubble({ message, isOwn, status = "sent" }: ChatMessa
   // Check if message is audio
   const isAudio = (message.metadata as any)?.audioUrl ||
     (message.body?.startsWith("https://") && message.body?.match(/audio\.webm/i));
-  const audioUrl = (message.metadata as any)?.audioUrl || message.body;
+  const rawAudioUrl = (message.metadata as any)?.audioUrl || message.body;
 
   // Check if message is an image (type = 'image' or body contains image URL)
   const isImage = !isAudio && (message.type === "image" || 
@@ -33,7 +36,29 @@ export function ChatMessageBubble({ message, isOwn, status = "sent" }: ChatMessa
     (message.body?.startsWith("https://") && 
      (message.body?.includes("chat-images") || message.body?.match(/\.(jpg|jpeg|png|gif|webp)$/i))));
 
-  const imageUrl = (message.metadata as any)?.imageUrl || message.body;
+  const rawImageUrl = (message.metadata as any)?.imageUrl || message.body;
+
+  // Resolve legacy public URLs / storage paths into signed URLs, since
+  // the chat-images bucket is now private.
+  useEffect(() => {
+    if (!isImage || !rawImageUrl) return;
+    let cancelled = false;
+    resolvePrivateStorageUrl("chat-images", rawImageUrl).then((url) => {
+      if (!cancelled) setResolvedImageUrl(url);
+    });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isImage, rawImageUrl]);
+
+  useEffect(() => {
+    if (!isAudio || !rawAudioUrl) return;
+    let cancelled = false;
+    resolvePrivateStorageUrl("chat-images", rawAudioUrl).then((url) => {
+      if (!cancelled) setResolvedAudioUrl(url);
+    });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAudio, rawAudioUrl]);
 
   const renderStatusIcon = () => {
     if (!isOwn) return null;
@@ -65,28 +90,37 @@ export function ChatMessageBubble({ message, isOwn, status = "sent" }: ChatMessa
         )}
       >
         {isAudio ? (
-          <ChatAudioPlayer src={audioUrl} isOwn={isOwn} />
+          resolvedAudioUrl ? (
+            <ChatAudioPlayer src={resolvedAudioUrl} isOwn={isOwn} />
+          ) : (
+            <div className="flex items-center gap-2 px-2 py-1">
+              <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              <span className="text-xs text-muted-foreground">Carregando audio...</span>
+            </div>
+          )
         ) : isImage && !imageError ? (
           <div className="relative">
-            {imageLoading && (
+            {(imageLoading || !resolvedImageUrl) && (
               <div className="absolute inset-0 flex items-center justify-center bg-secondary rounded-xl min-h-[100px] min-w-[150px]">
                 <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               </div>
             )}
-            <img
-              src={imageUrl}
-              alt="Imagem enviada"
-              className={cn(
-                "max-w-full rounded-xl cursor-pointer hover:opacity-90 transition-opacity",
-                imageLoading && "opacity-0"
-              )}
-              onLoad={() => setImageLoading(false)}
-              onError={() => {
-                setImageLoading(false);
-                setImageError(true);
-              }}
-              onClick={() => window.open(imageUrl, "_blank")}
-            />
+            {resolvedImageUrl && (
+              <img
+                src={resolvedImageUrl}
+                alt="Imagem enviada"
+                className={cn(
+                  "max-w-full rounded-xl cursor-pointer hover:opacity-90 transition-opacity",
+                  imageLoading && "opacity-0"
+                )}
+                onLoad={() => setImageLoading(false)}
+                onError={() => {
+                  setImageLoading(false);
+                  setImageError(true);
+                }}
+                onClick={() => resolvedImageUrl && window.open(resolvedImageUrl, "_blank")}
+              />
+            )}
           </div>
         ) : imageError ? (
           <p className="text-sm text-muted-foreground px-2 py-1">
