@@ -22,7 +22,7 @@ import { getCurrentUser } from "@/lib/supabase";
 
 type VerifiedFactor = {
   id: string;
-  friendly_name: string | null;
+  friendly_name?: string | null;
   created_at: string;
 };
 
