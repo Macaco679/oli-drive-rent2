@@ -156,7 +156,6 @@ export async function getVehicleById(vehicleId: string): Promise<any | null> {
       )
     `)
     .eq("id", vehicleId)
-    .eq("owner_id", userData.user.id)
     .single();
 
   if (error) {
