@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { getAvailableVehicles, getVehicleCoverPhoto, OliVehicle } from "@/lib/supabase";
 import { MapPin, Search as SearchIcon, SlidersHorizontal } from "lucide-react";
 
-interface VehicleWithCover extends OliVehicle {
+interface VehicleWithCover extends Omit<OliVehicle, "pickup_neighborhood"> {
   coverImage?: string;
   pickup_neighborhood?: string | null;
 }
