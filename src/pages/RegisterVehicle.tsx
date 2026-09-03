@@ -400,14 +400,26 @@ export default function RegisterVehicle() {
                   <FormField control={form.control} name="vehicle_type" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Selecione o tipo de veículo *</FormLabel>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-3">
                         {vehicleTypeOptions.map((type) => {
                           const Icon = type.icon;
                           const isSelected = field.value === type.value;
                           return (
-                            <button key={type.value} type="button" onClick={() => field.onChange(type.value)} className={`flex flex-col items-center justify-center gap-2 p-4 rounded-lg border-2 transition-all ${isSelected ? "border-primary bg-primary/10 text-primary" : "border-muted hover:border-primary/50 hover:bg-primary/5"}`}>
-                              <Icon className={`w-8 h-8 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
-                              <span className={`font-medium text-sm ${isSelected ? "text-primary" : ""}`}>{type.label}</span>
+                            <button
+                              key={type.value}
+                              type="button"
+                              onClick={() => field.onChange(type.value)}
+                              className={`group flex h-28 flex-col items-center justify-center gap-3 rounded-2xl border text-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
+                                isSelected
+                                  ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                                  : "border-primary/15 bg-background/90 text-foreground shadow-sm hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/5"
+                              }`}
+                              aria-pressed={isSelected}
+                            >
+                              <span className={`flex h-10 w-10 items-center justify-center rounded-full ${isSelected ? "bg-primary-foreground/15" : "bg-primary/10"}`}>
+                                <Icon className={`h-6 w-6 ${isSelected ? "text-primary-foreground" : "text-primary/75"}`} />
+                              </span>
+                              <span className="text-sm font-semibold leading-none">{type.label}</span>
                             </button>
                           );
                         })}

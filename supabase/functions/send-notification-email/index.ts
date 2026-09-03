@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const APP_URL = Deno.env.get("APP_URL") || "https://oli-drive-rent.lovable.app";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -21,12 +22,22 @@ type NotificationType =
   | "cnh_approved"
   | "cnh_rejected"
   | "vehicle_approved"
-  | "vehicle_rejected";
+  | "vehicle_rejected"
+  | "status_update";
 
 interface NotificationPayload {
   type: NotificationType;
   recipient_id: string;
   data: Record<string, unknown>;
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 // Email templates
@@ -297,6 +308,34 @@ const emailTemplates: Record<NotificationType, { subject: string; html: (data: R
       </div>
     `,
   },
+  status_update: {
+    subject: "Atualização importante - Oli Drive",
+    html: (data) => {
+      const title = escapeHtml(String(data.title || "Atualização de status"));
+      const body = escapeHtml(String(data.body || "Uma pendência ou status foi atualizado na sua conta."));
+      const link = typeof data.link === "string" && data.link.startsWith("/")
+        ? `${APP_URL}${data.link}`
+        : APP_URL;
+
+      return `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #0f4c45;">${title}</h2>
+          <p>${body}</p>
+          <div style="background: #f3f7f6; padding: 16px; border-radius: 8px; margin: 16px 0; border: 1px solid #d7ebe7;">
+            <p style="margin: 0;"><strong>Ação:</strong> Acesse o app para ver os detalhes.</p>
+          </div>
+          <a href="${link}"
+             style="display: inline-block; background: #0f4c45; color: white; padding: 12px 24px;
+                    border-radius: 8px; text-decoration: none; margin-top: 16px;">
+            Ver no app
+          </a>
+          <p style="color: #9ca3af; font-size: 12px; margin-top: 32px;">
+            Oli Drive - Aluguel de veículos entre pessoas
+          </p>
+        </div>
+      `;
+    },
+  },
 };
 
 // Get user email from profile or auth
@@ -329,6 +368,10 @@ async function getUserName(userId: string, supabaseAdmin: any): Promise<string> 
 
 // Send email using Resend REST API directly
 async function sendEmail(to: string, subject: string, html: string): Promise<{ id: string }> {
+  if (!RESEND_API_KEY) {
+    throw new Error("RESEND_API_KEY is not configured");
+  }
+
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {

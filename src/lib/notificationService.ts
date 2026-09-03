@@ -3,7 +3,9 @@
 // no header) a partir do mesmo ponto único.
 import { supabase } from "@/integrations/supabase/client";
 
-const EDGE_FUNCTION_URL = "https://sgpktbljjlixmyjmhppa.supabase.co/functions/v1/send-notification-email";
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+const EDGE_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/send-notification-email`;
 
 type NotificationType = 
   | "new_message"
@@ -17,7 +19,8 @@ type NotificationType =
   | "cnh_approved"
   | "cnh_rejected"
   | "vehicle_approved"
-  | "vehicle_rejected";
+  | "vehicle_rejected"
+  | "status_update";
 
 interface NotificationPayload {
   type: NotificationType;
@@ -105,6 +108,12 @@ function buildInAppNotification(
         body: `${vehicleTitle} não passou na verificação`,
         link: "/my-vehicles",
       };
+    case "status_update":
+      return {
+        title: (data.title as string) || "Atualização de status",
+        body: (data.body as string) || "Uma pendência ou status foi atualizado na sua conta",
+        link: (data.link as string) || "/home",
+      };
     default:
       return { title: "Nova notificação", body: "", link: "/home" };
   }
@@ -135,7 +144,7 @@ async function sendNotification(payload: NotificationPayload): Promise<boolean> 
       headers: {
         "Content-Type": "application/json",
         "Authorization": session?.access_token ? `Bearer ${session.access_token}` : "",
-        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNncGt0YmxqamxpeG15am1ocHBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTE5MjksImV4cCI6MjA4NDQ4NzkyOX0.OoTf_1N0KWWGSfnk-6ZE-M2yg5z8wmej6E83bdWKUAU",
+        "apikey": SUPABASE_PUBLISHABLE_KEY,
       },
       body: JSON.stringify(payload),
     });
@@ -323,6 +332,25 @@ export async function notifyVehicleRejected(
     data: {
       vehicle_title: vehicleTitle,
       status_label: statusLabel || "REPROVADO",
+    },
+  });
+}
+
+export async function notifyStatusUpdate(
+  recipientId: string,
+  title: string,
+  body: string,
+  link = "/home",
+  extraData: Record<string, unknown> = {}
+): Promise<boolean> {
+  return sendNotification({
+    type: "status_update",
+    recipient_id: recipientId,
+    data: {
+      ...extraData,
+      title,
+      body,
+      link,
     },
   });
 }

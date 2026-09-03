@@ -154,11 +154,11 @@ export default function Reservations() {
           <div className="text-center py-12 text-muted-foreground">Carregando...</div>
         ) : (
           <Tabs defaultValue="renter" className="w-full">
-            <TabsList className="w-full max-w-md grid grid-cols-2 mb-8">
-              <TabsTrigger value="renter" className="text-base py-3">
+            <TabsList className="w-full max-w-md grid grid-cols-2 mb-8 h-14 rounded-2xl border border-primary/15 bg-background/85 p-1.5 shadow-sm backdrop-blur">
+              <TabsTrigger value="renter" className="h-11 rounded-xl text-base font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md">
                 Como motorista
               </TabsTrigger>
-              <TabsTrigger value="owner" className="text-base py-3">
+              <TabsTrigger value="owner" className="h-11 rounded-xl text-base font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md">
                 Como locador
               </TabsTrigger>
             </TabsList>
