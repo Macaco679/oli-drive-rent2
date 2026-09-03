@@ -16,3 +16,6 @@ verify_jwt = false
 
 [functions.webhook-proxy]
 verify_jwt = false
+
+[functions.asaas-tokenize-card]
+verify_jwt = true

@@ -190,7 +190,7 @@ export async function updateVehicle(
 
   const { error } = await supabase
     .from("oli_vehicles")
-    .update(updateData)
+    .update(updateData as any)
     .eq("id", vehicleId)
     .eq("owner_id", userData.user.id);
 

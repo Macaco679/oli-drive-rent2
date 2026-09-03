@@ -3,7 +3,7 @@ Como o sistema funciona por dentro. Para setup e visão geral, ver ../README.md;
 Visão geral
 Aplicação single-page (Vite + React) que fala diretamente com o Supabase para a maior parte dos dados (Postgres + Auth + Storage + Realtime), e delega a um servidor n8n externo os fluxos que precisam de lógica de servidor ou integração com terceiros: validação de CNH, validação de veículo, geração de contrato, vistoria e processamento de pagamento/caução.
 
-O frontend deve falar com o n8n apenas através de uma Edge Function do Supabase que funciona como proxy com whitelist. Há uma exceção conhecida — ver Exceção à regra do proxy.
+O frontend deve falar com o n8n apenas através de uma Edge Function do Supabase que funciona como proxy com whitelist.
 
 ┌──────────────┐        ┌──────────────────────────┐       ┌───────────────┐
 
@@ -52,15 +52,15 @@ O schema cobre ainda vistoria (fotos de retirada/devolução), contratos digitai
 
 Superfície de segurança: como a chave anon é pública por design, toda a proteção dos dados depende das políticas de Row Level Security das tabelas oli_*. É o único perímetro que existe — uma revisão dedicada dessas policies é a tarefa de segurança de maior retorno neste projeto.
 Edge Functions (supabase/functions/)
-Configuração em supabase/config.toml; ambas rodam com verify_jwt = false.
+Configuração em supabase/config.toml. webhook-proxy e send-notification-email rodam com verify_jwt = false; asaas-tokenize-card roda com verify_jwt = true.
 webhook-proxy
-Ponto de saída do frontend para o n8n. Mantém a whitelist ALLOWED_URLS com 12 entradas — validação de veículo, CNH, as quatro etapas de vistoria, geração de contrato, cobrança PIX/cartão e caução via Asaas — e repassa a requisição, evitando CORS e mantendo as URLs do n8n fora do bundle do cliente. Suporta application/json e multipart/form-data (upload de fotos de vistoria), com o destino escolhido pelo campo _webhook_target.
+Ponto de saída do frontend para o n8n. Mantém a whitelist ALLOWED_URLS com as integrações permitidas — validação de veículo, CNH, vistoria, geração de contrato, validação facial, cobrança PIX/cartão e caução via Asaas — e repassa a requisição, evitando CORS e mantendo as URLs do n8n fora do bundle do cliente. Suporta application/json e multipart/form-data (upload de fotos de vistoria), com o destino escolhido pelo campo _webhook_target. Os logs redigem campos sensíveis e não registram corpo completo de resposta do n8n.
 
 Para adicionar um novo fluxo de servidor, registre a URL aqui em vez de chamar o n8n diretamente do frontend.
 
 Duas entradas apontam para a mesma URL (oli-pagamento-pix e oli-pagamento-cartao → /oli/sp/pagar); é intencional até segunda ordem.
-Exceção à regra do proxy
-src/components/profile/FaceRecognitionField.tsx chama o webhook oli-face-validation diretamente do browser, sem passar pelo proxy, e esse endpoint não consta na whitelist. Consequências: a URL do n8n vai para o bundle do cliente e a chamada fica sujeita a CORS. É uma pendência conhecida — o padrão não deve ser replicado.
+asaas-tokenize-card
+Tokeniza cartão na Asaas antes de enviar o pagamento ao n8n. O frontend envia número completo/CVV apenas para esta Edge Function autenticada; o n8n recebe somente creditCardToken e asaasCustomerId.
 send-notification-email
 Envio de e-mails transacionais via Resend (RESEND_API_KEY, configurado como secret do Supabase — não vive neste repositório).
 n8n e integrações externas
@@ -103,6 +103,9 @@ Sensível — secret do Supabase
 RESEND_API_KEY
 Edge Function send-notification-email
 Sensível — secret do Supabase
+ASAAS_API_KEY
+Edge Function asaas-tokenize-card
+Sensível — secret do Supabase
 ASAAS_CAUCAO_API_KEY, ASAAS_API_BASE_URL, ASAAS_WEBHOOK_TOKEN
 Workflows n8n
 Sensível — ambiente do n8n
@@ -126,7 +129,7 @@ Ambos os caminhos esperam a raiz do app na raiz do repositório — não mover p
 Não há ambiente de staging e não há CI. Nenhum teste automatizado roda antes de publicar.
 Pendências conhecidas
 Lockfile fora de sincronia — embla-carousel-autoplay@8.6.0 está no package.json mas ausente do package-lock.json, o que faz npm ci falhar (npm install funciona). O repositório também carrega três lockfiles: package-lock.json (oficial), bun.lock e bun.lockb. Regenerar lockfiles é uma mudança de dependências e deve ser feita deliberadamente, testando o impacto no pipeline Lovable/Vercel antes de commitar.
-Chamada direta ao n8n em FaceRecognitionField.tsx (ver acima).
+Workflow oli-face-validation ainda precisa existir no n8n para a validação facial sair de pending.
 49 MB de vídeo em public/videos/ — servidos direto do bundle, pesando no carregamento inicial de um app mobile-first. Mover para CDN/Storage é a otimização de maior impacto no tempo de carga.
 Ausência de testes e CI — nenhuma verificação de comportamento entre o commit e a produção.
 RLS não auditada — ver a nota em Modelo de dados.

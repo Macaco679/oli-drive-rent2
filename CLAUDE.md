@@ -106,7 +106,7 @@ Os modais de pagamento fogem do padrão: chamam supabase.functions.invoke("webho
 Cuidados específicos
 Integração com o n8n
 webhook-proxy (supabase/functions/webhook-proxy/index.ts) deve ser o único ponto por onde o frontend fala com o n8n. Ao adicionar um fluxo de servidor, registre a URL na whitelist ALLOWED_URLS (hoje com 12 entradas) em vez de chamar o n8n direto do client.
-Exceção conhecida, não corrigida: src/components/profile/FaceRecognitionField.tsx chama https://n8n.srv1153225.hstgr.cloud/webhook/oli-face-validation diretamente do browser, e esse endpoint não está na whitelist. Isso expõe a URL do n8n no bundle e sujeita a chamada a CORS. Não replique o padrão; se for mexer nesse arquivo, migrar para o proxy é bem-vindo.
+Validação facial: src/components/profile/FaceRecognitionField.tsx já chama o fluxo oli-face-validation via webhook-proxy. O workflow correspondente ainda precisa existir no n8n; até lá o frontend trata falha como não crítica e mantém o status pending.
 Os workflows deste repo são um subconjunto. n8n/workflows/ tem apenas os 3 fluxos da caução Asaas. CNH, validação de veículo, contrato, as quatro etapas de vistoria e os fluxos de pagamento vivem só no servidor n8n. A fonte da verdade é o servidor — o repositório pode estar defasado sem nenhum sinal.
 A whitelist tem duas entradas apontando para a mesma URL (oli-pagamento-pix e oli-pagamento-cartao → /oli/sp/pagar). É intencional até segunda ordem; não "limpe" isso sem confirmar.
 Segredos

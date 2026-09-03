@@ -37,6 +37,47 @@ const ALLOWED_URLS: Record<string, string> = {
   "oli-face-validation": `${N8N_BASE}/webhook/oli-face-validation`,
 };
 
+const SENSITIVE_KEY_PATTERN = /(card|cartao|cartão|cvv|ccv|token|authorization|apikey|api_key|secret|password|senha|cpf|cnpj|rg|license|cnh|renavam|phone|telefone|celular|email|url|image|photo|foto|selfie|payload)/i;
+
+const redactValue = (key: string, value: unknown): unknown => {
+  if (SENSITIVE_KEY_PATTERN.test(key)) return "[REDACTED]";
+
+  if (Array.isArray(value)) {
+    return `[Array(${value.length})]`;
+  }
+
+  if (value && typeof value === "object") {
+    return redactObject(value as Record<string, unknown>);
+  }
+
+  if (typeof value === "string" && value.length > 80) {
+    return `${value.slice(0, 20)}...[truncated:${value.length}]`;
+  }
+
+  return value;
+};
+
+const redactObject = (input: Record<string, unknown>): Record<string, unknown> => {
+  const output: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(input)) {
+    output[key] = redactValue(key, value);
+  }
+
+  return output;
+};
+
+const summarizeFormField = (key: string, value: FormDataEntryValue): string => {
+  if (value instanceof File) {
+    return `${key} (File: ${value.name || "[unnamed]"}, ${value.size} bytes, ${value.type || "application/octet-stream"})`;
+  }
+
+  if (SENSITIVE_KEY_PATTERN.test(key)) return `${key}: [REDACTED]`;
+
+  const stringValue = String(value);
+  return `${key}: ${stringValue.length > 80 ? `${stringValue.slice(0, 20)}...[truncated:${stringValue.length}]` : stringValue}`;
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -95,7 +136,7 @@ serve(async (req) => {
           }
 
           outgoing.append(key, stringValue);
-          fieldNames.push(`${key}: ${stringValue.slice(0, 150)}`);
+          fieldNames.push(summarizeFormField(key, stringValue));
         }
       }
 
@@ -124,18 +165,15 @@ serve(async (req) => {
         );
       }
 
-      console.log(`=== WEBHOOK PROXY (multipart) → ${targetKey} ===`);
-      console.log("inspection_id:", inspectionId);
-      console.log(`Fields (${fieldNames.length}):`, fieldNames.join(" | "));
+      console.log(`WEBHOOK_PROXY multipart target=${targetKey} inspection_id=${inspectionId || "[missing]"} fields=${fieldNames.join(" | ")}`);
 
       const n8nResponse = await fetch(targetUrl, {
         method: "POST",
         body: outgoing,
       });
 
-      console.log("n8n response status:", n8nResponse.status);
       const responseText = await n8nResponse.text();
-      console.log("n8n response body:", responseText.slice(0, 300));
+      console.log(`WEBHOOK_PROXY multipart target=${targetKey} status=${n8nResponse.status} response_bytes=${responseText.length}`);
 
       return new Response(responseText, {
         status: n8nResponse.status,
@@ -147,19 +185,18 @@ serve(async (req) => {
     const body = await req.json();
     
     const targetKey = body._webhook_target as string | undefined;
-    const targetUrl = targetKey ? ALLOWED_URLS[targetKey] : ALLOWED_URLS["validarcarro"];
+    const targetUrl = targetKey ? ALLOWED_URLS[targetKey] : null;
 
     if (!targetUrl) {
       return new Response(
-        JSON.stringify({ error: `Webhook target "${targetKey}" not allowed` }),
+        JSON.stringify({ error: `Webhook target "${targetKey || "[missing]"}" not allowed` }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     const { _webhook_target, ...payload } = body;
 
-    console.log(`=== WEBHOOK PROXY → ${targetKey || "validarcarro"} ===`);
-    console.log("Payload:", JSON.stringify(payload).slice(0, 500));
+    console.log(`WEBHOOK_PROXY json target=${targetKey} payload=${JSON.stringify(redactObject(payload))}`);
 
     const n8nResponse = await fetch(targetUrl, {
       method: "POST",
@@ -167,9 +204,8 @@ serve(async (req) => {
       body: JSON.stringify(payload),
     });
 
-    console.log("n8n response status:", n8nResponse.status);
     const responseText = await n8nResponse.text();
-    console.log("n8n response body:", responseText.slice(0, 300));
+    console.log(`WEBHOOK_PROXY json target=${targetKey} status=${n8nResponse.status} response_bytes=${responseText.length}`);
 
     return new Response(responseText, {
       status: n8nResponse.status,

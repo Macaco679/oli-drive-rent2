@@ -16,7 +16,7 @@ Vistoria fotográfica — fotos de retirada e devolução, enviadas ao n8n pelo 
 Pagamento e caução — cobrança via Asaas (PIX, boleto ou cartão), orquestrada pelo n8n.
 Devolução — vistoria final e liberação da caução.
 
-Regra estrutural: o frontend nunca chama o n8n diretamente — tudo passa pela Edge Function webhook-proxy, que mantém uma whitelist de endpoints. (Há uma exceção conhecida e não corrigida; ver CLAUDE.md.)
+Regra estrutural: o frontend nunca chama o n8n diretamente — tudo passa pela Edge Function webhook-proxy, que mantém uma whitelist de endpoints.
 
 Detalhamento em docs/ARCHITECTURE.md.
 
@@ -81,6 +81,9 @@ Edge Functions (Deno.env.get)
 Sensível — secret do Supabase, não vive aqui
 RESEND_API_KEY
 Edge Function send-notification-email
+Sensível — secret do Supabase
+ASAAS_API_KEY
+Edge Function asaas-tokenize-card
 Sensível — secret do Supabase
 ASAAS_CAUCAO_API_KEY, ASAAS_API_BASE_URL, ASAAS_WEBHOOK_TOKEN
 Workflows n8n
@@ -174,10 +177,11 @@ UUID). Não edite migrations existentes — apenas adicione novas.
 
 Edge Functions (supabase/functions/):
 
-webhook-proxy — ponto de saída do frontend para o n8n. Mantém a whitelist ALLOWED_URLS (12 endpoints), evitando CORS e mantendo as URLs do n8n fora do bundle do cliente. Novo fluxo de servidor → registre a URL aqui.
+webhook-proxy — ponto de saída do frontend para o n8n. Mantém a whitelist ALLOWED_URLS, evitando CORS e mantendo as URLs do n8n fora do bundle do cliente. Novo fluxo de servidor → registre a URL aqui. Os logs do proxy devem registrar apenas destino, status, tamanho da resposta e payload redigido.
+asaas-tokenize-card — tokeniza cartão na Asaas antes de chamar o n8n. O n8n recebe somente o token, não número completo/CVV.
 send-notification-email — e-mails transacionais via Resend.
 
-Ambas rodam com verify_jwt = false (ver supabase/config.toml).
+webhook-proxy e send-notification-email rodam com verify_jwt = false (ver supabase/config.toml). asaas-tokenize-card roda com verify_jwt = true.
 
 n8n roda num servidor externo. Atenção:
 
@@ -210,7 +214,7 @@ Não há testes automatizados nem CI. Nenhum *.test.*, nenhum .github/workflows/
 npm ci falha — package-lock.json está fora de sincronia com package.json (embla-carousel-autoplay@8.6.0 presente no package.json, ausente do lockfile). Use npm install. Regenerar o lockfile é uma mudança de dependências e deve ser tarefa própria, testada contra o build do Lovable/Vercel.
 Três lockfiles no repo — package-lock.json (oficial), bun.lock e bun.lockb (resquício de uso anterior do Bun; não gerencie dependências por eles).
 .env versionado — ver Configuração.
-Uma chamada direta ao n8n — src/components/profile/FaceRecognitionField.tsx chama o webhook oli-face-validation direto do browser, sem passar pelo webhook-proxy, e esse endpoint não está na whitelist. Expõe a URL do n8n no bundle e fica sujeito a CORS. Não replique o padrão.
+Validação facial depende do workflow oli-face-validation existir no n8n. O frontend já chama esse fluxo via webhook-proxy; se o workflow ainda não existir no n8n, o status fica pendente.
 src/lib/pixPaymentService.ts é código morto — nenhum arquivo o importa e nenhum dos seus exports é usado. O PIX real acontece em src/components/payments/PixPaymentModal.tsx, que chama o webhook-proxy diretamente. Cuidado: o arquivo contém uma função simulatePixPaymentConfirmation.
 49 MB de vídeo em public/videos/ — servidos direto do bundle, pesando no carregamento inicial de um app cujo público é mobile. Mover para CDN/Storage é uma melhoria clara.
 Erros de lint e typecheck pré-existentes — o baseline está documentado em CLAUDE.md.

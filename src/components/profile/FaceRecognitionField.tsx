@@ -266,17 +266,19 @@ export function FaceRecognitionField({ currentFaceUrl, validation, onFaceChange 
 
       const sanitizedCpf = String(profileSnapshot?.cpf || "").replace(/\D/g, "") || null;
 
+      const pendingFaceValidationUpdate = {
+        face_recognition_url: publicUrl,
+        face_validation_status: "pending",
+        face_validation_score: null,
+        face_validation_provider: provider,
+        face_validation_requested_at: requestedAt,
+        face_validation_validated_at: null,
+        face_validation_reference_id: referenceId,
+      };
+
       await supabase
         .from("oli_profiles")
-        .update({
-          face_recognition_url: publicUrl,
-          face_validation_status: "pending",
-          face_validation_score: null,
-          face_validation_provider: provider,
-          face_validation_requested_at: requestedAt,
-          face_validation_validated_at: null,
-          face_validation_reference_id: referenceId,
-        })
+        .update(pendingFaceValidationUpdate as any)
         .eq("id", user.id);
 
       const faceRequestPayload = {
@@ -401,7 +403,7 @@ export function FaceRecognitionField({ currentFaceUrl, validation, onFaceChange 
           face_validation_requested_at: null,
           face_validation_validated_at: null,
           face_validation_reference_id: null,
-        })
+        } as any)
         .eq("id", user.id);
 
       emitChange({
